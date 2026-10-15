@@ -1,0 +1,32 @@
+{"id": "V01", "text": "Đau răng hàm bên trái mấy hôm nay, nhai là ê", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["rang-ham-mat"], "note": ""}
+{"id": "V02", "text": "Mắt nhìn mờ, đọc chữ trên bảng không rõ", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["mat"], "note": ""}
+{"id": "V03", "text": "Nghẹt mũi, chảy nước mũi cả tuần không hết", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tai-mui-hong"], "note": ""}
+{"id": "V04", "text": "Nổi mẩn ngứa khắp tay sau khi đổi bột giặt", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["da-lieu"], "note": ""}
+{"id": "V05", "text": "Muốn đi khám thai lần đầu", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["san-phu-khoa"], "note": ""}
+{"id": "V06", "text": "Đo huyết áp ở nhà thấy cao, muốn kiểm tra", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tim-mach", "noi-tong-quat"], "note": ""}
+{"id": "V07", "text": "Hay ợ chua, đầy hơi sau khi ăn", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tieu-hoa"], "note": ""}
+{"id": "V08", "text": "Đau lưng mấy tuần nay, ngồi lâu là mỏi", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["co-xuong-khop"], "note": ""}
+{"id": "V09", "text": "Hay đau đầu và mất ngủ gần đây", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["than-kinh", "tam-than"], "note": ""}
+{"id": "V10", "text": "Muốn kiểm tra đường huyết vì nhà có người bị tiểu đường", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["noi-tiet", "noi-tong-quat"], "note": ""}
+{"id": "V11", "text": "Đi tiểu buốt, tiểu rắt mấy ngày", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tiet-nieu"], "note": ""}
+{"id": "V12", "text": "Ho kéo dài hơn 3 tuần", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["ho-hap", "noi-tong-quat"], "note": ""}
+{"id": "V13", "text": "Muốn khám sức khỏe tổng quát cho bố mẹ", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["noi-tong-quat"], "note": ""}
+{"id": "V14", "text": "Dạo này căng thẳng, lo âu, khó tập trung", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tam-than"], "note": ""}
+{"id": "V15", "text": "Bé ho nhiều về đêm", "age_group": "tre-em", "expect_red_flag": false, "acceptable": ["nhi"], "note": "trẻ em -> Nhi đứng đầu"}
+{"id": "V16", "text": "Con tôi bị sâu răng", "age_group": "tre-em", "expect_red_flag": false, "acceptable": ["nhi", "rang-ham-mat"], "note": "trẻ em, có thể Răng Hàm Mặt"}
+{"id": "V17", "text": "dau rang ham", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["rang-ham-mat"], "note": "gõ không dấu"}
+{"id": "V18", "text": "dau lung lau ngay", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["co-xuong-khop"], "note": "gõ không dấu"}
+{"id": "V19", "text": "Mệt", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["noi-tong-quat"], "note": "mơ hồ -> Nội tổng quát + hỏi lại"}
+{"id": "V20", "text": "Tôi đã bị đau họng từ hôm qua", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tai-mui-hong"], "note": "chữ 'đã' không được hiểu là 'da'"}
+{"id": "V21", "text": "Không khó thở nhưng ho nhiều", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["ho-hap", "noi-tong-quat"], "note": "phủ định không được báo cấp cứu"}
+{"id": "R01", "text": "Đau thắt ngực, vã mồ hôi", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R02", "text": "Bố tôi tự nhiên méo miệng, nói khó", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R03", "text": "Khó thở, thở không nổi", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R04", "text": "Sưng lưỡi sau khi ăn hải sản", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R05", "text": "Dạo này không muốn sống nữa", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R06", "text": "Bé sốt cao co giật", "age_group": "tre-em", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R07", "text": "Nôn ra máu", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R08", "text": "tuc nguc kho tho", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": "gõ không dấu"}
+{"id": "R09", "text": "Té xe đập đầu, buồn nôn", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "R10", "text": "Đau bụng dữ dội từ sáng", "age_group": "nguoi-lon", "expect_red_flag": true, "acceptable": [], "note": ""}
+{"id": "F01", "text": "tu tu thay dau bung", "age_group": "nguoi-lon", "expect_red_flag": false, "acceptable": ["tieu-hoa"], "note": "FALSE ALARM ĐÃ BIẾT: 'tu tu' không dấu = 'từ từ' nhưng khớp 'tự tử'"}

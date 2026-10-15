@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chuẩn bị buổi khám</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  :root { --ink: #1d2623; --muted: #5d6b66; --brand: #0f6e5a; --soft: #e3f2ee; --warn: #b42318; --todo: #fff1c2; --line: #dfe5e2; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 22px/1.45 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); }
+  .slide { width: 1280px; height: 720px; padding: 56px 72px; position: relative; page-break-after: always; overflow: hidden; background: #fff; }
+  .slide:last-child { page-break-after: auto; }
+  .kicker { font-size: 15px; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); font-weight: 700; margin-bottom: 8px; }
+  h1 { font-size: 44px; line-height: 1.15; margin: 0 0 18px; }
+  h2 { font-size: 34px; line-height: 1.2; margin: 0 0 22px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .box { border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .box.brand { background: var(--soft); border-color: transparent; }
+  .box.warn { border-color: var(--warn); }
+  .todo { background: var(--todo); border-radius: 10px; padding: 10px 14px; font-size: 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 18px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 15px; text-transform: uppercase; letter-spacing: .04em; }
+  ul { margin: 0; padding-left: 24px; } li { margin-bottom: 8px; }
+  .big { font-size: 52px; font-weight: 800; color: var(--brand); line-height: 1; }
+  .quote { font-size: 26px; line-height: 1.35; border-left: 6px solid var(--brand); padding-left: 22px; margin: 10px 0 18px; }
+  .shots { display: flex; gap: 16px; align-items: flex-start; }
+  .shots img { height: 440px; border-radius: 14px; border: 1px solid var(--line); object-fit: cover; object-position: top; }
+  .flow { display: flex; align-items: center; gap: 8px; font-size: 17px; flex-wrap: wrap; }
+  .flow span { padding: 8px 11px; border-radius: 10px; background: var(--soft); }
+  .flow span.gap { background: #fde7c7; font-weight: 700; }
+  .flow b { color: var(--muted); }
+  .title-slide { background: var(--brand); color: #fff; }
+  .title-slide .kicker, .title-slide .muted { color: #cfe9e1; }
+  .small { font-size: 16px; }
+</style>
+</head>
+<body>
+<section class="slide title-slide">
+  <div class="kicker">Vinmec × AI Thực Chiến · Bài tập 1 tuần</div>
+  <h1 style="font-size:56px;margin-top:110px">Chuẩn bị buổi khám:<br>nói hết, hỏi đủ, kể một lần</h1>
+  <p style="font-size:26px">Khoảnh khắc: <b>Đặt lịch</b>, đoạn từ lúc đặt hẹn xong tới lúc gặp bác sĩ</p>
+  <p class="muted" style="position:absolute;bottom:56px">Thái Hoài An · K3 · Lab Coach AI Thực Chiến · 10/2026</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">1 · Dùng thử app đã bác bỏ giả thuyết ban đầu</div>
+  <h2>Giả thuyết ban đầu "không biết khám khoa nào" đã sai với app</h2>
+  <div class="grid2" style="grid-template-columns: 1.15fr 1fr">
+    <div>
+      <ul style="font-size:19px">
+        <li>Form web bắt chọn chuyên khoa trước, nên mình làm prototype <b>gợi ý khoa</b>.</li>
+        <li>Quay 2 video dùng app (8 phút) thì thấy MyVinmec <b>đã có</b> "Đặt lịch theo triệu chứng" và trợ lý AI <b>MIA</b>.</li>
+        <li>So sánh 12 app trong và ngoài nước: tỷ lệ đặt sai khoa vốn <b>dưới 1%</b> (0,68% ở một bệnh viện Quảng Châu).</li>
+        <li>Đặt 9 bước của luồng đi khám cạnh tính năng app đang có: đoạn <b>đặt xong → gặp bác sĩ</b> gần như trống.</li>
+      </ul>
+      <p class="small muted" style="margin-top:12px">Phát hiện phụ, đã ghi lại: form đặt lịch cho chọn mục đau thắt ngực như triệu chứng thường, trong khi MIA cảnh báo cấp cứu với cùng mô tả. Cảnh báo qua LLM mất khoảng 20 giây. 7 hướng đã cân nhắc nằm trong <b>BACKLOG.md</b>.</p>
+    </div>
+    <div class="shots">
+      <img src="../01-phong-van/anh-myvinmec/06-tim-dau-bung.jpg" alt="Form đặt lịch: tìm Đau bụng" style="height:300px">
+      <img src="../01-phong-van/anh-myvinmec/07-mia-canh-bao-cap-cuu.jpg" alt="MIA cảnh báo cấp cứu" style="height:440px">
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">2 · Vấn đề, theo nghiên cứu</div>
+  <h2>Vài phút với bác sĩ thường không đủ để nói hết</h2>
+  <div class="grid3">
+    <div class="box brand"><div class="big">4/35</div><p class="small" style="margin-top:10px">người bệnh nói ra <b>đủ</b> điều họ định nói. Ở cả 14/14 ca có hậu quả xấu, đều có ít nhất một điều không nói ra.</p><p class="muted small">Barry et al., BMJ 2000</p></div>
+    <div class="box brand"><div class="big">11 giây</div><p class="small" style="margin-top:10px">trung vị trước khi bị ngắt lời. Bác sĩ chỉ hỏi người bệnh muốn bàn gì ở 36% lượt khám (chuyên khoa: 20%).</p><p class="muted small">Singh Ospina et al., JGIM 2019</p></div>
+    <div class="box brand"><div class="big">3 lần</div><p class="small" style="margin-top:10px">người dùng MyVinmec mô tả cùng một vấn đề: danh sách triệu chứng, trợ lý MIA, ô "Lý do khám" (≤ 120 ký tự).</p><p class="muted small">Dùng thử app, video 15/10</p></div>
+  </div>
+  <p class="todo" style="margin-top:22px">⚠️ Cập nhật từ phỏng vấn P1–P3: bao nhiêu người từng quên hỏi, kể lại mấy lần, chuẩn bị sai; 2 trích dẫn tiêu biểu; giả thuyết nào bị bác bỏ</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">3 · Journey map</div>
+  <h2>Điểm đau dồn vào đoạn trước và trong lúc gặp bác sĩ</h2>
+  <div class="flow">
+    <span>Đặt hẹn: ngày + lý do ≤ 120 ký tự</span><b>→</b><span>Tổng đài xác nhận</span><b>→</b>
+    <span class="gap">Tự chuẩn bị ⚡</span><b>→</b><span class="gap">Kể lại ở quầy ⚡</span><b>→</b>
+    <span class="gap">Gặp bác sĩ vài phút ⚡</span><b>→</b><span class="gap">Ra về mới nhớ điều quên hỏi ⚡</span>
+  </div>
+  <div class="grid2" style="margin-top:28px">
+    <ul style="font-size:20px">
+      <li><b>Đ1</b> Kể đi kể lại (form, MIA, tổng đài, điều dưỡng, bác sĩ)</li>
+      <li><b>Đ2–Đ3</b> Không biết cần chuẩn bị gì; chuẩn bị sai thì phải chờ hoặc quay lại</li>
+      <li><b>Đ4–Đ5</b> Không nói hết điều lo; quên hỏi</li>
+    </ul>
+    <ul style="font-size:20px">
+      <li><b>Đ6</b> Người kể không phải người bệnh (đi cùng bố mẹ, con)</li>
+      <li style="color:var(--warn)"><b>Đ7</b> Có dấu hiệu cấp cứu nhưng vẫn chờ tới ngày hẹn</li>
+    </ul>
+  </div>
+  <p class="todo">⚠️ Bản giả thuyết. Gắn mã P vào từng điểm đau sau phỏng vấn; bỏ điểm không ai nhắc tới.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">4 · Need statement (Biodesign)</div>
+  <h2>Đúng vấn đề, chưa nói giải pháp</h2>
+  <div class="quote">Cách để <b>người bệnh, hoặc người thân đi khám cùng, đã đặt lịch khám chuyên khoa</b> gặp tình huống <b>chỉ có vài phút với bác sĩ, dễ quên nói hoặc quên hỏi điều quan trọng và không chắc cần chuẩn bị gì</b> có thể <b>đến buổi khám đã chuẩn bị đúng, nói hết và hỏi đủ, mà không phải kể lại nhiều lần</b>.</div>
+  <div class="grid3" style="font-size:19px">
+    <div class="box"><b>Mức giải pháp</b><br>Workflow có một bước AI: xếp lời kể vào phiếu. Không phải agent</div>
+    <div class="box"><b>Ranh giới</b><br>Không chẩn đoán, không trả lời câu hỏi y khoa, không bắt buộc</div>
+    <div class="box"><b>Quyết định</b><br>Conditional go cho thử nghiệm · Not yet cho triển khai thật</div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">5 · Học từ thế giới</div>
+  <h2>3 best practice → 3 nguyên tắc thiết kế</h2>
+  <div class="grid3">
+    <div class="box brand"><b>Ubie AI 問診 (Nhật)</b><p style="font-size:17px;margin-top:8px">Hỏi bệnh trước khám, kết quả chuyển thẳng vào bệnh án; hơn 1.800 cơ sở. Một bệnh viện báo thời gian hỏi bệnh → vào khám giảm 40 → 20 phút (số của nhà cung cấp).</p><p><b>→ Phiếu đi thẳng vào workflow bác sĩ, khung cố định</b></p></div>
+    <div class="box brand"><b>AHRQ QuestionBuilder (Mỹ)</b><p style="font-size:17px;margin-top:8px">App của chính phủ Mỹ giúp chuẩn bị câu hỏi. Tổng quan 42 nghiên cứu: danh sách câu hỏi giúp hỏi nhiều hơn, nhất là khi bác sĩ đồng thuận.</p><p><b>→ Câu hỏi từ danh sách cố định; AI không trả lời</b></p></div>
+    <div class="box brand"><b>Epic MyChart (Mỹ)</b><p style="font-size:17px;margin-top:8px">Phiếu trước khám ở người ≥ 65 tuổi: chỉ 26,4% điền, trung vị 14 phút; người bệnh nặng nhất không điền.</p><p><b>→ Ngắn, không bắt buộc, cho người thân điền hộ</b></p></div>
+  </div>
+  <p class="muted" style="font-size:15px;margin-top:14px">Nguồn: ASCII.jp/PR TIMES; AHRQ; Sansoni et al., PEC 2015; Naimark et al., JMIR Form Res 2024. Chi tiết: 04-best-practice/</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">6 · Prototype</div>
+  <div class="grid2" style="grid-template-columns: 1fr 1.05fr">
+    <div>
+      <h2>Kể một lần → phiếu cho bác sĩ</h2>
+      <ul style="font-size:19px">
+        <li><b>Luật cấp cứu chạy trước AI</b>, tức thì: có dấu hiệu là dừng, hiện nút gọi 115</li>
+        <li>AI chỉ xếp lời kể vào 5 dòng; <b>mỗi dòng phải kèm câu người bệnh đã kể</b>, không có thì bỏ</li>
+        <li>Người bệnh sửa hoặc xoá từng dòng trước khi gửi</li>
+        <li>Câu hỏi: của người bệnh + danh sách cố định; checklist ghi rõ nguồn Vinmec hay đề xuất</li>
+        <li>Không bắt buộc · điền hộ được · LLM lỗi → luật · log ẩn danh</li>
+      </ul>
+    </div>
+    <div class="shots">
+      <img src="../05-prototype/screenshots/3-phieu.png" alt="Phiếu kiểm tra lại">
+      <img src="../05-prototype/screenshots/6-phieu-bac-si.png" alt="Phiếu bác sĩ thấy">
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">7 · Đo và thử</div>
+  <h2>Hai lớp kiểm chứng: bộ lời kể và người thật</h2>
+  <div class="grid2">
+    <div class="box">
+      <b>24 lời kể giả lập (chế độ luật)</b>
+      <div class="grid3" style="margin-top:14px;gap:12px">
+        <div><div class="big">10/10</div><span class="muted" style="font-size:15px">lời kể có dấu hiệu cấp cứu bị chặn</span></div>
+        <div><div class="big">0</div><span class="muted" style="font-size:15px">dòng phiếu không có căn cứ hoặc có lời khuyên</span></div>
+        <div><div class="big">37/37</div><span class="muted" style="font-size:15px">mục phiếu kỳ vọng có mặt</span></div>
+      </div>
+      <p class="muted" style="font-size:15px;margin-top:12px">Con số lạc quan: bộ ca và luật do cùng một bên viết; 3 ca trượt đã được sửa sau lần chạy đầu. Guardrail LLM đã thử bằng đầu ra cài lỗi; chế độ LLM thật chưa đo.</p>
+    </div>
+    <div class="box">
+      <b>Thử với 2–3 người (đóng vai theo thẻ K1–K5)</b>
+      <p class="muted small" style="margin-top:8px">Đo: số dòng AI ghi bị sửa hoặc xoá · thời gian điền · số câu hỏi mang vào phòng khám · ai bấm "Để sau"</p>
+      <p class="todo" style="margin-top:10px">⚠️ Cập nhật từ test-log.md: ai thử, gặp gì, đã sửa gì; kết quả summarize_log.py</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">8 · An toàn, đạo đức và bước tiếp theo</div>
+  <h2>AI chỉ ghi lại, người bệnh duyệt, bác sĩ quyết định</h2>
+  <div class="grid2">
+    <table>
+      <tr><th>Rủi ro (L×I ≥ 6)</th><th>Giảm thiểu</th></tr>
+      <tr><td>Bỏ sót cấp cứu</td><td>Luật cố định trước AI; không có đường từ màn cấp cứu sang tạo phiếu</td></tr>
+      <tr><td>AI thêm hoặc sai thông tin</td><td>Trích dẫn bắt buộc; người bệnh duyệt từng dòng; log số dòng bị sửa</td></tr>
+      <tr><td>AI trả lời câu hỏi y khoa</td><td>Câu hỏi chỉ chuyển cho bác sĩ; danh sách gợi ý cố định</td></tr>
+      <tr><td>Lộ thông tin sức khoẻ</td><td>Che SĐT, email trước khi log hay gửi LLM; ⏳ quy định ai đọc phiếu</td></tr>
+      <tr><td>Người lớn tuổi bị bỏ lại</td><td>Không bắt buộc; người thân điền hộ; tổng đài vẫn hỏi</td></tr>
+    </table>
+    <div class="box warn">
+      <b>Backlog cho sprint 6 tuần</b>
+      <ul style="font-size:18px;margin-top:10px">
+        <li><b>B3 · Hiểu lời dặn sau khám</b>: người bệnh quên 40–80% thông tin; cần bác sĩ duyệt bản viết lại</li>
+        <li><b>B2 · Báo cho MyVinmec</b> khoảng trống an toàn T1–T2 ở form đặt lịch</li>
+        <li><b>B1 · Gợi ý chuyên khoa</b>: module đã có, mở lại khi có số liệu tổng đài</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kicker">9 · Dẫn dắt nhóm K4</div>
+  <h2>Coach để mỗi bạn tự đi hết vòng, có bằng chứng thật</h2>
+  <div class="grid3">
+    <div class="box"><b>Nhịp</b><p style="font-size:19px;margin-top:8px">Mỗi ngày một đầu ra rõ; check-in 15 phút mỗi tối; trễ 1 mốc nhắn riêng, trễ 2 mốc gọi 10 phút.</p></div>
+    <div class="box"><b>Gỡ kẹt bằng câu hỏi</b><p style="font-size:19px;margin-top:8px">"Bạn đã dùng thử sản phẩm thật chưa?" · "Tỷ lệ gốc của vấn đề là bao nhiêu?" · "Bỏ chữ AI đi thì vấn đề còn không?"</p></div>
+    <div class="box"><b>Kiểm chất lượng</b><p style="font-size:19px;margin-top:8px">Checklist 8 mục; hỏi ngẫu nhiên 1 chi tiết và yêu cầu chỉ ra nguồn. Không chấp nhận log hay trích dẫn bịa.</p></div>
+  </div>
+  <p class="muted" style="margin-top:22px;font-size:19px">Bài học từ chính bài này: dùng thử sản phẩm thật trước khi viết giả thuyết; đổi hướng trước khi phỏng vấn thì gần như không mất gì.</p>
+</section>
+</body>
+</html>

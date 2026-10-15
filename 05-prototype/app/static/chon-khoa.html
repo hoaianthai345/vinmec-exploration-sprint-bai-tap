@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chọn chuyên khoa (module cũ) · Prototype</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #f4f6f5; --card: #ffffff; --ink: #1d2623; --muted: #5d6b66; --line: #dfe5e2;
+    --brand: #0f6e5a; --brand-soft: #e3f2ee; --warn: #b42318; --warn-soft: #fdecea; --note: #fff6e0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  .phone { max-width: 440px; margin: 0 auto; min-height: 100vh; background: var(--bg); padding: 0 16px 32px; }
+  header { position: sticky; top: 0; background: var(--bg); padding: 14px 0 10px; z-index: 2; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  h1 { font-size: 18px; margin: 0; }
+  .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--brand-soft); color: var(--brand); white-space: nowrap; }
+  .banner { margin-top: 8px; font-size: 13px; background: var(--note); border-radius: 10px; padding: 8px 10px; color: #6b4e00; }
+  .steps { display: flex; gap: 6px; margin-top: 10px; }
+  .steps span { flex: 1; height: 4px; border-radius: 4px; background: var(--line); }
+  .steps span.on { background: var(--brand); }
+  section { display: none; }
+  section.active { display: block; }
+  h2 { font-size: 20px; margin: 18px 0 6px; }
+  p.hint { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .choice button { padding: 14px 10px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); font: inherit; cursor: pointer; }
+  .choice button.sel { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+  label.small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  textarea, input[type=text] { width: 100%; font: inherit; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); }
+  textarea { min-height: 110px; resize: vertical; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .chips button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 99px; border: 1px solid var(--line); background: var(--card); cursor: pointer; }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 12px; border: 0; font: inherit; font-weight: 600; cursor: pointer; margin-top: 12px; }
+  .btn.primary { background: var(--brand); color: #fff; }
+  .btn.ghost { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
+  .btn.link { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 8px; }
+  .btn.danger { background: var(--warn); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .sug h3 { margin: 0 0 4px; font-size: 18px; }
+  .sug .why { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+  .tag { font-size: 12px; color: var(--brand); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .emergency { background: var(--warn-soft); border: 1.5px solid var(--warn); }
+  .emergency h2 { color: var(--warn); margin-top: 0; }
+  .clarify { background: var(--note); border-color: #f1d48a; }
+  .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .slots button { font: inherit; font-size: 14px; padding: 10px 6px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); cursor: pointer; }
+  .slots button.sel { border-color: var(--brand); background: var(--brand-soft); }
+  .day { font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
+  ul.check { padding-left: 20px; margin: 6px 0 0; }
+  ul.check li { margin-bottom: 4px; }
+  .list button { display: block; width: 100%; text-align: left; font: inherit; padding: 12px; border: 0; border-bottom: 1px solid var(--line); background: none; cursor: pointer; }
+  .disclaimer { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tester { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .tester input { width: 90px; padding: 4px 8px; font-size: 12px; border-radius: 8px; }
+  .row { display: flex; gap: 10px; }
+  .row .btn { margin-top: 8px; }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="top">
+      <h1>Đặt lịch khám</h1>
+      <span class="pill" id="modePill">…</span>
+    </div>
+    <div class="banner"><b>Module cũ, để trong backlog B1</b> (hướng ban đầu, xem 00-qua-trinh-chon-huong.md). Luồng chính: <a href="/">Chuẩn bị buổi khám</a>.<br>Prototype bài tập · lịch khám và cơ sở là <b>dữ liệu giả lập</b>. Gợi ý chuyên khoa có AI hỗ trợ, <b>không phải chẩn đoán</b>.</div>
+    <div class="tester">Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></div>
+    <div class="steps"><span class="on"></span><span></span><span></span><span></span></div>
+  </header>
+
+  <!-- Bước 1: đặt cho ai -->
+  <section id="s-who" class="active">
+    <h2>Bạn đặt lịch cho ai?</h2>
+    <p class="hint">Giúp gợi ý đúng khoa, ví dụ trẻ em sẽ bắt đầu từ khoa Nhi.</p>
+    <div class="choice" data-key="for_whom">
+      <button data-v="ban-than" class="sel">Bản thân</button>
+      <button data-v="nguoi-than">Người thân</button>
+    </div>
+    <div class="choice" data-key="age_group">
+      <button data-v="nguoi-lon" class="sel">Người lớn</button>
+      <button data-v="tre-em">Trẻ em (dưới 16)</button>
+    </div>
+    <button class="btn primary" onclick="go('s-reason')">Tiếp tục</button>
+  </section>
+
+  <!-- Bước 2: lý do khám -->
+  <section id="s-reason">
+    <h2>Bạn muốn khám vì điều gì?</h2>
+    <p class="hint">Mô tả bằng lời của bạn, không cần biết tên chuyên khoa. Đừng nhập họ tên hay số điện thoại.</p>
+    <textarea id="reason" maxlength="1000" placeholder="Ví dụ: đau lưng mấy tuần nay, ngồi lâu là mỏi"></textarea>
+    <div class="chips">
+      <button>Muốn khám sức khoẻ tổng quát</button>
+      <button>Ê buốt răng khi ăn đồ lạnh</button>
+      <button>Bé ho nhiều về đêm</button>
+      <button>Hay chóng mặt khi đứng dậy</button>
+    </div>
+    <button class="btn primary" id="btnTriage" onclick="runTriage()">Gợi ý chuyên khoa</button>
+    <button class="btn link" onclick="showManual()">Tôi đã biết chuyên khoa cần khám</button>
+  </section>
+
+  <!-- Bước 3: kết quả -->
+  <section id="s-result">
+    <div id="result"></div>
+  </section>
+
+  <!-- Chọn tay -->
+  <section id="s-manual">
+    <h2>Chọn chuyên khoa</h2>
+    <p class="hint">Danh sách mô phỏng cho prototype.</p>
+    <div class="card list" id="manualList" style="padding:0"></div>
+    <button class="btn link" onclick="go('s-reason')">← Quay lại mô tả</button>
+  </section>
+
+  <!-- Bước 4: chọn giờ -->
+  <section id="s-slots">
+    <h2 id="slotTitle">Chọn giờ khám</h2>
+    <p class="hint">Lịch trống giả lập trong 3 ngày tới.</p>
+    <div id="slotList"></div>
+    <button class="btn primary" id="btnBook" disabled onclick="book()">Xác nhận đặt lịch</button>
+    <button class="btn link" onclick="go('s-result')">← Đổi chuyên khoa</button>
+  </section>
+
+  <!-- Bước 5: xác nhận + phản hồi -->
+  <section id="s-done">
+    <h2>Đã giữ chỗ (giả lập)</h2>
+    <div class="card" id="doneInfo"></div>
+    <div class="card">
+      <b>Chuẩn bị trước khi đi khám</b>
+      <ul class="check" id="prepare"></ul>
+    </div>
+    <div class="card" id="fb">
+      <b>Gợi ý chuyên khoa có giúp bạn chọn nhanh và yên tâm hơn không?</b>
+      <div class="row">
+        <button class="btn ghost" onclick="feedback(true)">Có</button>
+        <button class="btn ghost" onclick="feedback(false)">Không</button>
+      </div>
+      <textarea id="fbText" placeholder="Điều gì làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:8px"></textarea>
+    </div>
+    <button class="btn link" onclick="restart()">Bắt đầu lại</button>
+  </section>
+</div>
+
+<script>
+const state = { for_whom: "ban-than", age_group: "nguoi-lon", result: null, specialty: null, slot: null,
+                session_id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) };
+let SPECIALTIES = {};
+const ORDER = ["s-who", "s-reason", "s-result", "s-slots", "s-done"];
+
+function go(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  const idx = id === "s-manual" ? 2 : Math.min(ORDER.indexOf(id), 3) + (id === "s-done" ? 1 : 0);
+  document.querySelectorAll(".steps span").forEach((s, i) => s.classList.toggle("on", i <= Math.min(idx, 3)));
+  window.scrollTo(0, 0);
+}
+function esc(t) { const d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
+async function api(path, body) {
+  const res = await fetch(path, { method: body ? "POST" : "GET", headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify({ session_id: state.session_id, tester_id: document.getElementById("tester").value, ...body }) : undefined });
+  return res.json();
+}
+const track = (event, extra = {}) => api("/api/event", { event, ...extra });
+
+document.querySelectorAll(".choice").forEach(group => group.addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  group.querySelectorAll("button").forEach(b => b.classList.remove("sel"));
+  e.target.classList.add("sel");
+  state[group.dataset.key] = e.target.dataset.v;
+}));
+document.querySelectorAll(".chips button").forEach(b => b.onclick = () => { document.getElementById("reason").value = b.textContent; });
+
+async function runTriage(extra) {
+  const box = document.getElementById("reason");
+  if (extra) box.value = box.value.trim() + ". " + extra;
+  const text = box.value.trim();
+  if (text.length < 3) { box.focus(); return; }
+  const btn = document.getElementById("btnTriage");
+  btn.disabled = true; btn.textContent = "Đang gợi ý…";
+  try {
+    state.result = await api("/api/triage", { text, age_group: state.age_group, for_whom: state.for_whom });
+    renderResult();
+    go("s-result");
+  } finally { btn.disabled = false; btn.textContent = "Gợi ý chuyên khoa"; }
+}
+
+function renderResult() {
+  const r = state.result, el = document.getElementById("result");
+  if (r.red_flag) {
+    el.innerHTML = `
+      <div class="card emergency">
+        <h2>Bạn có thể cần cấp cứu ngay</h2>
+        <p>Mô tả có dấu hiệu: <b>${r.red_flag_reasons.map(esc).join(", ")}</b>.</p>
+        <p>Đừng chờ lịch khám thường. Gọi <b>115</b> hoặc đến khoa Cấp cứu gần nhất ngay.</p>
+        <a class="btn danger" href="tel:115" style="text-align:center;text-decoration:none" onclick="track('emergency_ack',{step:'call115'})">Gọi 115</a>
+        <p class="disclaimer">Trợ lý không chẩn đoán. Cảnh báo này hiện ra mỗi khi mô tả có dấu hiệu nguy hiểm, kể cả khi có thể là nhầm.</p>
+      </div>
+      <button class="btn link" onclick="track('emergency_ack',{step:'edit'});go('s-reason')">Tôi mô tả nhầm, sửa lại mô tả</button>`;
+    return;
+  }
+  const clarify = r.clarify ? `
+    <div class="card clarify">
+      <b>Mô tả thêm một chút để gợi ý chính xác hơn</b>
+      <p class="muted" style="margin:4px 0 8px">${esc(r.clarify)}</p>
+      <input type="text" id="more" placeholder="Trả lời ngắn…">
+      <button class="btn ghost" onclick="runTriage(document.getElementById('more').value)">Gợi ý lại</button>
+    </div>` : "";
+  const cards = r.suggestions.map((s, i) => `
+    <div class="card sug">
+      <div class="tag">${i === 0 ? "Phù hợp nhất" : "Cũng có thể phù hợp"}</div>
+      <h3>${esc(s.name)}</h3>
+      <p class="why">${esc(s.why)}</p>
+      <button class="btn ${i === 0 ? "primary" : "ghost"}" onclick="pick('${s.specialty}', 'choose_specialty')">Đặt lịch khoa ${esc(s.name)}</button>
+    </div>`).join("");
+  el.innerHTML = `
+    <h2>Gợi ý chuyên khoa</h2>
+    <p class="hint">Dựa trên mô tả của bạn${r.mode.startsWith("llm") ? " (có AI hỗ trợ)" : ""}. Bác sĩ sẽ chuyển khoa nếu cần.</p>
+    ${clarify}${cards}
+    <button class="btn link" onclick="showManual()">Không thấy hợp lý? Tự chọn chuyên khoa</button>
+    <button class="btn link" onclick="track('call_hotline');alert('Prototype: chỗ này sẽ gọi tổng đài đặt lịch.')">Vẫn chưa chắc? Gọi tổng đài để được tư vấn đặt lịch</button>
+    <p class="disclaimer">Đây là gợi ý điều hướng, không phải chẩn đoán hay lời khuyên điều trị.</p>`;
+}
+
+function showManual() {
+  document.getElementById("manualList").innerHTML = Object.entries(SPECIALTIES)
+    .map(([k, v]) => `<button onclick="pick('${k}','manual_specialty')">${esc(v)}</button>`).join("");
+  go("s-manual");
+}
+
+async function pick(specialty, how) {
+  state.specialty = specialty; state.slot = null;
+  track(how, { specialty });
+  document.getElementById("slotTitle").textContent = "Chọn giờ khám · " + SPECIALTIES[specialty];
+  const { slots, prepare } = await api("/api/slots", { specialty, age_group: state.age_group });
+  state.prepare = prepare;
+  const byDay = {};
+  slots.forEach(s => (byDay[s.date] = byDay[s.date] || []).push(s));
+  document.getElementById("slotList").innerHTML = Object.entries(byDay).map(([d, list]) => `
+    <div class="day">${new Date(d).toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit" })}</div>
+    <div class="slots">${list.map(s => `<button data-s='${JSON.stringify(s)}'>${s.time}<br><small class="muted">${s.site}</small></button>`).join("")}</div>`).join("");
+  document.querySelectorAll(".slots button").forEach(b => b.onclick = () => {
+    document.querySelectorAll(".slots button").forEach(x => x.classList.remove("sel"));
+    b.classList.add("sel"); state.slot = JSON.parse(b.dataset.s);
+    document.getElementById("btnBook").disabled = false;
+  });
+  document.getElementById("btnBook").disabled = true;
+  go("s-slots");
+}
+
+function book() {
+  track("book", { specialty: state.specialty, slot: state.slot });
+  const s = state.slot;
+  document.getElementById("doneInfo").innerHTML =
+    `<b>${esc(SPECIALTIES[state.specialty])}</b><br>${new Date(s.date).toLocaleDateString("vi-VN")} · ${s.time}<br><span class="muted">${esc(s.site)}</span>`;
+  const prep = state.prepare || [];
+  document.getElementById("prepare").innerHTML = prep.map(p => `<li>${esc(p)}</li>`).join("");
+  go("s-done");
+}
+
+function feedback(useful) {
+  track("feedback", { useful, comment: document.getElementById("fbText").value });
+  document.getElementById("fb").innerHTML = "<b>Cảm ơn bạn!</b> Phản hồi đã được ghi lại (ẩn danh).";
+}
+
+function restart() {
+  track("restart");
+  state.session_id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+  state.result = null; state.prepare = null; document.getElementById("reason").value = "";
+  Object.assign(state, { for_whom: "ban-than", age_group: "nguoi-lon" });
+  document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button")
+    .forEach((x, i) => x.classList.toggle("sel", i === 0)));
+  go("s-who");
+}
+
+api("/api/config").then(c => {
+  SPECIALTIES = c.specialties;
+  document.getElementById("modePill").textContent = c.mode === "llm" ? "Chế độ: AI (LLM)" : "Chế độ: luật";
+});
+</script>
+</body>
+</html>

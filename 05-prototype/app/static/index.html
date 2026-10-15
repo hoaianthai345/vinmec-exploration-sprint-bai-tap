@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chuẩn bị buổi khám · Prototype</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #f4f6f5; --card: #ffffff; --ink: #1d2623; --muted: #5d6b66; --line: #dfe5e2;
+    --brand: #0f6e5a; --brand-soft: #e3f2ee; --warn: #b42318; --warn-soft: #fdecea; --note: #fff6e0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  .phone { max-width: 440px; margin: 0 auto; min-height: 100vh; background: var(--bg); padding: 0 16px 32px; }
+  header { position: sticky; top: 0; background: var(--bg); padding: 14px 0 10px; z-index: 2; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  h1 { font-size: 18px; margin: 0; }
+  .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--brand-soft); color: var(--brand); white-space: nowrap; }
+  .banner { margin-top: 8px; font-size: 13px; background: var(--note); border-radius: 10px; padding: 8px 10px; color: #6b4e00; }
+  .steps { display: flex; gap: 6px; margin-top: 10px; }
+  .steps span { flex: 1; height: 4px; border-radius: 4px; background: var(--line); }
+  .steps span.on { background: var(--brand); }
+  section { display: none; }
+  section.active { display: block; }
+  h2 { font-size: 20px; margin: 18px 0 6px; }
+  p.hint { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .choice.three { grid-template-columns: 1fr 1fr 1fr; }
+  .choice button { padding: 12px 8px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); font: inherit; font-size: 14px; cursor: pointer; }
+  .choice button.sel { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); font-weight: 600; }
+  label.small { display: block; font-size: 13px; color: var(--muted); margin: 4px 0 6px; }
+  textarea, input[type=text] { width: 100%; font: inherit; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); }
+  textarea { min-height: 140px; resize: vertical; }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 12px; border: 0; font: inherit; font-weight: 600; cursor: pointer; margin-top: 12px; text-align: center; text-decoration: none; }
+  .btn.primary { background: var(--brand); color: #fff; }
+  .btn.ghost { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
+  .btn.link { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 8px; }
+  .btn.danger { background: var(--warn); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .appt b { font-size: 17px; }
+  .ok { color: var(--brand); font-size: 13px; font-weight: 600; }
+  ul.tips { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
+  .field { border-top: 1px solid var(--line); padding: 10px 0; }
+  .field:first-child { border-top: 0; padding-top: 0; }
+  .field .lab { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--brand); margin-bottom: 4px; }
+  .field .lab button { font: inherit; font-size: 12px; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; }
+  .field input { padding: 9px 10px; }
+  .quote { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .q { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
+  .q:first-child { border-top: 0; }
+  .q input[type=checkbox] { margin-top: 5px; width: 18px; height: 18px; flex: none; }
+  .src { font-size: 12px; color: var(--muted); }
+  .src a { color: var(--brand); }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 6px; background: var(--brand-soft); color: var(--brand); margin-left: 4px; }
+  .tag.gen { background: #eef0ef; color: var(--muted); }
+  .emergency { background: var(--warn-soft); border: 1.5px solid var(--warn); }
+  .emergency h2 { color: var(--warn); margin-top: 0; }
+  .doctor { border: 1.5px dashed var(--brand); }
+  .doctor h3 { margin: 0 0 2px; font-size: 16px; }
+  .doctor dl { margin: 8px 0 0; }
+  .doctor dt { font-size: 12px; color: var(--muted); }
+  .doctor dd { margin: 0 0 6px; }
+  details { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .disclaimer { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .tester { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .tester input { width: 90px; padding: 4px 8px; font-size: 12px; border-radius: 8px; }
+  .row { display: flex; gap: 10px; }
+  .row .btn { margin-top: 8px; }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="top">
+      <h1>Chuẩn bị buổi khám</h1>
+      <span class="pill" id="modePill">…</span>
+    </div>
+    <div class="banner">Prototype bài tập · lịch hẹn là <b>dữ liệu giả lập</b>. App chỉ ghi lại lời bạn kể và nhắc chuẩn bị, <b>không chẩn đoán, không tư vấn</b>.</div>
+    <div class="tester">Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></div>
+    <div class="steps"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+  </header>
+
+  <!-- 0. Lịch hẹn đã xác nhận -->
+  <section id="s-appt" class="active">
+    <h2>Lịch hẹn của bạn</h2>
+    <div class="card appt">
+      <div class="ok">✓ Đã xác nhận (giả lập)</div>
+      <b id="apptService">Khám chuyên khoa (lần đầu)</b><br>
+      <span id="apptDate" class="muted"></span>
+    </div>
+    <label class="small">Loại lịch hẹn (để thử các kịch bản)</label>
+    <div class="choice three" data-key="service">
+      <button data-v="kham-chuyen-khoa" class="sel">Chuyên khoa</button>
+      <button data-v="kham-tong-quat">Tổng quát</button>
+      <button data-v="tai-kham">Tái khám</button>
+    </div>
+    <label class="small">Người đi khám</label>
+    <div class="choice" data-key="for_whom">
+      <button data-v="ban-than" class="sel">Bản thân</button>
+      <button data-v="nguoi-than">Người thân</button>
+    </div>
+    <div class="choice" data-key="age_group">
+      <button data-v="nguoi-lon" class="sel">Người lớn</button>
+      <button data-v="tre-em">Trẻ em (dưới 16)</button>
+    </div>
+    <div class="card">
+      <b>Chuẩn bị cho buổi khám · khoảng 2 phút</b>
+      <p class="muted" style="margin:4px 0 0;font-size:14px">Kể trước cho bác sĩ, ghi sẵn câu muốn hỏi, xem cần mang gì. Bác sĩ đọc phiếu trước khi gọi bạn vào. Không bắt buộc.</p>
+      <button class="btn primary" onclick="startPrep()">Bắt đầu chuẩn bị</button>
+      <button class="btn link" onclick="skipPrep(this)">Để sau</button>
+    </div>
+  </section>
+
+  <!-- 1. Kể -->
+  <section id="s-tell">
+    <h2 id="tellTitle">Bạn muốn bác sĩ giúp gì lần này?</h2>
+    <p class="hint">Kể bằng lời của bạn, ngắn hay dài đều được. Đừng nhập họ tên hay số điện thoại.</p>
+    <div class="card">
+      <b style="font-size:14px">Nếu chưa biết kể gì, thử trả lời:</b>
+      <ul class="tips">
+        <li>Chuyện gì, từ khi nào?</li>
+        <li>Đã khám ở đâu, đã dùng thuốc hay thử gì chưa?</li>
+        <li>Điều bạn lo nhất là gì?</li>
+        <li>Bạn mong bác sĩ làm gì? Có câu nào muốn hỏi không?</li>
+      </ul>
+    </div>
+    <textarea id="story" maxlength="1500" placeholder="Ví dụ: Đau lưng 3 tuần nay, ngồi lâu là mỏi. Đã uống thuốc giảm đau nhưng không đỡ. Sợ là bị nặng. Tôi có cần chụp phim không?"></textarea>
+    <button class="btn primary" id="btnPrep" onclick="runPrepare()">Tạo phiếu cho bác sĩ</button>
+    <button class="btn link" onclick="go('s-appt')">← Quay lại</button>
+  </section>
+
+  <!-- 2. Phiếu tóm tắt -->
+  <section id="s-summary">
+    <div id="summary"></div>
+  </section>
+
+  <!-- 3. Câu hỏi -->
+  <section id="s-questions">
+    <h2>Câu hỏi mang vào phòng khám</h2>
+    <p class="hint">Chọn những câu bạn muốn hỏi. App <b>không trả lời</b> các câu này; bác sĩ sẽ trả lời trong buổi khám.</p>
+    <div class="card" id="qList"></div>
+    <div class="row">
+      <input type="text" id="qNew" placeholder="Thêm câu hỏi của bạn…">
+      <button class="btn ghost" style="width:auto;margin-top:0;padding:10px 14px" onclick="addQuestion()">Thêm</button>
+    </div>
+    <button class="btn primary" onclick="confirmQuestions()">Tiếp tục</button>
+    <button class="btn link" onclick="go('s-summary')">← Sửa phiếu</button>
+  </section>
+
+  <!-- 4. Checklist -->
+  <section id="s-check">
+    <h2>Cần chuẩn bị gì</h2>
+    <p class="hint" id="checkHint"></p>
+    <div class="card" id="checkList"></div>
+    <button class="btn primary" onclick="submitPrep()">Hoàn tất và gửi phiếu</button>
+    <button class="btn link" onclick="go('s-questions')">← Sửa câu hỏi</button>
+  </section>
+
+  <!-- 5. Hoàn tất -->
+  <section id="s-done">
+    <h2>Đã gửi phiếu cho bác sĩ (giả lập)</h2>
+    <p class="hint">Bạn có thể mở lại danh sách câu hỏi và checklist bất cứ lúc nào trong mục Lịch hẹn, kể cả khi đang ngồi trong phòng khám.</p>
+    <div class="card doctor" id="doctorView"></div>
+    <div class="card" id="fb">
+      <b>Phần chuẩn bị này có giúp bạn không?</b>
+      <div class="row">
+        <button class="btn ghost" onclick="feedback(true)">Có</button>
+        <button class="btn ghost" onclick="feedback(false)">Không</button>
+      </div>
+      <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:8px"></textarea>
+    </div>
+    <button class="btn link" onclick="restart()">Bắt đầu lại</button>
+  </section>
+</div>
+
+<script>
+const ORDER = ["s-appt", "s-tell", "s-summary", "s-questions", "s-check", "s-done"];
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+const state = { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
+                session_id: newId(), result: null, startedAt: null, questions: [] };
+let SERVICES = {};
+
+function go(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  const idx = Math.min(ORDER.indexOf(id), 4);
+  document.querySelectorAll(".steps span").forEach((s, i) => s.classList.toggle("on", i <= idx));
+  window.scrollTo(0, 0);
+}
+function esc(t) { const d = document.createElement("div"); d.textContent = t ?? ""; return d.innerHTML; }
+async function api(path, body) {
+  const res = await fetch(path, { method: body ? "POST" : "GET", headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify({ session_id: state.session_id, tester_id: document.getElementById("tester").value, ...body }) : undefined });
+  return res.json();
+}
+const track = (event, extra = {}) => api("/api/event", { event, ...extra });
+
+const apptDate = new Date(Date.now() + 3 * 864e5);
+document.getElementById("apptDate").textContent =
+  apptDate.toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit" }) + " · 09:30 · Cơ sở giả lập";
+
+document.querySelectorAll(".choice").forEach(group => group.addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  group.querySelectorAll("button").forEach(b => b.classList.remove("sel"));
+  e.target.classList.add("sel");
+  state[group.dataset.key] = e.target.dataset.v;
+  if (group.dataset.key === "service") document.getElementById("apptService").textContent = SERVICES[state.service] || "";
+}));
+
+function startPrep() {
+  state.startedAt = Date.now();
+  track("start_prep", { step: state.service });
+  document.getElementById("tellTitle").textContent = state.for_whom === "nguoi-than"
+    ? "Người thân của bạn cần bác sĩ giúp gì?" : "Bạn muốn bác sĩ giúp gì lần này?";
+  go("s-tell");
+}
+function skipPrep(btn) {
+  track("skip_prep");
+  btn.outerHTML = '<p class="muted" style="font-size:14px;margin:10px 0 0">Lịch hẹn vẫn giữ nguyên. App sẽ nhắc lại một lần trước ngày khám (giả lập).</p>';
+}
+
+async function runPrepare() {
+  const box = document.getElementById("story"), text = box.value.trim();
+  if (text.length < 3) { box.focus(); return; }
+  const btn = document.getElementById("btnPrep");
+  btn.disabled = true; btn.textContent = "Đang sắp xếp…";
+  try {
+    state.result = await api("/api/prepare", { text, service: state.service, for_whom: state.for_whom, age_group: state.age_group });
+    renderSummary();
+    go("s-summary");
+  } finally { btn.disabled = false; btn.textContent = "Tạo phiếu cho bác sĩ"; }
+}
+
+const LABELS = { ly_do: "Lý do chính", tu_khi_nao: "Từ khi nào", da_lam: "Đã khám / đã dùng thuốc / đã thử",
+                 dieu_lo: "Điều lo nhất", mong_muon: "Mong bác sĩ giúp" };
+
+function renderSummary() {
+  const r = state.result, el = document.getElementById("summary");
+  if (r.red_flag) {
+    el.innerHTML = `
+      <div class="card emergency">
+        <h2>Có thể cần cấp cứu ngay</h2>
+        <p>Lời kể có dấu hiệu: <b>${r.red_flag_reasons.map(esc).join(", ")}</b>.</p>
+        <p>Đừng chờ tới ngày hẹn. Gọi <b>115</b> hoặc đến khoa Cấp cứu gần nhất ngay.</p>
+        <a class="btn danger" href="tel:115" onclick="track('emergency_ack',{step:'call115'})">Gọi 115</a>
+        <p class="disclaimer">App không chẩn đoán. Cảnh báo này hiện ra mỗi khi lời kể có dấu hiệu nguy hiểm, kể cả khi có thể là nhầm.</p>
+      </div>
+      <button class="btn link" onclick="track('emergency_ack',{step:'edit'});go('s-tell')">Tôi kể nhầm, sửa lại</button>`;
+    return;
+  }
+  const byKey = Object.fromEntries(r.fields.map(f => [f.key, f]));
+  state.original = Object.fromEntries(r.fields.map(f => [f.key, f.value]));
+  const rows = Object.entries(LABELS).map(([k, label]) => {
+    const f = byKey[k];
+    return `
+      <div class="field" data-k="${k}">
+        <div class="lab">${esc(label)} ${f ? `<button onclick="clearField('${k}')">Xoá</button>` : ""}</div>
+        <input type="text" value="${f ? esc(f.value) : ""}" placeholder="${f ? "" : "(chưa có, thêm nếu muốn)"}">
+        ${f ? `<div class="quote">Bạn đã kể: “${esc(f.quote)}”</div>` : ""}
+      </div>`;
+  }).join("");
+  el.innerHTML = `
+    <h2>Phiếu gửi bác sĩ: kiểm tra lại</h2>
+    <p class="hint">App chỉ sắp xếp lời bạn kể${r.mode.startsWith("llm") ? " (có AI hỗ trợ)" : ""}, không thêm thông tin. Sai chỗ nào, sửa chỗ đó.</p>
+    <div class="card">${rows}
+      <details><summary>Xem nguyên văn lời kể</summary>${esc(document.getElementById("story").value)}</details>
+    </div>
+    <button class="btn primary" onclick="confirmSummary()">Đúng rồi, tiếp tục</button>
+    <button class="btn link" onclick="go('s-tell')">← Kể lại</button>`;
+}
+function clearField(k) { document.querySelector(`.field[data-k="${k}"] input`).value = ""; }
+
+function confirmSummary() {
+  const edited = [], deleted = [], added = [];
+  state.final = {};
+  document.querySelectorAll("#summary .field").forEach(div => {
+    const k = div.dataset.k, v = div.querySelector("input").value.trim(), orig = state.original[k];
+    if (v) state.final[k] = v;
+    if (orig !== undefined && !v) deleted.push(k);
+    else if (orig !== undefined && v !== orig) edited.push(k);
+    else if (orig === undefined && v) added.push(k);
+  });
+  track("confirm_summary", { edited, deleted, added });
+  const r = state.result;
+  state.questions = [...r.questions_own.map(q => ({ text: q, kind: "own", on: true })),
+                     ...r.questions_suggested.map(q => ({ text: q, kind: "suggested", on: false }))];
+  renderQuestions();
+  go("s-questions");
+}
+
+function renderQuestions() {
+  document.getElementById("qList").innerHTML = state.questions.length ? state.questions.map((q, i) => `
+    <label class="q"><input type="checkbox" ${q.on ? "checked" : ""} onchange="state.questions[${i}].on=this.checked">
+      <span>${esc(q.text)} ${q.kind === "own" ? '<span class="tag">bạn đã kể</span>' : q.kind === "custom" ? '<span class="tag">bạn thêm</span>' : '<span class="tag gen">gợi ý chung</span>'}</span>
+    </label>`).join("") : '<span class="muted">Chưa có câu hỏi nào.</span>';
+}
+function addQuestion() {
+  const box = document.getElementById("qNew"), t = box.value.trim();
+  if (!t) return;
+  state.questions.push({ text: t, kind: "custom", on: true });
+  box.value = ""; renderQuestions();
+}
+function confirmQuestions() {
+  const on = state.questions.filter(q => q.on);
+  track("confirm_questions", { own_kept: on.filter(q => q.kind === "own").length,
+                               suggested_chosen: on.filter(q => q.kind === "suggested").length,
+                               custom_added: on.filter(q => q.kind === "custom").length });
+  const list = state.result.checklist;
+  document.getElementById("checkHint").textContent = "Cho lịch hẹn: " + state.result.service_name +
+    (state.age_group === "tre-em" ? " · trẻ em" : "");
+  document.getElementById("checkList").innerHTML = list.map(i => `
+    <label class="q"><input type="checkbox"><span>${esc(i.text)}${i.why ? ` <span class="tag">${esc(i.why)}</span>` : ""}<br>
+      <span class="src">${i.source === "vinmec" ? `Theo hướng dẫn công khai của <a href="${i.url}" target="_blank" rel="noopener">Vinmec</a>` : "Đề xuất của prototype, cần bệnh viện xác nhận"}</span></span>
+    </label>`).join("");
+  go("s-check");
+}
+
+function submitPrep() {
+  const seconds = state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : null;
+  track("submit", { seconds });
+  const who = (state.for_whom === "nguoi-than" ? "Người thân đặt hộ" : "Người bệnh tự kể") +
+              " · " + (state.age_group === "tre-em" ? "trẻ em" : "người lớn");
+  const fields = Object.entries(LABELS).filter(([k]) => state.final[k])
+    .map(([k, l]) => `<dt>${esc(l)}</dt><dd>${esc(state.final[k])}</dd>`).join("");
+  const qs = state.questions.filter(q => q.on).map(q => `<li>${esc(q.text)}</li>`).join("");
+  document.getElementById("doctorView").innerHTML = `
+    <span class="muted" style="font-size:12px">Bác sĩ thấy phiếu này trước giờ khám</span>
+    <h3>${esc(state.result.service_name)}</h3>
+    <span class="muted" style="font-size:13px">${esc(who)} · đã xem lại và xác nhận</span>
+    <dl>${fields || '<dd class="muted">Không có thông tin.</dd>'}</dl>
+    ${qs ? `<b style="font-size:14px">Người bệnh muốn hỏi</b><ol style="margin:4px 0 0;padding-left:20px">${qs}</ol>` : ""}`;
+  go("s-done");
+}
+
+function feedback(useful) {
+  track("feedback", { useful, comment: document.getElementById("fbText").value });
+  document.getElementById("fb").innerHTML = "<b>Cảm ơn bạn!</b> Phản hồi đã được ghi lại (ẩn danh).";
+}
+
+function restart() {
+  track("restart");
+  Object.assign(state, { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
+                         session_id: newId(), result: null, startedAt: null, questions: [], final: {} });
+  document.getElementById("story").value = "";
+  document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button").forEach((x, i) => x.classList.toggle("sel", i === 0)));
+  document.getElementById("apptService").textContent = SERVICES[state.service] || "";
+  document.getElementById("fb").innerHTML = `
+      <b>Phần chuẩn bị này có giúp bạn không?</b>
+      <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
+      <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:8px"></textarea>`;
+  go("s-appt");
+}
+
+api("/api/config").then(c => {
+  SERVICES = c.services;
+  document.getElementById("apptService").textContent = SERVICES[state.service];
+  document.getElementById("modePill").textContent = c.mode === "llm" ? "Chế độ: AI (LLM)" : "Chế độ: luật";
+});
+</script>
+</body>
+</html>
