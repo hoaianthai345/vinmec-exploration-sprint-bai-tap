@@ -87,8 +87,9 @@ lớn **văn bản và code trong repo do AI viết**. Phần do mình làm là 
   transcript máy; mọi câu trích được kiểm tra bằng máy là có nguyên văn trong transcript. Bản ghi gốc giữ ngoài repo.
 - Đã xin đồng ý ghi âm cả hai buổi. Buổi với một bác sĩ (gợi ý xem UMC Care) **không có bản ghi**, chỉ ghi lại theo trí nhớ ở
   [P3](01-phong-van/phong-van/P3.md) và **không được dùng làm bằng chứng điểm đau**.
-- **Chưa có lượt thử prototype nào với người thật**; [test-log.md](05-prototype/test-log.md) còn trống. Tour cho giám khảo là
-  bản demo do người làm bài bấm, **không phải buổi thử**.
+- **1 buổi thử với người thật** (T1, 22 tuổi, đã đồng ý): 10 lỗi đã sửa, 2 lỗi còn mở; chưa có vòng 2
+  ([test-log.md](05-prototype/test-log.md)). Nhận xét của T1 do AI viết lại từ ghi chép của Thái, không phải nguyên văn; số lần
+  T1 phải hỏi người điều phối không được ghi lại. Tour cho giám khảo là bản demo do người làm bài bấm, **không phải buổi thử**.
 - Các con số 16/16 và 14/20 là kiểm thử kỹ thuật trên luật và câu hỏi do chính người làm bài (và AI) viết, không phải chỉ số
   sản phẩm.
 

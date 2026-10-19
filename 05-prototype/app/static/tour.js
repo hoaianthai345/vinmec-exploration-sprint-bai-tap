@@ -43,7 +43,7 @@
       ],
       why: "Khoảng trống còn lại nằm <b>trong ngày khám</b>: app bệnh viện biết phiếu khám, chỉ định, phòng của từng người nhưng chỉ đưa hướng dẫn chung.",
       look: "Bài đổi hướng hai lần, mỗi lần do một bằng chứng cụ thể. Mọi bản cũ được giữ lại để đối chiếu.",
-      limit: "Bệnh viện, phòng, thời gian chờ đều là giả lập. Tour là demo do người làm bài bấm, <b>không phải buổi thử với người dùng</b>; chưa có lượt thử nào với người thật." },
+      limit: "Bệnh viện, phòng, thời gian chờ đều là giả lập. Tour là demo do người làm bài bấm, <b>không phải buổi thử với người dùng</b>. Mới có 1 buổi thử với người thật (T1, 10 lỗi đã sửa)." },
     { target: () => $(".banner-ad"), before: async () => { go("s-home"); },
       title: "1 · Điểm vào nằm trong app quen thuộc",
       body: "Người bệnh đang đứng ở sảnh viện mở mục \"Lộ trình hôm nay\" ngay trên Trang chủ.",
@@ -191,7 +191,7 @@
              <li>Trợ lý, held-out 20 câu (đo một lần): hiểu đúng <b>14/20</b> · cấp cứu 2/2 · câu y khoa <b>1/3</b>. Bộ held-out2 trước khi vá: câu y khoa <b>0/6</b>; đã vá 19/10, chưa có số khách quan sau khi vá</li>
              <li>Chế độ LLM: <b>chưa đo</b></li></ul>`,
       research: [
-        R("Trạng thái bằng chứng", "2 buổi phỏng vấn có bản ghi (P1, P2): bác bỏ H1; điểm đau của hướng Lộ trình chưa có trong bản ghi (0/2). Chưa có lượt thử prototype nào với người thật.", "01-phong-van/tong-hop-insight.md"),
+        R("Trạng thái bằng chứng", "2 buổi phỏng vấn có bản ghi (P1, P2): bác bỏ H1; điểm đau của hướng Lộ trình chưa có trong bản ghi (0/2). 1 buổi thử với người thật (T1): 10 lỗi đã sửa, chưa có vòng 2.", "05-prototype/test-log.md"),
         R("Kết quả đo", "Đo ngày 18/10, chế độ luật. 16/16 và 14/20 là kiểm thử kỹ thuật trên luật và câu hỏi do chính người làm bài viết, không phải chỉ số sản phẩm.", "05-prototype/eval/results/"),
         R("Đọc tiếp", "Câu chuyện đổi hướng: VERSIONS.md, 00-qua-trinh-chon-huong.md · Need statement: 03-need-statement/ · Rủi ro: 06-rui-ro-dao-duc/", "README.md"),
       ],

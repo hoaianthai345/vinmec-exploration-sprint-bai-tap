@@ -58,5 +58,6 @@ không vượt rõ con số này thì nên bỏ AI, giữ lộ trình bằng lu�
 
 ## Bản cuối (sau khi thử với người dùng)
 
-> **Chưa có bản cuối**: chưa có buổi thử với người thật. Khi có, viết lại nếu người thử cho thấy vấn đề khác, ghi rõ đã đổi gì
-> và vì sao, và lưu bản trước thành `-vN`.
+> **Chưa có bản cuối.** Mới có 1 buổi thử (T1, [test-log](../05-prototype/test-log.md)); buổi đó kiểm tra prototype dùng có
+> được không, **không phải bằng chứng về điểm đau**, nên chưa đủ để viết lại need statement. Khi có thêm phỏng vấn và buổi thử,
+> viết lại nếu vấn đề khác, ghi rõ đã đổi gì và vì sao, lưu bản trước thành `-vN`.

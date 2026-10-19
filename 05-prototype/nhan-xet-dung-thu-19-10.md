@@ -1,8 +1,7 @@
 # Nhận xét dùng thử prototype (19/10/2026, khoảng 22:20) và cách xử lý
 
-> **Nguồn:** bản nhận xét bằng chữ do Thái chuyển lại. Không có thông tin người thử (ai, đồng ý, tuổi, thiết bị) nên **không**
-> ghi vào [test-log.md](test-log.md) như một buổi thử với người dùng, và **không** tính vào chỉ số sản phẩm. Dùng như một
-> danh sách lỗi cần sửa. Câu trong ngoặc kép là chữ của bản nhận xét.
+> **Nguồn:** buổi thử của **T1** (người thật, 22 tuổi, đã đồng ý), ghi ở [test-log.md](test-log.md). Thái ghi lại nhận xét
+> của T1 rồi nhờ AI viết lại thành văn bản; câu trong ngoặc kép là chữ của **bản viết lại**, không phải nguyên văn T1.
 
 ## Điều người dùng thử làm được ngay
 
