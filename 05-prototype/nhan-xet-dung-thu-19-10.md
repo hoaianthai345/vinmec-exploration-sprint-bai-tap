@@ -27,6 +27,6 @@ câu cấp cứu hiện ngay khung đỏ và nút 115; câu "đường huyết 7
 | 11 | Tải lại trang là mất lộ trình | Trung bình | ⏳ Chưa sửa (hết thời gian); app thật phải lưu lộ trình theo tài khoản |
 | 12 | "Chỉ đường" chỉ có một câu, không có sơ đồ | Trung bình | ⏳ Chưa làm; cần sơ đồ tầng thật của viện |
 
-Kiểm chứng sau khi sửa (19/10, 22:45): bộ đo trợ lý không đổi (bộ chính 44/44, held-out 16/20, held-out2 20/20, chặn nhầm 0);
+Kiểm chứng sau khi sửa (19/10, khoảng 22:30): bộ đo trợ lý không đổi (bộ chính 44/44, held-out 16/20, held-out2 20/20, chặn nhầm 0);
 16/16 ràng buộc lộ trình; Playwright: mở lúc 22:xx hiện ghi chú ngoài giờ, không có giờ ≥ 24:00; bấm "Xem lộ trình" khi chưa
 chọn đủ bị chặn; nút Hỏi không đè bước cuối; lịch hẹn mới không còn câu hỏi cũ; tour 17 bước chạy hết, không lỗi JavaScript.
