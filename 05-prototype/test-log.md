@@ -2,8 +2,9 @@
 
 > Thẻ kịch bản: [test-scenarios.md](test-scenarios.md). Chưa có lượt thử nào cho hướng H1 trước khi đổi hướng.
 
-> ⚠️ THÁI ĐIỀN SAU KHI THỬ THẬT với 2–3 người. Mỗi dòng phải đối chiếu được với `logs/sessions.jsonl`
-> (cùng mã người thử). Không có người thử thật thì để trống. Bảng trống tốt hơn bảng bịa.
+> **Trạng thái (19/10/2026): CHƯA CÓ BUỔI THỬ NÀO VỚI NGƯỜI THẬT.** Các bảng dưới là khung sẽ dùng, cố ý để trống: bảng trống
+> tốt hơn bảng bịa. Tour `?tour=1` là demo do người làm bài bấm, không tính là buổi thử. Kế hoạch thử: phiên A trong
+> [test-scenarios.md](test-scenarios.md) (một giả thuyết, chỉ số là số lần người thử phải hỏi người khác). Bản cũ: [test-log-v1.md](test-log-v1.md).
 
 ## Vòng 1 (ngày …/10/2026, chế độ: luật / LLM …)
 
@@ -20,7 +21,7 @@ thử có hỏi bằng lời của mình không; nếu toàn bấm gợi ý thì
 danh sách "câu hỏi người thử tự gõ": đây là bộ câu hỏi thật, chưa dùng để chỉnh luật.
 
 ```
-(dán kết quả vào đây)
+(chưa có: chưa có buổi thử)
 ```
 
 ## Thay đổi sau vòng 1

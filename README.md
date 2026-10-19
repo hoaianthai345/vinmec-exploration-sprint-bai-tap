@@ -68,20 +68,21 @@ python3 ../eval/run_eval_lotrinh.py --heldout  # đo trợ lý trên 20 câu ch�
 
 ## Phần nào do AI tạo
 
-Mình dùng Claude (Anthropic) làm trợ lý trong bài này. Phân chia cụ thể:
+Bài dùng hai công cụ AI: **Claude Code (Anthropic)** cho gần như toàn bộ phần viết, code, research và slides; **Cursor
+(agent)** cho một lượt rà soát hồ sơ theo §6.3 và vá luật y khoa ngày 19/10 (Claude chạy lại để nghiệm thu). Nói thẳng: phần
+lớn **văn bản và code trong repo do AI viết**. Phần do mình làm là thu thập dữ liệu thật và ra quyết định.
 
 | Phần | AI làm | Mình làm |
 |---|---|---|
-| 00 Chọn khoảnh khắc, chọn hướng | Soạn bảng so sánh, desk research 12 app, đánh giá 7 hướng, ghi chép UMC Care từ video, báo cáo quá trình | Chọn khoảnh khắc; quay video dùng thử MyVinmec và UMC Care; phỏng vấn; đọc ý kiến trên Threads; bác bỏ H1; chốt hướng lộ trình |
-| 01 Phỏng vấn | Soạn interview guide, mẫu ghi chép; **soạn log P1, P2 và bảng tổng hợp từ transcript máy** (chỉ chép điều có trong bản ghi, kiểm tra câu trích bằng máy) | Dùng thử MyVinmec, **phỏng vấn và ghi âm**, nghe lại để sửa câu trích, xác nhận đồng ý và quan hệ với người được hỏi |
-| 02 Journey map | Bản 1 (giả thuyết), bản 2 và cột bằng chứng theo P1, P2 (điểm chưa có trong bản ghi ghi rõ là giả thuyết) | Kiểm lại theo bản ghi, thêm điểm đau từ phỏng vấn mới |
-| 03 Need statement | Bản 1, bản 2 (đánh dấu giả thuyết), tách "chờ lâu" khỏi "không biết giờ" | Duyệt câu chữ, điền Impact khi có bằng chứng |
-| 04 Best practice | Tìm nguồn, tóm tắt, đối chiếu số liệu với tóm tắt gốc trên PubMed/Europe PMC | Kiểm tra lại nguồn, rút bài học |
-| 05 Prototype | Viết code, prompt, bộ câu hỏi giả lập và kỳ vọng (chưa được người dùng hay nhân viên viện duyệt), dữ liệu phòng giả lập | Chọn hướng, quyết định thiết kế, **thử với người thật, ghi log, sửa** |
-| 06, 07 | Soạn nháp | Duyệt, chỉnh theo kinh nghiệm Lab Coach |
-| Slides | Dựng khung | Điền kết quả thật |
+| 00 Chọn khoảnh khắc, chọn hướng | Bảng so sánh, desk research 12 app, đánh giá 7 hướng, ghi chép UMC Care từ video của mình, viết báo cáo quá trình | Quay video dùng thử MyVinmec và UMC Care; đọc ý kiến trên Threads; chọn H1, rồi bác H1 và chọn hướng Lộ trình; chọn cách nộp theo trạng thái thật sau review |
+| 01 Phỏng vấn | Interview guide, mẫu ghi chép; log P1, P2 và bảng tổng hợp từ transcript máy (mọi câu trích kiểm tra bằng máy); log P3 từ lời mình kể lại | **Đi phỏng vấn, ghi âm, xin đồng ý**; nói chuyện với bác sĩ; xác nhận đồng ý và nhóm tuổi |
+| 02, 03 Journey map, need statement | Viết toàn bộ, đánh dấu chỗ nào là giả thuyết | Duyệt |
+| 04 Best practice | Tìm nguồn, tóm tắt, đối chiếu số liệu với tóm tắt gốc trên PubMed/Europe PMC | Duyệt |
+| 05 Prototype | Toàn bộ code, prompt, dữ liệu phòng giả lập, bộ câu hỏi và kỳ vọng, bộ đo, tour, deploy Vercel. Cursor viết bộ held-out2 và luật vá ngày 19/10 | Đặt yêu cầu: giao diện giống MyVinmec, luồng bắt đầu từ đặt lịch, tour cho giám khảo, cho thoát tour để tự dùng thử |
+| 06, 07 Rủi ro, coach plan | Viết toàn bộ | Duyệt; kinh nghiệm Lab Coach là của mình |
+| Slides | Thiết kế và viết toàn bộ 10 trang | Chọn hướng trình bày (phương án A) |
 
-**Trạng thái bằng chứng (cập nhật 18/10/2026 tối):**
+**Trạng thái bằng chứng (cập nhật 19/10/2026):**
 - Phỏng vấn có bản ghi: **2 buổi** ([P1](01-phong-van/phong-van/P1.md), [P2](01-phong-van/phong-van/P2.md)). Log do AI soạn từ
   transcript máy; mọi câu trích được kiểm tra bằng máy là có nguyên văn trong transcript. Bản ghi gốc giữ ngoài repo.
 - Đã xin đồng ý ghi âm cả hai buổi. Buổi với một bác sĩ (gợi ý xem UMC Care) **không có bản ghi**, chỉ ghi lại theo trí nhớ ở
@@ -93,6 +94,6 @@ Mình dùng Claude (Anthropic) làm trợ lý trong bài này. Phân chia cụ t
 
 ## Ràng buộc đã tuân thủ
 
-Xin đồng ý trước phỏng vấn · chỉ hỏi về trải nghiệm dịch vụ, không hỏi bệnh · ẩn danh P1, P2, P3 · không ghi âm khi
-chưa được đồng ý · không chụp ảnh người hay giấy tờ y tế · không đưa lời khuyên y khoa · không dùng dữ liệu người bệnh
-thật (prototype dùng dữ liệu giả lập). P1, P2 đã đồng ý ghi âm; P3 không ghi âm.
+Hai buổi ghi âm (P1, P2) đều đã xin đồng ý; buổi với bác sĩ (P3) không ghi âm · chỉ hỏi về trải nghiệm dịch vụ, không hỏi
+bệnh · ẩn danh P1, P2, P3 · không chụp ảnh người hay giấy tờ y tế · không đưa lời khuyên y khoa · không dùng dữ liệu người bệnh
+thật (prototype dùng dữ liệu giả lập).

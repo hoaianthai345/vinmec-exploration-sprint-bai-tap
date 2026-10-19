@@ -45,7 +45,7 @@ Kiểm tra theo đề: câu need statement **không chứa giải pháp**. Khôn
 
 **Thành thật về phần AI (Day 2: "bỏ chữ AI đi thì vấn đề còn không?"):** phần lớn giá trị (quầy nào, thứ tự phòng, giờ
 dự kiến) đến từ **luật và dữ liệu vận hành**, không cần AI. AI chỉ đáng dùng ở bước hiểu câu hỏi tự do: trên bộ 20 câu
-held-out, luật từ khoá chỉ hiểu đúng 14/20 và chặn được 1/3 câu y khoa (xem `05-prototype/README.md`). Nếu chế độ LLM
+held-out (đo một lần, trước khi vá luật y khoa ngày 19/10), luật từ khoá chỉ hiểu đúng 14/20 và chặn được 1/3 câu y khoa (xem `05-prototype/README.md`). Nếu chế độ LLM
 không vượt rõ con số này thì nên bỏ AI, giữ lộ trình bằng luật.
 
 ## Quyết định Go / Not Yet / No-Go
@@ -58,4 +58,5 @@ không vượt rõ con số này thì nên bỏ AI, giữ lộ trình bằng lu�
 
 ## Bản cuối (sau khi thử với người dùng)
 
-> ⚠️ THÁI VIẾT LẠI nếu người thử cho thấy vấn đề khác. Ghi rõ đã đổi gì và vì sao, và lưu bản này thành `-v2`.
+> **Chưa có bản cuối**: chưa có buổi thử với người thật. Khi có, viết lại nếu người thử cho thấy vấn đề khác, ghi rõ đã đổi gì
+> và vì sao, và lưu bản trước thành `-vN`.

@@ -42,6 +42,9 @@
 
 ## 4. Điều còn thiếu trước khi chọn hướng
 
+- **Mẫu hẹp:** cả 2 người có bản ghi đều 20–25 tuổi; chưa có người lớn tuổi, người hay đưa bố mẹ đi khám, dù persona của hướng
+  Lộ trình nhắm tới họ.
+
 - Chưa buổi nào kể **một lần khám cụ thể** có hành động, cách xoay xở, tần suất, hậu quả (chuẩn Day 17).
 - Chưa có người từng khám ở **Vinmec** hoặc viện tư tương tự.
 - Buổi với bác sĩ (gợi ý UMC Care) chưa có ghi chép: cần đào vào việc bác sĩ đang làm, không chỉ chép lại gợi ý.

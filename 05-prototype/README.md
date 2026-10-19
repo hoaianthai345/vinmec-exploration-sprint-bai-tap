@@ -116,20 +116,9 @@ quát biết trước gói; lịch hẹn không hợp lệ bị bỏ qua).
   sót, câu trả lời **vẫn không chứa lời khuyên y khoa** vì mọi câu trả lời đều ghép từ dữ liệu phòng; người hỏi nhận "chưa
   hiểu" hoặc một vị trí. An toàn giữ được nhờ cách dựng, nhưng trải nghiệm kém. Đây là chỗ cần LLM chứng minh giá trị.
 - Bộ câu hỏi do AI viết (cùng tác giả với luật). Bộ câu hỏi thật là câu người thử gõ, in ra bằng `summarize_log.py`.
-- **Chưa đo chế độ LLM thật** (chưa có API key). ⚠️ THÁI: chạy `run_eval_lotrinh.py --heldout --llm` rồi dán kết quả
-  vào bảng trên. Nếu LLM không vượt rõ 14/20 và 1/3 thì nên bỏ AI, giữ luật (ghi rõ trong need statement).
-
-**Guardrail chế độ LLM** đã thử bằng LLM giả cài sẵn lỗi (18/10): mã phòng bịa → bị bỏ, dùng mã luật tìm được, trả đúng
-phòng siêu âm; LLM xếp "kết quả máu có sao không" thành câu hỏi vị trí → luật y khoa thắng; intent ngoài danh mục → "chưa
-hiểu"; câu có dấu hiệu cấp cứu → LLM **không được gọi**; LLM timeout → chuyển sang luật (`llm-loi:TimeoutError`).
-
-**Giao diện** (Playwright + Chrome, 18/10): đi hết luồng người có BHYT, chưa đặt lịch → nhập 4 chỉ định → lộ trình sắp lại
-đúng thứ tự → hỏi 4 câu (nhịn ăn, vị trí, y khoa, cấp cứu) → câu y khoa xuất hiện trong "Câu hỏi để hỏi bác sĩ" → xong
-12 bước → phản hồi. Không lỗi JavaScript; 20 sự kiện log khớp thao tác. Module cũ: `run_eval_prep.py` và `run_eval.py`
-cho kết quả như trước.
-
-## Thử với người dùng
-
+- **Chưa đo chế độ LLM thật** (không có API key trong thời gian làm bài). Bản chạy và bản deploy đều ở **chế độ luật**: phần AI
+  (LLM phân loại câu hỏi) đã có code, prompt và guardrail được thử bằng LLM giả, nhưng **chưa có số đo với LLM thật**. Lệnh đo:
+  `run_eval_lotrinh.py --heldout2 --llm`. Nếu LLM không vượt rõ luật trên câu chưa thấy thì nên bỏ AI, giữ lộ trình bằng luật.
 - Kịch bản: [test-scenarios.md](test-scenarios.md) (bản 1 của H1: [test-scenarios-v1.md](test-scenarios-v1.md)).
 - Log máy: `logs/sessions.jsonl`. Log do người điều phối viết: [test-log.md](test-log.md).
 

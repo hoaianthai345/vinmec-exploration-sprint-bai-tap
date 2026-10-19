@@ -1,4 +1,27 @@
-# 3 best practice quốc tế cho "Chuẩn bị buổi khám" và bài học cho Vinmec
+# 3 best practice quốc tế và bài học cho Vinmec
+
+> **Nói rõ:** ba best practice dưới đây được chọn ngày 15/10, khi bài còn theo hướng "Chuẩn bị buổi khám" (H1). Khi đổi sang
+> hướng Lộ trình (18/10), mình giữ chúng vì bài học vẫn áp dụng (bảng ngay dưới), và bổ sung các ví dụ gần hướng Lộ trình nhất
+> từ phần so sánh app. Các ví dụ bổ sung mới dựa trên mô tả công khai, **chưa đào sâu bằng nguồn gốc** như ba best practice
+> chính. Bản trước: [best-practice-v1.md](best-practice-v1.md).
+
+## Áp dụng cho hướng hiện tại: Lộ trình khám trong ngày
+
+| Best practice | Bài học | Trong prototype Lộ trình |
+|---|---|---|
+| Ubie AI 問診 (Nhật) | Dữ liệu phải đi thẳng vào workflow của viện, không bắt người bệnh nhập lại | Chỉ định lấy từ hệ thống bệnh viện (prototype mô phỏng); người bệnh chỉ trả lời 4 câu bấm chọn |
+| AHRQ QuestionBuilder + tổng quan 42 nghiên cứu | Danh sách câu hỏi giúp hỏi nhiều hơn khi gắn với buổi khám | Câu y khoa không trả lời mà lưu vào "Câu hỏi để hỏi bác sĩ", hiện ở bước quay lại bác sĩ |
+| Epic MyChart (Mỹ) | Người từ 65 tuổi ít dùng phiếu trên cổng bệnh nhân (26,4%) | Bấm chọn thay vì gõ; không thay biển báo và nhân viên; cần kênh kiosk hoặc người đi cùng mở hộ (rủi ro R7) |
+
+**Ví dụ bổ sung gần hướng Lộ trình** (từ [so sánh 12 app](app-dat-lich-trong-ngoai-nuoc.md) và [ghi chép UMC Care](umc-care-va-app-benh-vien-vn.md)):
+BV Phụ sản – Nhi Quảng Châu (Tencent) có **chỉ đường trong viện** sau khi đặt lịch; BVĐK Tâm Anh có **theo dõi hàng đợi**;
+UMC Care ghi **phòng và tầng** trên phiếu khám nhưng hướng dẫn quy trình là bài viết chung. Bài học: các app đã giải từng mảnh
+(vị trí, hàng đợi); khoảng trống là nối chúng theo **chỉ định của từng người**, và việc đó cần dữ liệu thật từ hệ thống viện.
+
+---
+
+## Phần gốc (viết cho hướng H1, giữ để đối chiếu)
+
 
 Tiêu chí chọn: mỗi ví dụ giải đúng bài toán "giúp người bệnh chuẩn bị trước khi gặp bác sĩ" và có nguồn đọc được. Mình
 chỉ ghi điều nguồn nói; phần "bài học" là suy luận của mình.
