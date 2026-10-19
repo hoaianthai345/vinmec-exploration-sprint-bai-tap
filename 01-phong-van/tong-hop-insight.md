@@ -1,8 +1,8 @@
 # Tổng hợp insight từ phỏng vấn (bản 3, 18/10/2026)
 
 > Bản 2 (khung trống theo chặng): [tong-hop-insight-v2.md](tong-hop-insight-v2.md). Bản 1 (theo H1–H4): [tong-hop-insight-v1.md](tong-hop-insight-v1.md).
-> **Chỉ tính buổi có bản ghi**: [P1](phong-van/P1.md), [P2](phong-van/P2.md). Các cuộc nói chuyện không ghi âm hoặc không có
-> ghi chép (kể cả buổi với bác sĩ gợi ý xem UMC Care) **không** được tính là bằng chứng ở đây.
+> **Chỉ tính buổi có bản ghi**: [P1](phong-van/P1.md), [P2](phong-van/P2.md) (đã đồng ý ghi âm, 20–25 tuổi). Buổi với bác sĩ
+> ghi theo trí nhớ ở [P3](phong-van/P3.md): chỉ là gợi ý hướng tìm hiểu (xem UMC Care), **không** được tính vào bảng đếm.
 > Mỗi ý ghi số người trên 2. Không khái quát từ 1 người.
 
 ## 1. Gom ý (affinity)

@@ -84,7 +84,8 @@ Mình dùng Claude (Anthropic) làm trợ lý trong bài này. Phân chia cụ t
 **Trạng thái bằng chứng (cập nhật 18/10/2026 tối):**
 - Phỏng vấn có bản ghi: **2 buổi** ([P1](01-phong-van/phong-van/P1.md), [P2](01-phong-van/phong-van/P2.md)). Log do AI soạn từ
   transcript máy; mọi câu trích được kiểm tra bằng máy là có nguyên văn trong transcript. Bản ghi gốc giữ ngoài repo.
-- Các cuộc nói chuyện khác (kể cả buổi với bác sĩ gợi ý xem UMC Care) **chưa có ghi chép nên không được dùng làm bằng chứng**.
+- Đã xin đồng ý ghi âm cả hai buổi. Buổi với một bác sĩ (gợi ý xem UMC Care) **không có bản ghi**, chỉ ghi lại theo trí nhớ ở
+  [P3](01-phong-van/phong-van/P3.md) và **không được dùng làm bằng chứng điểm đau**.
 - **Chưa có lượt thử prototype nào với người thật**; [test-log.md](05-prototype/test-log.md) còn trống. Tour cho hội đồng là
   bản demo do người làm bài bấm, **không phải buổi thử**.
 - Các con số 16/16 và 14/20 là kiểm thử kỹ thuật trên luật và câu hỏi do chính người làm bài (và AI) viết, không phải chỉ số
@@ -94,4 +95,4 @@ Mình dùng Claude (Anthropic) làm trợ lý trong bài này. Phân chia cụ t
 
 Xin đồng ý trước phỏng vấn · chỉ hỏi về trải nghiệm dịch vụ, không hỏi bệnh · ẩn danh P1, P2, P3 · không ghi âm khi
 chưa được đồng ý · không chụp ảnh người hay giấy tờ y tế · không đưa lời khuyên y khoa · không dùng dữ liệu người bệnh
-thật (prototype dùng dữ liệu giả lập). ⚠️ Việc xin đồng ý ghi âm của P1, P2 đang chờ Thái xác nhận trong log.
+thật (prototype dùng dữ liệu giả lập). P1, P2 đã đồng ý ghi âm; P3 không ghi âm.
