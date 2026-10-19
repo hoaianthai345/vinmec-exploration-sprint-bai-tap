@@ -1,32 +1,38 @@
 # Ghi chép dùng thử MyVinmec: luồng đặt lịch
 
-> ⚠️ THÁI ĐIỀN: tự cài app, làm thử, chụp màn hình **của chính app** (không chụp thông tin cá nhân).
-> Đặt thử tới bước cuối rồi huỷ, hoặc dừng trước bước xác nhận. Đừng tạo lịch hẹn thật chiếm chỗ người khác.
+> Bản có khung mẫu ban đầu: [myvinmec-trial-notes-v1.md](myvinmec-trial-notes-v1.md). Chi tiết theo mốc thời gian video và
+> 10 khoảng trống T1–T10: [myvinmec-gap-analysis.md](myvinmec-gap-analysis.md).
 
-- Ngày thử: …/10/2026 · Thiết bị: iOS/Android · Phiên bản app: …
-- Tài khoản: đã có / tạo mới
+- Ngày thử: 15/10/2026 · iOS · tài khoản chưa kết nối hồ sơ y tế
+- Nguồn: 18 ảnh chụp màn hình và 2 video quay màn hình (3:30 và 4:44). Ảnh, video gốc **ngoài repo** vì có họ tên, SĐT;
+  7 ảnh trong `anh-myvinmec/` đã cắt phần thông tin cá nhân.
+- Không tạo lịch hẹn thật; dừng trước bước xác nhận.
 
-## Bước tôi đã làm
+## Bước đã làm
 
-| # | Màn hình | Tôi làm gì | Thấy gì | Vướng/cảm xúc (😀 😐 😟) | Ảnh |
+| # | Màn hình | Làm gì | Thấy gì | Vướng | Nguồn |
 |---|---|---|---|---|---|
-| 1 | Mở app | | | | |
-| 2 | Vào mục đặt lịch | | | | |
-| 3 | Chọn cơ sở | | | | |
-| 4 | **Chọn chuyên khoa / bác sĩ** | | | | |
-| 5 | Chọn ngày giờ | | | | |
-| 6 | Xác nhận | | | | |
+| 1 | Trang chủ | Mở app | Lưới dịch vụ, nút trợ lý AI MIA nổi ở góc | Nút MIA che nội dung ở nhiều màn (T7) | ảnh 03, 05 |
+| 2 | Tab Đặt lịch | Chọn "Khám chuyên khoa tại bệnh viện" | Chọn khách hàng (Tôi / + Thêm), hai ô tick CBNV và người nước ngoài | Nhiều lối vào đặt lịch khác nhau (T10) | V1 0:20–1:45 |
+| 3 | Chọn cơ sở | Chọn một trong khoảng 15 cơ sở | — | — | V1 |
+| 4 | Chọn phương thức | Theo bác sĩ, theo chuyên khoa, **theo triệu chứng** | Danh sách triệu chứng xếp ABC, lẫn tên bệnh và thủ thuật; gõ tìm thì ra mục dễ hiểu | Danh sách mặc định khó hiểu (T5); gợi ý theo tuổi có ngõ cụt (T4) | ảnh 01, 02 |
+| 5 | Chọn ngày | Chọn ngày khám mong muốn | Không chọn giờ cụ thể | — | V1 1:20–1:31 |
+| 6 | Lý do khám, đặt hẹn | Gõ lý do (tối đa 120 ký tự) | Phải mô tả lại vấn đề lần thứ ba (danh sách, MIA, ô lý do) | Kể lại 3 lần (T3) | V2 1:07–1:47 |
+| 7 | Trợ lý MIA | "Kiểm tra triệu chứng", đóng vai câu đau ngực và "bạn tôi bị méo miệng nói khó" | Modal cảnh báo cấp cứu có nút gọi 115 | Cảnh báo đến sau khoảng 20 giây (T2); form đặt lịch lại cho chọn "Cơn đau thắt ngực" như triệu chứng thường (T1) | ảnh 06, 07; V2 3:08–4:10 |
 
-## Câu hỏi cần trả lời khi thử (để nối với khoảnh khắc đã chọn)
+## Câu hỏi khi thử và câu trả lời
 
-- [ ] App có giúp gì khi tôi **không biết** nên chọn khoa nào không? (mô tả khoa, tìm theo triệu chứng, chatbot…)
-- [ ] Danh sách chuyên khoa có bao nhiêu mục? Tên khoa có dễ hiểu với người không làm y tế không?
-- [ ] Đặt cho **người thân** (trẻ em, bố mẹ) thì luồng khác gì?
-- [ ] Nếu chọn sai khoa thì app có nói gì không? Có đường gọi tổng đài không?
-- [ ] App đã có tính năng AI/chatbot nào chưa? Nếu có thì làm gì?
-- [ ] Có ô "lý do khám" không? Ô này nằm **trước hay sau** bước chọn khoa?
-- [ ] Sau khi đặt, tổng đài có gọi lại xác nhận không? Nếu có, họ có hỏi lại triệu chứng để đổi khoa không?
-- [ ] Nếu chọn theo **bác sĩ** thay vì theo khoa, hồ sơ bác sĩ có ghi bệnh/triệu chứng mà bác sĩ đó khám không?
+- App có giúp khi **không biết** nên chọn khoa nào không? → **Có**: đặt theo triệu chứng và MIA.
+- Đặt cho **người thân** thì sao? → Có "+ Thêm" hồ sơ; MIA hỏi giới tính, tuổi của người đang có triệu chứng.
+- App đã có AI chưa? → Có trợ lý MIA (chat tự do, thẻ trắc nghiệm, cảnh báo cấp cứu).
+- Có ô "lý do khám" không? → Có, nằm **sau** bước chọn khoa hoặc triệu chứng.
+- Sau khi đặt có hướng dẫn chuẩn bị không? → **Chưa quan sát được** (màn Lịch hẹn của tài khoản này trống).
+
+## Tóm tắt 3 phát hiện chính
+
+1. Bài toán "không biết khám khoa nào" app **đã giải phần lớn** (đặt theo triệu chứng, MIA) → bỏ hướng gợi ý khoa.
+2. **Cảnh báo cấp cứu không nhất quán và chậm** (T1, T2) → nguyên tắc "luật cấp cứu chạy trước AI" trong prototype.
+3. Người dùng **mô tả cùng một vấn đề 3 lần** (T3).
 
 ## Quan sát từ ảnh chụp app (15/10/2026, lượt 1: 18 ảnh, IMG_2221–2238)
 

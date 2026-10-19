@@ -1,39 +1,48 @@
-# Tổng hợp insight từ phỏng vấn
+# Tổng hợp insight từ phỏng vấn (bản 3, 18/10/2026)
 
-> ⚠️ THÁI ĐIỀN SAU KHI XONG ÍT NHẤT 3 BUỔI. Mỗi insight phải trỏ về P nào và câu trích dẫn nào.
-> Insight chỉ có 1 người nói thì ghi rõ "1/3", không khái quát hoá.
+> Bản 2 (khung trống theo chặng): [tong-hop-insight-v2.md](tong-hop-insight-v2.md). Bản 1 (theo H1–H4): [tong-hop-insight-v1.md](tong-hop-insight-v1.md).
+> **Chỉ tính buổi có bản ghi**: [P1](phong-van/P1.md), [P2](phong-van/P2.md). Các cuộc nói chuyện không ghi âm hoặc không có
+> ghi chép (kể cả buổi với bác sĩ gợi ý xem UMC Care) **không** được tính là bằng chứng ở đây.
+> Mỗi ý ghi số người trên 2. Không khái quát từ 1 người.
 
-## Bảng gom ý (affinity)
+## 1. Gom ý (affinity)
 
-| Chủ đề | P1 | P2 | P3 | Số người |
+| Nhóm | P1 | P2 | Số người | Loại tín hiệu |
 |---|---|---|---|---|
-| Quên nói hoặc quên hỏi bác sĩ điều mình định nói | | | | /3 |
-| Có ghi sẵn điều muốn nói hoặc hỏi trước khi vào phòng | | | | /3 |
-| Phải kể lại cùng chuyện nhiều lần (ghi số lần) | | | | /3 |
-| Chuẩn bị thiếu hoặc sai (nhịn ăn, giấy tờ, kết quả cũ, thuốc) | | | | /3 |
-| Biết cần chuẩn bị gì từ đâu | | | | /3 |
-| Thấy bác sĩ không đủ thời gian nghe | | | | /3 |
-| Khó khi đi cùng hoặc thay người thân | | | | /3 |
-| Sẵn sàng dành 2 phút kể trước | | | | /3 |
-| Muốn xem và sửa phiếu AI viết | | | | /3 |
-| Lo ai đọc được phiếu | | | | /3 |
-| Điều khác bất ngờ | | | | /3 |
+| Đến thẳng viện, không đặt lịch trước | đến sớm lấy số | "ở dưới quê là tới hẳn luôn" | 2/2 | Mô tả thói quen (trung bình) |
+| Không chuẩn bị gì trước buổi khám ngoài giấy tờ | chỉ mang CCCD/BHYT | xác nhận câu hỏi dẫn dắt | 2/2 | P1 trung bình, P2 yếu |
+| Bác sĩ là người dẫn quy trình; người bệnh nói triệu chứng bằng lời | "nó hỏi mồm" | "bác sĩ sẽ dựa vào cái triệu chứng đó" | 2/2 | Mô tả (trung bình) |
+| Nói được hết với bác sĩ | "có nói được hết mà" | — | 1/2 | Ý kiến về bản thân (yếu) |
+| Khâu đăng ký đã nhanh nhờ máy quét, tự chọn khoa | có | — | 1/2 | Mô tả (trung bình) |
+| Quy trình rườm rà, bị đẩy qua nhiều phòng | — | "nó đẩy qua phòng đó luôn" | 1/2 | Ý kiến có cảm xúc |
+| Nghi bác sĩ làm thêm dịch vụ để thu tiền | — | "làm dịch vụ đó liền luôn" | 1/2 | Ý kiến có cảm xúc |
+| Tái khám phải làm lại quy trình, tự kể lại lịch sử khám | có, không tỏ ra bực | — | 1/2 | Mô tả |
+| Sau khám ở quê không có kênh hỏi lại, phải chờ ngày hẹn | — | có | 1/2 | Mô tả |
+| **Bỡ ngỡ không biết vào quầy nào** | **không nhắc; mô tả ngược lại** | **không nhắc** | **0/2** | — |
 
-## Insight (dạng: "Người dùng X làm Y vì Z, dẫn tới W")
+## 2. Insight (dạng: "Người dùng X làm Y vì Z, dẫn tới W")
 
-1. … — bằng chứng: P?, "trích dẫn"
-2. …
-3. …
+1. Người bệnh đến thẳng viện và không chuẩn bị gì ngoài giấy tờ, vì bác sĩ sẽ hỏi và dẫn quy trình, nên **họ không cảm thấy
+   cần chuẩn bị trước** (2/2; P1 [03:50], P2 [00:46]). → bác bỏ hướng H1 bằng mô tả hành vi, không chỉ bằng ý kiến.
+2. Một người thấy quy trình rườm rà và nghi bị làm thêm dịch vụ, nên **không tin chỉ định có thật sự cần** (1/2, P2 [01:56],
+   [03:47]). → điểm đau tiềm năng về niềm tin và chi phí, **chưa đủ** để kết luận.
+3. Ở nơi P1 khám, khâu đăng ký đã có máy quét và người bệnh tự chọn khoa (1/2, P1 [01:43], [02:21]). → **không ủng hộ** giả
+   định người bệnh bỡ ngỡ không biết vào quầy nào của hướng Lộ trình.
 
-## Kiểm tra giả thuyết (xem 00-chon-khoanh-khac.md)
+## 3. Giả thuyết bị xác nhận hay bác bỏ
 
 | Giả thuyết | Kết quả | Bằng chứng |
 |---|---|---|
-| H1. Không nói hết hoặc quên hỏi điều định hỏi | Đúng / Sai / Chưa đủ dữ liệu | |
-| H2. Phải kể lại cùng một chuyện nhiều lần | | |
-| H3. Có lúc chuẩn bị sai, phải chờ hoặc quay lại | | |
-| H4. Sẵn sàng dành 2 phút nếu bác sĩ đọc, nhưng lo quyền riêng tư | | |
+| H1. Không nói hết hoặc quên hỏi điều định hỏi | Chưa ủng hộ | P1 "có nói được hết" (ý kiến, 1/2) |
+| H2. Phải kể lại cùng một chuyện nhiều lần | Chưa đủ dữ liệu | P1 tái khám tự kể lại lịch sử, không tỏ ra bực |
+| H3. Có lúc chuẩn bị sai, phải chờ hoặc quay lại | Không có dữ liệu | — |
+| H4. Sẵn sàng dành 2 phút nếu bác sĩ đọc | Không ủng hộ | P2 khi nghe ý tưởng thì nói sang chuyện chọn khoa, "bác sĩ sẽ hướng dẫn mình" [06:26] (sau câu dẫn dắt, yếu) |
+| Người bệnh đặt lịch trước qua app | Bác bỏ cho 2 người này | 2/2 đến thẳng |
+| **Lộ trình: bỡ ngỡ không biết vào quầy nào, đi phòng nào** | **Chưa có bằng chứng ghi âm** (0/2; P1 mô tả ngược lại) | Cần phỏng vấn thêm bằng một lần khám cụ thể |
 
-## Điều làm mình đổi hướng (nếu có)
+## 4. Điều còn thiếu trước khi chọn hướng
 
-- …
+- Chưa buổi nào kể **một lần khám cụ thể** có hành động, cách xoay xở, tần suất, hậu quả (chuẩn Day 17).
+- Chưa có người từng khám ở **Vinmec** hoặc viện tư tương tự.
+- Buổi với bác sĩ (gợi ý UMC Care) chưa có ghi chép: cần đào vào việc bác sĩ đang làm, không chỉ chép lại gợi ý.
+- Lỗi phỏng vấn cần sửa ở các buổi sau: hỏi dẫn dắt (P2 [00:23]), giới thiệu ý tưởng giữa buổi (P2 [04:45]).
