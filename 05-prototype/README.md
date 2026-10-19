@@ -4,12 +4,12 @@
 > `/index-v2.html` và `/index-v1.html` là "Chuẩn bị buổi khám" (hướng H1); `/chon-khoa.html` là gợi ý chuyên khoa
 > (hướng H0). Vì sao đổi: [../VERSIONS.md](../VERSIONS.md).
 
-**Tour cho hội đồng:** mở `http://localhost:8000/?tour=1` (hoặc nút "Tour cho người chấm" ở Trang chủ). Tour 17 bước tự
+**Tour cho giám khảo:** mở `http://localhost:8000/?tour=1` (hoặc nút "Tour cho người chấm" ở Trang chủ). Tour 17 bước tự
 thao tác, đi cả luồng người đến thẳng và luồng người đã đặt lịch (`app/static/tour.js`). Ở màn rộng (từ 1080px), màn điện
 thoại giữ đúng giao diện người dùng, hai bên là **nghiên cứu và bằng chứng** (trái) và **lý do thiết kế** (phải), có nút
 Trước/Tiếp, phím ← →, và nút **"Thoát tour, tự dùng thử từ màn này"** ở mọi bước (app giữ nguyên màn đang xem; nút nổi
-"Quay lại tour" đưa về đúng bước). Màn hẹp hơn thì ghi chú hiện trong khung điện thoại. Bản ghi sẵn: [GIF](screenshots/tour/tour-hoi-dong.gif),
-[MP4](screenshots/tour/tour-hoi-dong.mp4), [ảnh từng bước](screenshots/tour/); bản ghi các phiên bản trước ở `screenshots/tour/v1/`,
+"Quay lại tour" đưa về đúng bước). Màn hẹp hơn thì ghi chú hiện trong khung điện thoại. Bản ghi sẵn: [GIF](screenshots/tour/tour-giam-khao.gif),
+[MP4](screenshots/tour/tour-giam-khao.mp4), [ảnh từng bước](screenshots/tour/); bản ghi các phiên bản trước ở `screenshots/tour/v1/`,
 `v2/`. Lượt tour ghi log với mã `TOUR` và `eval/summarize_log.py` bỏ qua mã này. Ảnh trong `screenshots/` (ngoài thư mục
 `tour/`) là của prototype H1 cũ.
 

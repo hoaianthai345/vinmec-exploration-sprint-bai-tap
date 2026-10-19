@@ -2,18 +2,18 @@
 
 Bài tập 1 tuần, Exploration Sprint Vinmec × AI Thực Chiến · Thái Hoài An · K3
 
-## Xem nhanh cho hội đồng (3–5 phút)
+## Xem nhanh cho giám khảo (3–5 phút)
 
-**Demo trực tuyến:** <https://lo-trinh-kham-prototype.vercel.app> · tour cho hội đồng: <https://lo-trinh-kham-prototype.vercel.app/?tour=1>
+**Demo trực tuyến:** <https://lo-trinh-kham-prototype.vercel.app> · tour cho giám khảo: <https://lo-trinh-kham-prototype.vercel.app/?tour=1>
 (bản mô phỏng cho bài tập, **không phải ứng dụng của Vinmec**; phòng, vị trí, thời gian chờ đều giả lập; trang đặt noindex).
 Slides: [slides.pdf](slides.pdf) (10 trang).
 
-![Tour cho hội đồng: giữa là giao diện người dùng, trái là nghiên cứu và bằng chứng, phải là lý do thiết kế](05-prototype/screenshots/tour/tour-hoi-dong.gif)
+![Tour cho giám khảo: giữa là giao diện người dùng, trái là nghiên cứu và bằng chứng, phải là lý do thiết kế](05-prototype/screenshots/tour/tour-giam-khao.gif)
 
-- **Không chạy code:** GIF ở trên (17 bước, mỗi bước 7 giây), video [tour-hoi-dong.mp4](05-prototype/screenshots/tour/tour-hoi-dong.mp4)
+- **Không chạy code:** GIF ở trên (17 bước, mỗi bước 7 giây), video [tour-giam-khao.mp4](05-prototype/screenshots/tour/tour-giam-khao.mp4)
   (56 giây), hoặc ảnh từng bước trong [05-prototype/screenshots/tour/](05-prototype/screenshots/tour/).
   Giữa màn là **giao diện đúng như người dùng thấy**; bên trái là **nghiên cứu và bằng chứng** của bước đó (kèm nguồn trong
-  repo); bên phải là **tính năng, vì sao thiết kế như vậy, hội đồng nên để ý gì, giới hạn**.
+  repo); bên phải là **tính năng, vì sao thiết kế như vậy, giám khảo nên để ý gì, giới hạn**.
 - **Chạy thử:** `cd 05-prototype/app && python3 server.py`, mở `http://localhost:8000/?tour=1` trên màn hình rộng
   (từ 1080px). Phím ← → để chuyển bước, chấm tiến trình để nhảy tới bước bất kỳ. Nút **"Thoát tour, tự dùng thử từ màn này"** (hoặc
   Esc) có ở mọi bước: app giữ nguyên màn đang xem để tự bấm tiếp; nút nổi **"Quay lại tour"** ở góc trái đưa về đúng bước. Không cần cài gì thêm,
@@ -86,7 +86,7 @@ Mình dùng Claude (Anthropic) làm trợ lý trong bài này. Phân chia cụ t
   transcript máy; mọi câu trích được kiểm tra bằng máy là có nguyên văn trong transcript. Bản ghi gốc giữ ngoài repo.
 - Đã xin đồng ý ghi âm cả hai buổi. Buổi với một bác sĩ (gợi ý xem UMC Care) **không có bản ghi**, chỉ ghi lại theo trí nhớ ở
   [P3](01-phong-van/phong-van/P3.md) và **không được dùng làm bằng chứng điểm đau**.
-- **Chưa có lượt thử prototype nào với người thật**; [test-log.md](05-prototype/test-log.md) còn trống. Tour cho hội đồng là
+- **Chưa có lượt thử prototype nào với người thật**; [test-log.md](05-prototype/test-log.md) còn trống. Tour cho giám khảo là
   bản demo do người làm bài bấm, **không phải buổi thử**.
 - Các con số 16/16 và 14/20 là kiểm thử kỹ thuật trên luật và câu hỏi do chính người làm bài (và AI) viết, không phải chỉ số
   sản phẩm.

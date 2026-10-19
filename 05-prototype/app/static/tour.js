@@ -1,7 +1,7 @@
 // Bản 5 (18/10/2026): sửa nội dung theo review (bằng chứng phỏng vấn chỉ lấy từ P1, P2 có bản ghi). Bản 4 ở tour-v4.js.
 // Bản 4: thêm nút "Thoát tour, tự dùng thử" ở mọi bước (giữ nguyên màn đang xem) và nút nổi "Quay lại tour"
 // để xem tiếp đúng bước. Bản 3 lưu ở tour-v3.js.
-// Tour cho hội đồng. Màn điện thoại giữ đúng giao diện người dùng (chỉ một viền sáng nhẹ); hai bên
+// Tour cho giám khảo. Màn điện thoại giữ đúng giao diện người dùng (chỉ một viền sáng nhẹ); hai bên
 // màn hình là "Nghiên cứu & bằng chứng" (trái) và "Vì sao làm vậy" (phải), có nút Trước/Tiếp. Màn hẹp (< 1080px) thì
 // dùng thẻ ghi chú trong khung như bản 2 (tour-v2.js).
 // Dùng các hàm của index.html (state, go, startRoute, markDone, applyOrders, openSheet, send, bookAppt, routeFromAppt...).
@@ -32,7 +32,7 @@
   const R = (tag, text, src) => ({ tag, text, src });
 
   // Mỗi bước: target, before (thao tác tự động), title, body (tính năng), research (bằng chứng), why (vì sao),
-  // look (hội đồng nên để ý), limit (giới hạn, nếu có).
+  // look (giám khảo nên để ý), limit (giới hạn, nếu có).
   const STEPS = [
     { title: "Lộ trình khám trong ngày",
       body: `Một mục mới trong MyVinmec (giao diện mô phỏng) luôn trả lời được câu <i>"Bây giờ tôi đi đâu tiếp, và còn chờ bao lâu?"</i>. Tour đi hai luồng: <b>người đến thẳng</b> (bước 1–11) và <b>người đã đặt lịch</b> (bước 12–15).`,
@@ -327,7 +327,7 @@
     right.innerHTML = `<div class="side-kicker"><span>Vì sao làm vậy</span><span>${n}</span></div>
       <h3>Tính năng ở bước này</h3><div class="side-feature">${s.body}</div>
       ${s.why ? `<h3>Vì sao thiết kế như vậy</h3><div>${s.why}</div>` : ""}
-      ${s.look ? `<h3>Hội đồng nên để ý</h3><div class="side-look">${s.look}</div>` : ""}
+      ${s.look ? `<h3>Giám khảo nên để ý</h3><div class="side-look">${s.look}</div>` : ""}
       ${s.limit ? `<h3>Giới hạn</h3><div class="side-limit">${s.limit}</div>` : ""}
       <div class="side-nav" id="sideNav">${navHtml(i)}</div>`;
   }
@@ -405,7 +405,7 @@
     document.getElementById("tester").value = prevTester === "TOUR" ? "" : prevTester;
     if (selfTry) restart();
     const finished = selfTry || idx === STEPS.length - 1;
-    resume.querySelector(".r1").textContent = finished ? "↺ Xem lại tour cho hội đồng" : `↺ Quay lại tour · bước ${idx + 1}/${STEPS.length}`;
+    resume.querySelector(".r1").textContent = finished ? "↺ Xem lại tour cho giám khảo" : `↺ Quay lại tour · bước ${idx + 1}/${STEPS.length}`;
     resume.querySelector(".r2").style.display = finished ? "none" : "block";
     resume.classList.add("on");
     toast(finished ? "Đang tự dùng thử từ đầu" : "Đang tự dùng thử từ màn này");
