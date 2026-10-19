@@ -18,6 +18,7 @@ hướng dẫn công khai của Vinmec; mục "gia-lap" cần bệnh viện xác
 
 from __future__ import annotations
 
+import datetime as dt
 import json
 import os
 import re
@@ -103,6 +104,27 @@ TESTS = {
                  "source": "gia-lap", "aliases": ["dien tim", "ecg", "do dien tim"]},
 }
 
+# Giờ làm việc GIẢ LẬP (phút từ 0h). None = mở 24/7. Thêm ngày 19/10 sau nhận xét dùng thử: giờ dự kiến từng vượt 24:00
+# khi mở app buổi tối, và trợ lý không trả lời được "khoa xét nghiệm đóng cửa chưa".
+OUTPATIENT = (7 * 60, 16 * 60 + 30)
+PLACE_HOURS = {"kiosk-hen": (6 * 60 + 30, 16 * 60 + 30), "quay-bhyt": OUTPATIENT, "quay-dich-vu": OUTPATIENT,
+               "sinh-hieu": OUTPATIENT, "phong-kham": OUTPATIENT, "thu-ngan": (7 * 60, 17 * 60),
+               "lay-mau": (7 * 60, 16 * 60), "sieu-am": OUTPATIENT, "x-quang": OUTPATIENT, "dien-tim": OUTPATIENT,
+               "nha-thuoc": (7 * 60, 20 * 60), "can-tin": (6 * 60, 19 * 60), "quay-thong-tin": (6 * 60 + 30, 17 * 60),
+               "wc": None, "gui-xe": None, "cap-cuu": None}
+VN_TZ = dt.timezone(dt.timedelta(hours=7))
+
+
+def _fmt(minutes: int) -> str:
+    minutes %= 24 * 60
+    return f"{minutes // 60:02d}:{minutes % 60:02d}"
+
+
+def now_min() -> int:
+    t = dt.datetime.now(VN_TZ)
+    return t.hour * 60 + t.minute
+
+
 PURPOSES = {
     "kham-benh": "Khám bệnh",
     "tai-kham": "Tái khám",
@@ -125,8 +147,8 @@ TQ_PACKAGE = ["xn-mau-nhin-an", "xn-nuoc-tieu", "sieu-am-bung", "x-quang-nguc", 
 PREP_BEFORE = {
     "kham-tong-quat": (["Không ăn sáng; tránh đồ uống có đường, có gas, trà, cà phê trước khi lấy máu",
                         "Uống nhiều nước và nhịn tiểu cho tới khi siêu âm ổ bụng xong",
-                        "Mang giấy tờ tuỳ thân, thẻ BHYT nếu dùng"], "vinmec"),
-    "default": (["Mang giấy tờ tuỳ thân, thẻ BHYT nếu dùng",
+                        "{docs}"], "vinmec"),
+    "default": (["{docs}",
                  "Mang thuốc hoặc vỏ hộp thuốc đang dùng, kết quả và đơn thuốc cũ liên quan",
                  "Chưa rõ có xét nghiệm máu không: hỏi tổng đài trước xem có cần nhịn ăn",
                  "Đến trước giờ hẹn 15–30 phút để check-in"], "gia-lap"),
@@ -162,7 +184,7 @@ def arrival_step(visit: dict) -> dict:
         docs += ["Thẻ BHYT hoặc ứng dụng VNeID có BHYT", "Giấy chuyển tuyến (nếu có)"]
     if visit.get("booked"):
         appt = valid_appt(visit.get("appt"))
-        return _step("den", "kiosk-hen", "Check-in lịch hẹn",
+        return _step("den", "kiosk-hen", "Check-in lịch hẹn" + (f" (giờ hẹn {appt['time']})" if appt else ""),
                      "Bạn đã đặt lịch qua app nên không cần lấy số ở quầy tiếp đón" +
                      ("; quầy 9 sẽ kiểm tra thẻ BHYT cho bạn" if visit.get("bhyt") else "") +
                      (f". Nên đến trước giờ hẹn {appt['time']} khoảng 15–30 phút" if appt else ""), docs=docs)
@@ -218,6 +240,8 @@ def build_route(visit: dict) -> dict:
         # Lộ trình bắt đầu từ lúc đặt lịch: hai bước trước ngày khám, không có giờ dự kiến
         bk = BOOKING[appt["specialty"]]
         items, src = PREP_BEFORE.get(purpose, PREP_BEFORE["default"])
+        docs = "Mang giấy tờ tuỳ thân" + (", thẻ BHYT hoặc ứng dụng VNeID có BHYT" if visit.get("bhyt") else "")
+        items = [docs if it == "{docs}" else it for it in items]
         steps.append({"id": "dat-lich", "place": None, "kind": "pre", "title": "Đã đặt lịch",
                       "room": f"{bk['name']} · {appt['time']}" + (f" · {appt['date']}" if appt["date"] else ""),
                       "where": f"{bk['doctor']} · {bk['room']}, tầng 2, khu B", "how": "",
@@ -263,7 +287,20 @@ def build_route(visit: dict) -> dict:
             if st["place"] == "phong-kham" and st["kind"] != "wait":
                 st["room"] = f"{bk['room']} · {bk['doctor']}"
                 st["where"] = f"Tầng 2, khu B, {bk['room'].lower()}"
-    clock = _hm(appt["time"]) - 30 if appt else int(visit.get("start_min") or 8 * 60)
+    else:  # người đến thẳng chưa có phòng khám cụ thể cho tới khi đăng ký
+        for st in steps:
+            if st["place"] == "phong-kham" and st["kind"] != "wait":
+                st["room"] = "Phòng khám ghi trên phiếu đăng ký (giả lập: phòng 205)"
+    note = None
+    if appt:
+        clock = _hm(appt["time"]) - 30
+    else:
+        clock = int(visit.get("start_min") or 8 * 60)
+        if clock < OUTPATIENT[0] or clock > OUTPATIENT[1] - 60:  # sau 15:30 không kịp làm hết một lượt khám
+            note = ("Ngoài giờ khám ngoại trú (giả lập 07:00–16:30): lộ trình tính từ 07:00 "
+                    + ("sáng nay" if clock < OUTPATIENT[0] else "sáng mai")
+                    + ". Cần khám gấp thì đến Khoa Cấp cứu (mở 24/7).")
+            clock = OUTPATIENT[0]
     ready = clock
     for s in steps:
         if s["kind"] == "pre":
@@ -276,8 +313,8 @@ def build_route(visit: dict) -> dict:
             clock += s["wait"] + s["service"]
             if s["kind"] == "test":
                 ready = max(ready, clock + s["result"])
-        s["eta"] = f"{clock // 60:02d}:{clock % 60:02d}"
-    return {"purpose": PURPOSES[purpose], "steps": steps, "finish": steps[-1]["eta"],
+        s["eta"] = _fmt(clock)
+    return {"purpose": PURPOSES[purpose], "steps": steps, "finish": steps[-1]["eta"], "note": note,
             "has_fasting": any(TESTS[t]["fasting"] for t, _ in tests), "appt": appt}
 
 
@@ -293,6 +330,7 @@ INTENTS = {
     "pay": "Hỏi thanh toán ở đâu, bằng cách nào",
     "docs": "Hỏi cần mang giấy tờ gì",
     "counter": "Hỏi nên vào quầy nào để đăng ký",
+    "hours": "Hỏi giờ mở cửa, còn làm việc hay đã đóng cửa",
     "medical": "Câu hỏi y khoa: ý nghĩa kết quả, bệnh, thuốc, có nặng không, nên điều trị gì",
     "other": "Không thuộc các loại trên",
 }
@@ -343,6 +381,8 @@ _SUBSTANCE = re.compile(
 _COUNSEL = re.compile(r"\b(?:uong them|co nen|nen uong|moi ngay|ngung|bo sung)\b")
 _THUOC_PLACE = ("nha thuoc", "lay thuoc", "mua thuoc", "quay thuoc")
 _RULES = [
+    ("hours", ["mo cua", "dong cua", "con mo", "gio lam viec", "may gio dong", "may gio mo", "con lay mau",
+               "con kham khong", "con nhan khong", "het gio", "ngoai gio", "dong chua", "con lam viec"]),
     ("counter", ["quay nao", "vao quay", "dang ky o dau", "dang ky kham o dau", "lay so o dau", "bat dau tu dau",
                  "moi den", "vua den", "toi nen vao dau", "lay so"]),
     ("fasting", ["nhin an", "duoc an", "an sang", "an duoc", "uong nuoc", "nhin doi", "an gi chua", "an chua",
@@ -471,7 +511,7 @@ def _pending_tests(route: dict, done: set[str]) -> list[dict]:
     return [s for s in route["steps"] if s["kind"] == "test" and s["id"] not in done]
 
 
-def compose_answer(intent: str, target: str | None, visit: dict, done: list[str]) -> dict:
+def compose_answer(intent: str, target: str | None, visit: dict, done: list[str], question: str = "") -> dict:
     """Ghép câu trả lời từ dữ liệu. Không có văn bản nào do LLM viết."""
     route = build_route(visit)
     done_set = set(done or [])
@@ -496,8 +536,35 @@ def compose_answer(intent: str, target: str | None, visit: dict, done: list[str]
         pid = TESTS[target]["place"] if target in TESTS else target
         return {"text": _place_text(pid), "source": src_place}
 
+    if intent == "hours":
+        pid = TESTS[target]["place"] if target in TESTS else target
+        now = now_min()
+        if pid not in PLACE_HOURS:
+            opn = OUTPATIENT[0] <= now < OUTPATIENT[1]
+            return {"text": f"Khám ngoại trú mở 07:00–16:30 (giờ giả lập). Bây giờ {_fmt(now)}: "
+                            + ("đang mở." if opn else "đã đóng, mở lại 07:00.") + " Khoa Cấp cứu mở 24/7.",
+                    "source": "Giờ làm việc (giả lập)"}
+        hrs = PLACE_HOURS[pid]
+        name = PLACES[pid]["name"]
+        if hrs is None:
+            return {"text": f"{name}: mở 24/7.", "source": "Giờ làm việc (giả lập)"}
+        opn = hrs[0] <= now < hrs[1]
+        text = f"{name}: mở {_fmt(hrs[0])}–{_fmt(hrs[1])} (giờ giả lập). Bây giờ {_fmt(now)}: " + ("đang mở." if opn else "đã đóng.")
+        if not opn:
+            text += f" Mở lại lúc {_fmt(hrs[0])}. Cần khám gấp thì đến Khoa Cấp cứu (mở 24/7)."
+        return {"text": text, "source": "Giờ làm việc (giả lập)"}
+
     if intent == "fasting":
         pending = _pending_tests(route, done_set)
+        if _has(_n(question), ["nuoc loc", "uong nuoc", "nuoc suoi", "duoc uong"]):
+            names = ", ".join(st["title"] for st in pending if st["fasting"])
+            if not names:
+                return {"text": "Bạn không còn mục nào cần nhịn, ăn uống bình thường.", "source": "Hướng dẫn chuẩn bị (giả lập)"}
+            text = (f"Nước lọc thì được uống. Hướng dẫn chỉ yêu cầu không ăn sáng và tránh đồ uống có đường, có gas, trà, cà phê "
+                    f"trước khi lấy máu. Bạn còn: {names}.")
+            if any(st.get("test") == "sieu-am-bung" for st in pending):
+                text += " Riêng siêu âm ổ bụng còn cần uống nhiều nước và nhịn tiểu cho tới khi siêu âm xong."
+            return {"text": text, "source": "Hướng dẫn công khai của Vinmec", "url": VINMEC_TQ}
         tests = [s for s in pending if s.get("test") == target] if target in TESTS else pending
         need = [s for s in tests if s["fasting"]]
         if target in TESTS and not tests:
@@ -507,7 +574,7 @@ def compose_answer(intent: str, target: str | None, visit: dict, done: list[str]
                     "source": "Hướng dẫn chuẩn bị (giả lập)"}
         if need:
             names = ", ".join(s["title"] for s in need)
-            prep = " ".join(p for s in need for p in s["prep"])
+            prep = "; ".join(p for s in need for p in s["prep"]) + "."
             src = "Hướng dẫn công khai của Vinmec" if any(s["source"] == "vinmec" for s in need) else "Hướng dẫn chuẩn bị (giả lập)"
             return {"text": f"Chưa nên ăn: bạn còn {names} cần nhịn ăn. {prep}", "source": src,
                     "url": next((s["url"] for s in need if s.get("url")), None)}
@@ -602,6 +669,6 @@ def ask(question: str, visit: dict, done: list[str] | None = None, use_llm: bool
         out["medical"] = True
         out["answer"] = {"text": MEDICAL_TEXT, "source": "Luật an toàn", "save_question": masked}
     else:
-        out["answer"] = compose_answer(cls["intent"], cls["target"], visit, done or [])
+        out["answer"] = compose_answer(cls["intent"], cls["target"], visit, done or [], masked)
     out["latency_ms"] = int((time.time() - t0) * 1000)
     return out

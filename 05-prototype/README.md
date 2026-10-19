@@ -124,6 +124,10 @@ quát biết trước gói; lịch hẹn không hợp lệ bị bỏ qua).
 
 ## Giới hạn đã biết
 
+- Nhận xét dùng thử ngày 19/10 và 10 lỗi đã sửa, 2 lỗi còn mở: [nhan-xet-dung-thu-19-10.md](nhan-xet-dung-thu-19-10.md).
+- Tải lại trang là mất lộ trình (chưa lưu); "Chỉ đường" chưa có sơ đồ tầng.
+- Giờ làm việc của từng phòng là giả lập (khám ngoại trú 07:00–16:30, Cấp cứu 24/7).
+
 - Sơ đồ phòng, thời gian chờ, thời gian có kết quả là **giả lập**; không phản ánh Vinmec hay bệnh viện nào.
 - Giờ dự kiến chỉ cộng dồn thời gian giả lập, không theo hàng đợi thật; thực tế cần dữ liệu hệ thống gọi số (HIS/LIS).
 - Lộ trình chưa xử lý: nhiều chuyên khoa trong một buổi, chỉ định cần hẹn riêng (nội soi), người ưu tiên.

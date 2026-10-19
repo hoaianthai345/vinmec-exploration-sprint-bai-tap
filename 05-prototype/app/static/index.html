@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="vi">
-<!-- Bản 7 (19/10/2026): thêm noindex và dòng "không phải ứng dụng của Vinmec" cho bản deploy công khai. Bản 6 ở index-v6.html.
+<!-- Bản 8 (19/10/2026 tối): sửa theo nhận xét dùng thử (không chọn sẵn đáp án, giờ ngoài giờ khám, câu hỏi cũ dính sang lượt mới,
+     nút Hỏi đè bước cuối). Bản 7 ở index-v7.html.
+     Bản 7 (19/10/2026): thêm noindex và dòng "không phải ứng dụng của Vinmec" cho bản deploy công khai. Bản 6 ở index-v6.html.
      Bản 6 (18/10/2026): "Lộ trình khám trong ngày", bắt đầu từ đặt lịch nếu đã đặt + tour cho giám khảo (tour.js bản 3:
      nghiên cứu và lý do thiết kế ở hai bên màn hình). Bản 5 (tour trong khung) ở index-v5.html;
      Bản 4 (chưa có luồng đặt lịch) ở index-v4.html; bản 3 (chưa có tour) ở index-v3.html;
@@ -213,6 +215,7 @@
   .proto-strip { position: fixed; left: 50%; bottom: 4px; transform: translateX(-50%); font-size: 11.5px; color: #5d6b66;
                  background: rgba(255,255,255,.85); border-radius: 99px; padding: 3px 12px; white-space: nowrap; z-index: 5; }
   @media (max-width: 700px) { .proto-strip { display: none; } }
+  .phone.route #s-route .pad { padding-bottom: 96px; }  /* chừa chỗ cho nút Hỏi, không đè bước cuối */
   .toast { position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%); background: rgba(30,30,30,.88); color: #fff; font-size: 13px;
            padding: 8px 14px; border-radius: 99px; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 50; }
   .toast.show { opacity: 1; }
@@ -302,12 +305,12 @@
         <button data-v="kham-tong-quat">Khám tổng quát</button>
       </div>
       <label class="small">Bạn đã đặt lịch trước qua app hoặc tổng đài chưa?</label>
-      <div class="choice" data-key="booked"><button data-v="1">Đã đặt lịch</button><button data-v="0" class="sel">Chưa, đến thẳng</button></div>
+      <div class="choice" data-key="booked"><button data-v="1">Đã đặt lịch</button><button data-v="0">Chưa, đến thẳng</button></div>
       <div class="hint-link" id="bookedHint" onclick="go('s-appts')">Đã đặt lịch? <b>Mở lịch hẹn</b> để lộ trình bắt đầu từ lịch hẹn, app tự điền khoa, giờ, BHYT ›</div>
       <label class="small">Lần này có dùng bảo hiểm y tế (BHYT) không?</label>
-      <div class="choice" data-key="bhyt"><button data-v="1">Có BHYT</button><button data-v="0" class="sel">Không</button></div>
+      <div class="choice" data-key="bhyt"><button data-v="1">Có BHYT</button><button data-v="0">Không</button></div>
       <label class="small">Đây là lần đầu bạn khám ở bệnh viện này?</label>
-      <div class="choice" data-key="first_time"><button data-v="1" class="sel">Lần đầu</button><button data-v="0">Đã từng khám</button></div>
+      <div class="choice" data-key="first_time"><button data-v="1">Lần đầu</button><button data-v="0">Đã từng khám</button></div>
       <button class="btn primary" id="btnRoute" onclick="startRoute()">Xem lộ trình</button>
       <div class="notice"><span class="t">LƯU Ý</span><br>Prototype bài tập. Bệnh viện, phòng, vị trí và thời gian chờ đều là <b>giả lập</b>. Trợ lý chỉ chỉ đường và nhắc chuẩn bị, <b>không giải thích kết quả, không tư vấn điều trị</b>.</div>
       <div class="tester"><span>Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></span><span class="pill" id="modePill">…</span></div>
@@ -327,6 +330,7 @@
         <div class="sum"><span id="sumPurpose"></span><span>Dự kiến xong <b id="sumFinish">--:--</b></span></div>
         <div class="bar"><span id="sumBar" style="width:0"></span></div>
         <div class="sum" style="font-size:11.5px"><span id="sumStep"></span><span>giờ là ước tính giả lập</span></div>
+        <div id="sumNote" style="display:none;margin-top:8px;font-size:12.5px;background:#fff4e5;color:#7a5200;border-radius:8px;padding:7px 10px"></div>
       </div>
       <div class="card now" id="nowCard"></div>
       <div class="card" id="qCard" style="display:none">
@@ -375,7 +379,7 @@
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
 const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
 const fresh = () => ({ session_id: newId(), startedAt: null, route: null, done: [], questions: [], ordersDecided: false, appt: null,
-  visit: { purpose: "kham-benh", booked: false, bhyt: false, first_time: true, paid_in_app: false, tests: [], start_min: nowMin() } });
+  visit: { purpose: "kham-benh", booked: null, bhyt: null, first_time: null, paid_in_app: false, tests: [], start_min: nowMin() } });
 let state = fresh();
 let TESTS = {};
 let pendingTests = new Set();
@@ -436,6 +440,11 @@ document.querySelectorAll(".choice").forEach(group => group.addEventListener("cl
 }));
 
 async function startRoute() {
+  const missing = ["booked", "bhyt", "first_time"].filter(k => state.visit[k] === null);
+  if (missing.length) { toast("Chọn đủ 4 câu để app chỉ đúng quầy"); return; }
+  state.questions = []; state.done = []; state.ordersDecided = false; pendingTests = new Set();
+  document.getElementById("msgs").innerHTML = "";
+  state.visit.start_min = nowMin();
   const btn = document.getElementById("btnRoute");
   btn.disabled = true;
   if (!state.startedAt) state.startedAt = Date.now();
@@ -455,6 +464,8 @@ function render() {
   document.getElementById("sumFinish").textContent = r.finish;
   document.getElementById("sumBar").style.width = Math.round(doneCount / steps.length * 100) + "%";
   document.getElementById("sumStep").textContent = cur ? `Bước ${steps.indexOf(cur) + 1}/${steps.length}` : "Đã xong";
+  const noteEl = document.getElementById("sumNote");
+  noteEl.textContent = r.note || ""; noteEl.style.display = r.note ? "block" : "none";
 
   const now = document.getElementById("nowCard");
   if (!cur) {
@@ -538,6 +549,7 @@ async function routeFromAppt() {
   state.visit = { purpose: "kham-benh", booked: true, bhyt: a.bhyt, first_time: a.first_time, paid_in_app: false, tests: [],
                   start_min: nowMin(), appt: { specialty: a.specialty, time: a.time, date: a.date } };
   state.done = ["dat-lich"]; state.ordersDecided = false; pendingTests = new Set();
+  state.questions = []; document.getElementById("msgs").innerHTML = "";  // lịch hẹn mới: không mang câu hỏi của lượt trước
   if (!state.startedAt) state.startedAt = Date.now();
   track("open_appt_route", { appt: { specialty: a.specialty, time: a.time } });
   await refresh(); go("s-route");
@@ -627,7 +639,7 @@ function restart() {
   document.getElementById("fbCard").innerHTML = `<b>Lộ trình này có giúp bạn không?</b>
     <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
     <textarea id="fbText" placeholder="Chỗ nào làm bạn bối rối, thiếu hoặc thừa? (không bắt buộc)" style="margin-top:10px"></textarea>`;
-  const defaults = { purpose: "kham-benh", booked: "0", bhyt: "0", first_time: "1", bk_bhyt: "0", bk_first: "1" };
+  const defaults = { purpose: "kham-benh", bk_bhyt: "0", bk_first: "1" };  // 3 câu quyết định quầy không chọn sẵn
   document.getElementById("bookedHint").classList.remove("show");
   document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button").forEach(b => b.classList.toggle("sel", b.dataset.v === defaults[g.dataset.key])));
   go("s-arrive");

@@ -438,7 +438,7 @@
     <span><b>Tour cho người chấm</b>App tự bấm qua từng tính năng; hai bên màn hình là nghiên cứu và lý do thiết kế</span>`;
   launch.onclick = () => begin(0);
   const homePad = document.querySelector("#s-home .pad");
-  homePad.insertBefore(launch, homePad.firstChild);
+  homePad.appendChild(launch);  // dưới thẻ tính năng: người thử thật thấy "Lộ trình hôm nay" trước, không bấm nhầm vào tour
 
   if (new URLSearchParams(location.search).get("tour") === "1") setTimeout(() => begin(0), 400);
 })();
