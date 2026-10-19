@@ -4,9 +4,9 @@ Bài tập 1 tuần, Exploration Sprint Vinmec × AI Thực Chiến · Thái Ho�
 
 ## Xem nhanh cho hội đồng (3–5 phút)
 
-![Tour cho hội đồng: giữa là giao diện người dùng, trái là nghiên cứu và bằng chứng, phải là lý do thiết kế](05-prototype/screenshots/tour/tour-hoi-dong.gif)
+![Tour cho hội đồng: giữa là giao diện người dùng, trái là nghiên cứu và bằng chứng, phải là lý do thiết kế](05-prototype/screenshots/tour/v3/tour-hoi-dong.gif)
 
-- **Không chạy code:** GIF ở trên (17 bước, mỗi bước 7 giây), video [tour-hoi-dong.mp4](05-prototype/screenshots/tour/tour-hoi-dong.mp4)
+- **Không chạy code:** GIF ở trên (17 bước, mỗi bước 7 giây), video [tour-hoi-dong.mp4](05-prototype/screenshots/tour/v3/tour-hoi-dong.mp4)
   (56 giây), hoặc ảnh từng bước trong [05-prototype/screenshots/tour/](05-prototype/screenshots/tour/).
   Giữa màn là **giao diện đúng như người dùng thấy**; bên trái là **nghiên cứu và bằng chứng** của bước đó (kèm nguồn trong
   repo); bên phải là **tính năng, vì sao thiết kế như vậy, hội đồng nên để ý gì, giới hạn**.
