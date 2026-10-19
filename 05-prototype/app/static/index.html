@@ -1,195 +1,385 @@
 <!doctype html>
 <html lang="vi">
+<!-- Bản 7 (19/10/2026): thêm noindex và dòng "không phải ứng dụng của Vinmec" cho bản deploy công khai. Bản 6 ở index-v6.html.
+     Bản 6 (18/10/2026): "Lộ trình khám trong ngày", bắt đầu từ đặt lịch nếu đã đặt + tour cho hội đồng (tour.js bản 3:
+     nghiên cứu và lý do thiết kế ở hai bên màn hình). Bản 5 (tour trong khung) ở index-v5.html;
+     Bản 4 (chưa có luồng đặt lịch) ở index-v4.html; bản 3 (chưa có tour) ở index-v3.html;
+     bản 2 (Chuẩn bị buổi khám, giao diện MyVinmec) ở index-v2.html; bản 1 ở index-v1.html. -->
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chuẩn bị buổi khám · Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Prototype bài tập ứng tuyển, không phải ứng dụng của Vinmec. Bệnh viện, phòng, thời gian chờ đều giả lập.">
+<title>Lộ trình khám · Prototype (mô phỏng)</title>
 <link rel="icon" href="data:,">
 <style>
+  /* Giao diện mô phỏng theo app MyVinmec (ảnh chụp 15/10/2026): teal #37AEA7, nền xám #F6F6F6. Đây là bản mô phỏng
+     cho bài tập, không phải app thật. */
   :root {
-    --bg: #f4f6f5; --card: #ffffff; --ink: #1d2623; --muted: #5d6b66; --line: #dfe5e2;
-    --brand: #0f6e5a; --brand-soft: #e3f2ee; --warn: #b42318; --warn-soft: #fdecea; --note: #fff6e0;
+    --teal: #37aea7; --teal-dk: #2b958f; --teal-soft: #e8f6f5;
+    --bg: #f6f6f6; --card: #ffffff; --ink: #1f1f1f; --ink2: #3c3c3c; --muted: #8a8f8e; --line: #ececec;
+    --warn: #e5484d; --warn-soft: #fdeeee; --gold: #f5a623; --gold-soft: #fff4e5;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 16px/1.5 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-  .phone { max-width: 440px; margin: 0 auto; min-height: 100vh; background: var(--bg); padding: 0 16px 32px; }
-  header { position: sticky; top: 0; background: var(--bg); padding: 14px 0 10px; z-index: 2; }
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  h1 { font-size: 18px; margin: 0; }
-  .pill { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--brand-soft); color: var(--brand); white-space: nowrap; }
-  .banner { margin-top: 8px; font-size: 13px; background: var(--note); border-radius: 10px; padding: 8px 10px; color: #6b4e00; }
-  .steps { display: flex; gap: 6px; margin-top: 10px; }
-  .steps span { flex: 1; height: 4px; border-radius: 4px; background: var(--line); }
-  .steps span.on { background: var(--brand); }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #d9dedd; color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  .phone { position: relative; width: 390px; height: 844px; margin: 24px auto; background: var(--bg);
+           border-radius: 44px; overflow: hidden; box-shadow: 0 0 0 10px #111, 0 20px 60px rgba(0,0,0,.35);
+           display: flex; flex-direction: column; }
+  .statusbar { flex: none; height: 47px; display: flex; align-items: flex-end; justify-content: space-between;
+               padding: 0 28px 6px 34px; font-weight: 600; font-size: 15px; position: relative; z-index: 5; }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; }
+  .statusbar .batt { font-size: 11px; background: #f5d33a; color: #000; border-radius: 4px; padding: 0 4px; font-weight: 700; }
+  .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px;
+              border-radius: 3px; background: #111; z-index: 40; }
+  @media (max-width: 500px) {
+    body { background: var(--bg); }
+    .phone { width: 100%; height: 100vh; height: 100dvh; margin: 0; border-radius: 0; box-shadow: none; padding-top: env(safe-area-inset-top); }
+    .statusbar, .home-ind { display: none; }
+  }
+  .on-teal .statusbar { color: #fff; background: var(--teal); }
+
+  .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  .topbar { flex: none; display: none; height: 52px; align-items: center; justify-content: center; position: relative;
+            background: #fff; font-weight: 700; font-size: 18px; }
+  .topbar .back { position: absolute; left: 6px; top: 6px; width: 40px; height: 40px; border: 0; background: none; cursor: pointer;
+                  display: grid; place-items: center; color: var(--ink); }
+  .phone.flow .topbar { display: flex; }
+  .phone.flow .tabbar, .phone.route .tabbar { display: none; }
+
   section { display: none; }
   section.active { display: block; }
-  h2 { font-size: 20px; margin: 18px 0 6px; }
-  p.hint { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
-  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .choice.three { grid-template-columns: 1fr 1fr 1fr; }
-  .choice button { padding: 12px 8px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); font: inherit; font-size: 14px; cursor: pointer; }
-  .choice button.sel { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); font-weight: 600; }
-  label.small { display: block; font-size: 13px; color: var(--muted); margin: 4px 0 6px; }
-  textarea, input[type=text] { width: 100%; font: inherit; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); }
-  textarea { min-height: 140px; resize: vertical; }
-  .btn { display: block; width: 100%; padding: 14px; border-radius: 12px; border: 0; font: inherit; font-weight: 600; cursor: pointer; margin-top: 12px; text-align: center; text-decoration: none; }
-  .btn.primary { background: var(--brand); color: #fff; }
-  .btn.ghost { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
-  .btn.link { background: none; color: var(--muted); text-decoration: underline; font-weight: 400; padding: 8px; }
+  .pad { padding: 0 16px 24px; }
+
+  .tealhead { position: relative; background: var(--teal); color: #fff; overflow: hidden; }
+  .tealhead .leaves { position: absolute; inset: 0; pointer-events: none; opacity: .9; }
+  .home-head { padding: 6px 16px 70px; }
+  .home-head h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: .2px; }
+  .home-head p { margin: 2px 0 0; font-size: 12.5px; opacity: .95; }
+  .home-head .sim { display: inline-block; margin-top: 6px; font-size: 10.5px; font-weight: 600; background: rgba(255,255,255,.22);
+                    border-radius: 99px; padding: 2px 8px; }
+  .home-head .acts { position: absolute; right: 14px; top: 10px; display: flex; gap: 10px; z-index: 2; }
+  .home-head .acts span { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .route-head { padding: 10px 16px 58px; display: flex; align-items: center; gap: 8px; }
+  .route-head h1 { margin: 0; font-size: 24px; font-weight: 600; flex: 1; position: relative; z-index: 2; }
+  .route-head button { position: relative; z-index: 2; background: none; border: 0; color: #fff; cursor: pointer; padding: 4px; display: grid; place-items: center; }
+  .route-head .edit { font: inherit; font-size: 13px; border: 1.5px solid #fff; border-radius: 99px; padding: 4px 12px; }
+
+  .lift { margin-top: -46px; position: relative; z-index: 3; }
+  .card { background: var(--card); border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+
+  .banner-ad { border-radius: 14px; overflow: hidden; position: relative; cursor: pointer;
+               background: linear-gradient(120deg, #e3f6f4 0%, #c9ece8 55%, #a9dfd9 100%); padding: 18px; min-height: 140px; }
+  .banner-ad .tag { display: inline-block; background: var(--gold); color: #fff; font-size: 10px; font-weight: 700; border-radius: 4px; padding: 3px 8px; letter-spacing: .3px; }
+  .banner-ad h3 { margin: 8px 0 2px; font-size: 19px; color: var(--teal-dk); font-weight: 700; }
+  .banner-ad p { margin: 0; font-size: 12px; color: #3f6f6b; max-width: 62%; }
+  .banner-ad .cta { display: inline-block; margin-top: 10px; background: var(--teal); color: #fff; font-size: 10.5px; font-weight: 700; padding: 5px 14px; border-radius: 99px; }
+  .banner-ad svg { position: absolute; right: 8px; bottom: 6px; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 4px; padding: 6px 0 2px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 11.5px;
+          color: var(--ink2); background: none; border: 0; cursor: pointer; font-family: inherit; line-height: 1.25; position: relative; }
+  .tile .ic { width: 50px; height: 50px; border-radius: 50%; background: var(--teal-soft); display: grid; place-items: center; color: var(--teal); }
+  .tile .ic.dash { background: var(--gold-soft); color: var(--gold); outline: 1.5px dashed var(--gold); outline-offset: -1px; }
+  .tile .new { position: absolute; top: -4px; right: 10px; background: var(--gold); color: #fff; font-size: 8.5px; font-weight: 700; border-radius: 99px; padding: 1px 5px; }
+
+  .tabbar { flex: none; height: 74px; background: #fff; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
+            padding-bottom: 20px; box-shadow: 0 -1px 0 var(--line); position: relative; z-index: 6; }
+  .tabbar button { background: none; border: 0; font: inherit; font-size: 10.5px; color: #9a9a9a; display: flex; flex-direction: column;
+                   align-items: center; gap: 3px; cursor: pointer; padding: 0; }
+  .tabbar button.on { color: var(--teal); font-weight: 600; }
+  .tabbar .center .bubble { width: 46px; height: 46px; border-radius: 50%; background: var(--teal); color: #fff; display: grid; place-items: center;
+                            margin-top: -22px; box-shadow: 0 0 0 4px #fff, 0 3px 10px rgba(55,174,167,.35); }
+  @media (max-width: 500px) { .tabbar { padding-bottom: max(12px, env(safe-area-inset-bottom)); height: auto; padding-top: 8px; } }
+
+  /* Màn "Đến viện" */
+  h2.ft { font-size: 19px; font-weight: 700; margin: 14px 0 4px; }
+  p.hint { color: var(--muted); margin: 0 0 12px; font-size: 13px; }
+  label.small { display: block; font-size: 13.5px; color: var(--ink2); margin: 14px 0 7px; font-weight: 500; }
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice button { position: relative; padding: 11px 6px; border-radius: 8px; border: 0; background: #f2f4f4; color: var(--teal);
+                   font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; }
+  .choice button.sel { background: var(--teal); color: #fff; font-weight: 600; }
+  .choice button.sel::after { content: "✓"; position: absolute; top: -7px; right: -6px; width: 18px; height: 18px; border-radius: 50%;
+                              background: #2fbf71; color: #fff; font-size: 11px; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px #fff; }
+  .notice { background: var(--teal-soft); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--teal-dk); margin-top: 14px; }
+  .notice .t { display: inline-block; background: var(--teal); color: #fff; font-size: 10px; font-weight: 700; border-radius: 3px; padding: 2px 6px; margin-bottom: 6px; letter-spacing: .3px; }
+  .tester { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); margin: 8px 2px 0; }
+  .tester input { width: 90px; padding: 5px 8px; font-size: 12px; border-radius: 6px; border: 1px solid #dcdcdc; }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #fff; color: var(--teal); border: 1px solid var(--teal); white-space: nowrap; }
+
+  .btn { display: block; width: 100%; padding: 13px; border-radius: 8px; border: 0; font: inherit; font-weight: 600; cursor: pointer;
+         margin-top: 12px; text-align: center; text-decoration: none; text-transform: uppercase; letter-spacing: .4px; font-size: 14px; }
+  .btn.primary { background: var(--teal); color: #fff; box-shadow: 0 3px 8px rgba(55,174,167,.25); }
+  .btn.primary:active { background: var(--teal-dk); }
+  .btn.ghost { background: #fff; color: var(--teal); border: 1.5px solid var(--teal); text-transform: none; letter-spacing: 0; }
+  .btn.link { background: none; color: var(--teal); text-transform: none; letter-spacing: 0; font-weight: 500; padding: 8px; box-shadow: none; }
   .btn.danger { background: var(--warn); color: #fff; }
-  .btn:disabled { opacity: .5; cursor: default; }
-  .appt b { font-size: 17px; }
-  .ok { color: var(--brand); font-size: 13px; font-weight: 600; }
-  ul.tips { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
-  .field { border-top: 1px solid var(--line); padding: 10px 0; }
-  .field:first-child { border-top: 0; padding-top: 0; }
-  .field .lab { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: var(--brand); margin-bottom: 4px; }
-  .field .lab button { font: inherit; font-size: 12px; color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; }
-  .field input { padding: 9px 10px; }
-  .quote { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .q { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
-  .q:first-child { border-top: 0; }
-  .q input[type=checkbox] { margin-top: 5px; width: 18px; height: 18px; flex: none; }
-  .src { font-size: 12px; color: var(--muted); }
-  .src a { color: var(--brand); }
-  .tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 6px; background: var(--brand-soft); color: var(--brand); margin-left: 4px; }
-  .tag.gen { background: #eef0ef; color: var(--muted); }
-  .emergency { background: var(--warn-soft); border: 1.5px solid var(--warn); }
-  .emergency h2 { color: var(--warn); margin-top: 0; }
-  .doctor { border: 1.5px dashed var(--brand); }
-  .doctor h3 { margin: 0 0 2px; font-size: 16px; }
-  .doctor dl { margin: 8px 0 0; }
-  .doctor dt { font-size: 12px; color: var(--muted); }
-  .doctor dd { margin: 0 0 6px; }
-  details { font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .disclaimer { font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .tester { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin-top: 8px; }
-  .tester input { width: 90px; padding: 4px 8px; font-size: 12px; border-radius: 8px; }
+  .btn:disabled { opacity: .55; cursor: default; }
   .row { display: flex; gap: 10px; }
-  .row .btn { margin-top: 8px; }
+  .row .btn { margin-top: 10px; }
   .muted { color: var(--muted); }
+
+  /* Lộ trình */
+  .sum { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+  .sum b { color: var(--ink); font-size: 15px; }
+  .bar { height: 6px; border-radius: 6px; background: #e9eded; margin: 10px 0 2px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--teal); border-radius: 6px; transition: width .3s; }
+  .now { border: 1.5px solid var(--teal); }
+  .now .lbl { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: .4px; }
+  .now h3 { margin: 4px 0 2px; font-size: 18px; }
+  .now .room { font-size: 14.5px; font-weight: 600; color: var(--teal-dk); }
+  .now .where { font-size: 13.5px; color: var(--ink2); margin-top: 2px; }
+  .now .why { font-size: 12.5px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .now .how { font-size: 13px; background: var(--teal-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; display: none; }
+  .now .how.open { display: block; }
+  .prep { font-size: 12.5px; background: var(--gold-soft); color: #8a5a00; border-radius: 8px; padding: 7px 10px; margin-top: 8px; }
+  .prep a { color: #8a5a00; }
+  .docs { font-size: 12.5px; color: var(--ink2); margin-top: 8px; }
+  .eta { display: inline-block; font-size: 11.5px; color: var(--muted); }
+  .orders { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .orders .lab { font-size: 12px; font-weight: 700; color: var(--gold); letter-spacing: .3px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .chip { border: 1.5px solid #d9dede; background: #fff; color: var(--ink2); border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip.sel { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dk); font-weight: 600; }
+
+  .tl { list-style: none; margin: 0; padding: 0; }
+  .tl li { display: grid; grid-template-columns: 44px 18px 1fr; gap: 0 8px; align-items: start; position: relative; cursor: pointer; }
+  .tl .t { font-size: 12px; color: var(--muted); text-align: right; padding-top: 1px; }
+  .tl .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #cfd6d5; background: #fff; margin-top: 3px; position: relative; z-index: 1; }
+  .tl li::before { content: ""; position: absolute; left: 58px; top: 18px; bottom: -4px; width: 2px; background: #e3e8e7; }
+  .tl li:last-child::before { display: none; }
+  .tl .body { padding-bottom: 14px; }
+  .tl .body b { font-size: 14px; font-weight: 600; display: block; }
+  .tl .body span { font-size: 12px; color: var(--muted); }
+  .tl li.done .dot { background: var(--teal); border-color: var(--teal); }
+  .tl li.done .dot::after { content: "✓"; position: absolute; inset: 0; color: #fff; font-size: 9px; line-height: 10px; text-align: center; font-weight: 800; }
+  .tl li.done .body b { color: var(--muted); text-decoration: line-through; font-weight: 500; }
+  .tl li.cur .dot { border-color: var(--teal); box-shadow: 0 0 0 4px var(--teal-soft); }
+  .tl li.cur .body b { color: var(--teal-dk); }
+  .tl li.wait .dot { border-style: dashed; }
+  .group-title { display: flex; align-items: center; gap: 8px; color: var(--teal); font-size: 16px; font-weight: 600; margin: 2px 0 12px; }
+  .qdoc li { font-size: 14px; margin: 4px 0; }
+
+  /* Trợ lý */
+  .fab { position: absolute; right: 16px; bottom: 30px; z-index: 20; width: 58px; height: 58px; border-radius: 50%; border: 0; cursor: pointer;
+         background: var(--teal); color: #fff; box-shadow: 0 6px 16px rgba(55,174,167,.45); display: none; flex-direction: column;
+         align-items: center; justify-content: center; font: inherit; font-size: 10.5px; font-weight: 700; gap: 1px; }
+  .phone.route .fab { display: flex; }
+  .sheet-bg { position: absolute; inset: 0; background: rgba(0,0,0,.35); z-index: 30; display: none; }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 78%; background: #fff; border-radius: 18px 18px 0 0; z-index: 31;
+           display: none; flex-direction: column; }
+  .sheet.open, .sheet-bg.open { display: flex; }
+  .sheet header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; font-weight: 700; font-size: 16px; }
+  .sheet header button { border: 0; background: #f1f1f1; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 15px; }
+  .sheet .sub { font-size: 11.5px; color: var(--muted); padding: 0 16px 6px; }
+  .msgs { flex: 1; overflow-y: auto; padding: 6px 16px; }
+  .msg { max-width: 86%; margin: 8px 0; padding: 9px 12px; border-radius: 14px; font-size: 14px; }
+  .msg.me { margin-left: auto; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.bot { background: #f3f5f5; border-bottom-left-radius: 4px; }
+  .msg.bot .src { display: block; font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .msg.bot .src a { color: var(--teal); }
+  .msg.med { background: var(--gold-soft); color: #6b4800; }
+  .msg.sos { background: var(--warn-soft); color: #8a1c1f; border: 1.5px solid var(--warn); }
+  .msg.sos .btn { margin-top: 8px; padding: 10px; font-size: 13px; }
+  .sheet .quick { display: flex; gap: 8px; overflow-x: auto; padding: 6px 16px; }
+  .sheet .quick::-webkit-scrollbar { display: none; }
+  .sheet .quick .chip { white-space: nowrap; font-size: 12.5px; }
+  .sheet .inp { display: flex; gap: 8px; padding: 8px 16px 26px; border-top: 1px solid var(--line); }
+  .sheet .inp input { flex: 1; font: inherit; padding: 10px 14px; border: 1px solid #dcdcdc; border-radius: 99px; outline: none; }
+  .sheet .inp input:focus { border-color: var(--teal); }
+  .sheet .inp button { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--teal); color: #fff; cursor: pointer; }
+  .typing { font-size: 12px; color: var(--muted); padding: 0 4px; }
+
+  /* Đặt lịch, lịch hẹn */
+  .appt-card { display: flex; gap: 12px; }
+  .appt-card .date { flex: none; width: 58px; border-radius: 10px; background: var(--teal); color: #fff; text-align: center; padding: 6px 0; align-self: flex-start; }
+  .appt-card .date b { display: block; font-size: 22px; line-height: 1.1; }
+  .appt-card .date span { font-size: 11px; }
+  .appt-card .info b { font-size: 15.5px; font-weight: 600; display: block; }
+  .appt-card .info .m { font-size: 12.5px; color: var(--muted); }
+  .status { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--teal); font-weight: 600; background: var(--teal-soft);
+            border-radius: 99px; padding: 2px 8px; margin-bottom: 4px; }
+  .empty { text-align: center; padding: 26px 10px 10px; color: var(--muted); font-size: 13px; }
+  .hint-link { display: none; font-size: 12.5px; color: var(--teal-dk); background: var(--teal-soft); border-radius: 8px; padding: 8px 10px; margin-top: 8px; cursor: pointer; }
+  .hint-link.show { display: block; }
+  .prep ul { margin: 4px 0 0; padding-left: 18px; }
+  .tl li.pre .dot { border-color: var(--gold); }
+  .tl li.pre.done .dot { background: var(--gold); border-color: var(--gold); }
+  .tl .t { font-size: 11px; }
+  .proto-strip { position: fixed; left: 50%; bottom: 4px; transform: translateX(-50%); font-size: 11.5px; color: #5d6b66;
+                 background: rgba(255,255,255,.85); border-radius: 99px; padding: 3px 12px; white-space: nowrap; z-index: 5; }
+  @media (max-width: 700px) { .proto-strip { display: none; } }
+  .toast { position: absolute; left: 50%; bottom: 100px; transform: translateX(-50%); background: rgba(30,30,30,.88); color: #fff; font-size: 13px;
+           padding: 8px 14px; border-radius: 99px; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 50; }
+  .toast.show { opacity: 1; }
+  textarea { width: 100%; font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid #dcdcdc; border-radius: 8px; min-height: 64px; resize: vertical; }
 </style>
 </head>
 <body>
-<div class="phone">
-  <header>
-    <div class="top">
-      <h1>Chuẩn bị buổi khám</h1>
-      <span class="pill" id="modePill">…</span>
-    </div>
-    <div class="banner">Prototype bài tập · lịch hẹn là <b>dữ liệu giả lập</b>. App chỉ ghi lại lời bạn kể và nhắc chuẩn bị, <b>không chẩn đoán, không tư vấn</b>.</div>
-    <div class="tester">Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></div>
-    <div class="steps"><span class="on"></span><span></span><span></span><span></span><span></span></div>
-  </header>
+<div class="proto-strip">Prototype bài tập ứng tuyển · không phải ứng dụng của Vinmec · bệnh viện, phòng, thời gian đều giả lập</div>
+<div class="phone on-teal" id="phone">
+  <div class="statusbar"><span id="clock">08:00</span>
+    <span class="icons">
+      <svg width="18" height="11" viewBox="0 0 18 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .6 10.3 10.3 0 0 0 .7 3.6L2 4.9a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4.2 6.6 6.6 0 0 0 3.3 6.1l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zM8 9.6 10 7.8a3 3 0 0 0-4 0z"/></svg>
+      <span class="batt">22</span>
+    </span>
+  </div>
 
-  <!-- 0. Lịch hẹn đã xác nhận -->
-  <section id="s-appt" class="active">
-    <h2>Lịch hẹn của bạn</h2>
-    <div class="card appt">
-      <div class="ok">✓ Đã xác nhận (giả lập)</div>
-      <b id="apptService">Khám chuyên khoa (lần đầu)</b><br>
-      <span id="apptDate" class="muted"></span>
-    </div>
-    <label class="small">Loại lịch hẹn (để thử các kịch bản)</label>
-    <div class="choice three" data-key="service">
-      <button data-v="kham-chuyen-khoa" class="sel">Chuyên khoa</button>
-      <button data-v="kham-tong-quat">Tổng quát</button>
-      <button data-v="tai-kham">Tái khám</button>
-    </div>
-    <label class="small">Người đi khám</label>
-    <div class="choice" data-key="for_whom">
-      <button data-v="ban-than" class="sel">Bản thân</button>
-      <button data-v="nguoi-than">Người thân</button>
-    </div>
-    <div class="choice" data-key="age_group">
-      <button data-v="nguoi-lon" class="sel">Người lớn</button>
-      <button data-v="tre-em">Trẻ em (dưới 16)</button>
-    </div>
-    <div class="card">
-      <b>Chuẩn bị cho buổi khám · khoảng 2 phút</b>
-      <p class="muted" style="margin:4px 0 0;font-size:14px">Kể trước cho bác sĩ, ghi sẵn câu muốn hỏi, xem cần mang gì. Bác sĩ đọc phiếu trước khi gọi bạn vào. Không bắt buộc.</p>
-      <button class="btn primary" onclick="startPrep()">Bắt đầu chuẩn bị</button>
-      <button class="btn link" onclick="skipPrep(this)">Để sau</button>
-    </div>
-  </section>
+  <div class="topbar"><button class="back" onclick="go('s-home')" aria-label="Quay lại">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg>
+    </button><span id="topTitle">Hôm nay bạn đến viện</span></div>
 
-  <!-- 1. Kể -->
-  <section id="s-tell">
-    <h2 id="tellTitle">Bạn muốn bác sĩ giúp gì lần này?</h2>
-    <p class="hint">Kể bằng lời của bạn, ngắn hay dài đều được. Đừng nhập họ tên hay số điện thoại.</p>
-    <div class="card">
-      <b style="font-size:14px">Nếu chưa biết kể gì, thử trả lời:</b>
-      <ul class="tips">
-        <li>Chuyện gì, từ khi nào?</li>
-        <li>Đã khám ở đâu, đã dùng thuốc hay thử gì chưa?</li>
-        <li>Điều bạn lo nhất là gì?</li>
-        <li>Bạn mong bác sĩ làm gì? Có câu nào muốn hỏi không?</li>
-      </ul>
-    </div>
-    <textarea id="story" maxlength="1500" placeholder="Ví dụ: Đau lưng 3 tuần nay, ngồi lâu là mỏi. Đã uống thuốc giảm đau nhưng không đỡ. Sợ là bị nặng. Tôi có cần chụp phim không?"></textarea>
-    <button class="btn primary" id="btnPrep" onclick="runPrepare()">Tạo phiếu cho bác sĩ</button>
-    <button class="btn link" onclick="go('s-appt')">← Quay lại</button>
-  </section>
+  <div class="scroll" id="scroll">
 
-  <!-- 2. Phiếu tóm tắt -->
-  <section id="s-summary">
-    <div id="summary"></div>
-  </section>
-
-  <!-- 3. Câu hỏi -->
-  <section id="s-questions">
-    <h2>Câu hỏi mang vào phòng khám</h2>
-    <p class="hint">Chọn những câu bạn muốn hỏi. App <b>không trả lời</b> các câu này; bác sĩ sẽ trả lời trong buổi khám.</p>
-    <div class="card" id="qList"></div>
-    <div class="row">
-      <input type="text" id="qNew" placeholder="Thêm câu hỏi của bạn…">
-      <button class="btn ghost" style="width:auto;margin-top:0;padding:10px 14px" onclick="addQuestion()">Thêm</button>
-    </div>
-    <button class="btn primary" onclick="confirmQuestions()">Tiếp tục</button>
-    <button class="btn link" onclick="go('s-summary')">← Sửa phiếu</button>
-  </section>
-
-  <!-- 4. Checklist -->
-  <section id="s-check">
-    <h2>Cần chuẩn bị gì</h2>
-    <p class="hint" id="checkHint"></p>
-    <div class="card" id="checkList"></div>
-    <button class="btn primary" onclick="submitPrep()">Hoàn tất và gửi phiếu</button>
-    <button class="btn link" onclick="go('s-questions')">← Sửa câu hỏi</button>
-  </section>
-
-  <!-- 5. Hoàn tất -->
-  <section id="s-done">
-    <h2>Đã gửi phiếu cho bác sĩ (giả lập)</h2>
-    <p class="hint">Bạn có thể mở lại danh sách câu hỏi và checklist bất cứ lúc nào trong mục Lịch hẹn, kể cả khi đang ngồi trong phòng khám.</p>
-    <div class="card doctor" id="doctorView"></div>
-    <div class="card" id="fb">
-      <b>Phần chuẩn bị này có giúp bạn không?</b>
-      <div class="row">
-        <button class="btn ghost" onclick="feedback(true)">Có</button>
-        <button class="btn ghost" onclick="feedback(false)">Không</button>
+  <!-- Trang chủ -->
+  <section id="s-home" class="active">
+    <div class="tealhead home-head">
+      <svg class="leaves" viewBox="0 0 390 140" preserveAspectRatio="none"><g fill="#fff" opacity=".12"><path d="M300 140c10-60 50-95 95-100-5 50-40 90-95 100z"/><path d="M250 140c20-40 50-55 80-55-15 35-45 52-80 55z"/></g></svg>
+      <h1>MyVinmec</h1>
+      <p>Chăm sóc bằng tài năng, y đức và sự thấu cảm</p>
+      <span class="sim">Bản mô phỏng cho bài tập · không phải app thật</span>
+      <div class="acts">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6v12M15 6v12" stroke-dasharray="2 2"/></svg></span>
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
       </div>
-      <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:8px"></textarea>
     </div>
-    <button class="btn link" onclick="restart()">Bắt đầu lại</button>
+    <div class="pad lift">
+      <div class="banner-ad" onclick="go('s-arrive')">
+        <span class="tag">MỚI</span>
+        <h3>Lộ trình hôm nay</h3>
+        <p>Đang ở viện? Biết ngay quầy nào, phòng nào, đi theo thứ tự nào và chờ bao lâu</p>
+        <span class="cta">XEM LỘ TRÌNH</span>
+        <svg width="110" height="100" viewBox="0 0 110 100" fill="none"><circle cx="22" cy="80" r="8" fill="#37aea7"/><circle cx="88" cy="22" r="8" fill="#f5a623"/><path d="M22 72c0-30 30-10 40-30s20-20 26-20" stroke="#2b958f" stroke-width="3" stroke-dasharray="6 6" stroke-linecap="round"/><circle cx="58" cy="46" r="5" fill="#fff" stroke="#2b958f" stroke-width="3"/></svg>
+      </div>
+      <div class="card" style="margin-top:12px"><div class="grid" id="homeGrid"></div></div>
+    </div>
   </section>
+
+  <!-- Đặt lịch (MÔ PHỎNG tối giản: app thật đã có bước này) -->
+  <section id="s-book">
+    <div class="pad" style="background:#fff;min-height:100%">
+      <h2 class="ft">Đặt lịch khám</h2>
+      <p class="hint">Bước này app thật đã làm tốt nên prototype chỉ mô phỏng, chọn sẵn. Điểm cần xem là <b>lộ trình bắt đầu ngay từ lịch hẹn</b>.</p>
+      <label class="small">Dịch vụ</label>
+      <div class="chips" id="bkSpec"></div>
+      <label class="small">Ngày khám</label>
+      <div class="chips" id="bkDate"></div>
+      <label class="small">Khung giờ</label>
+      <div class="chips" id="bkTime"></div>
+      <label class="small">Dùng bảo hiểm y tế (BHYT)?</label>
+      <div class="choice" data-key="bk_bhyt"><button data-v="1">Có BHYT</button><button data-v="0" class="sel">Không</button></div>
+      <label class="small">Lần đầu khám ở bệnh viện này?</label>
+      <div class="choice" data-key="bk_first"><button data-v="1" class="sel">Lần đầu</button><button data-v="0">Đã từng khám</button></div>
+      <button class="btn primary" onclick="bookAppt()">Đặt hẹn</button>
+    </div>
+  </section>
+
+  <!-- Lịch hẹn -->
+  <section id="s-appts">
+    <div class="tealhead route-head">
+      <svg class="leaves" viewBox="0 0 390 110" preserveAspectRatio="none"><g fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"><path d="M8 110c8-40 30-62 58-70"/><path d="M382 110c-6-34-24-52-48-58"/></g></svg>
+      <button onclick="go('s-home')" aria-label="Về trang chủ"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+      <h1>Lịch hẹn</h1>
+      <button class="edit" onclick="go('s-book')">+ Đặt</button>
+    </div>
+    <div class="pad lift"><div class="card" id="apptBox"></div></div>
+  </section>
+
+  <!-- Đến viện: thông tin để chọn đúng quầy -->
+  <section id="s-arrive">
+    <div class="pad" style="background:#fff;min-height:100%">
+      <h2 class="ft">Hôm nay bạn đến viện để làm gì?</h2>
+      <p class="hint">Trả lời 4 câu để app chỉ đúng quầy và các bước tiếp theo. Không cần nhập tên hay triệu chứng.</p>
+      <div class="choice" data-key="purpose">
+        <button data-v="kham-benh" class="sel">Khám bệnh</button>
+        <button data-v="tai-kham">Tái khám</button>
+        <button data-v="lay-ket-qua">Lấy kết quả</button>
+        <button data-v="kham-tong-quat">Khám tổng quát</button>
+      </div>
+      <label class="small">Bạn đã đặt lịch trước qua app hoặc tổng đài chưa?</label>
+      <div class="choice" data-key="booked"><button data-v="1">Đã đặt lịch</button><button data-v="0" class="sel">Chưa, đến thẳng</button></div>
+      <div class="hint-link" id="bookedHint" onclick="go('s-appts')">Đã đặt lịch? <b>Mở lịch hẹn</b> để lộ trình bắt đầu từ lịch hẹn, app tự điền khoa, giờ, BHYT ›</div>
+      <label class="small">Lần này có dùng bảo hiểm y tế (BHYT) không?</label>
+      <div class="choice" data-key="bhyt"><button data-v="1">Có BHYT</button><button data-v="0" class="sel">Không</button></div>
+      <label class="small">Đây là lần đầu bạn khám ở bệnh viện này?</label>
+      <div class="choice" data-key="first_time"><button data-v="1" class="sel">Lần đầu</button><button data-v="0">Đã từng khám</button></div>
+      <button class="btn primary" id="btnRoute" onclick="startRoute()">Xem lộ trình</button>
+      <div class="notice"><span class="t">LƯU Ý</span><br>Prototype bài tập. Bệnh viện, phòng, vị trí và thời gian chờ đều là <b>giả lập</b>. Trợ lý chỉ chỉ đường và nhắc chuẩn bị, <b>không giải thích kết quả, không tư vấn điều trị</b>.</div>
+      <div class="tester"><span>Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></span><span class="pill" id="modePill">…</span></div>
+    </div>
+  </section>
+
+  <!-- Lộ trình -->
+  <section id="s-route">
+    <div class="tealhead route-head">
+      <svg class="leaves" viewBox="0 0 390 110" preserveAspectRatio="none"><g fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"><path d="M8 110c8-40 30-62 58-70"/><path d="M20 96c-4-14 2-26 14-32M30 84c10-6 22-6 30 0"/><path d="M382 110c-6-34-24-52-48-58"/><path d="M372 98c4-12-2-22-12-28"/></g></svg>
+      <button onclick="go('s-home')" aria-label="Về trang chủ"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+      <h1>Lộ trình hôm nay</h1>
+      <button class="edit" onclick="go(state.visit.appt ? 's-appts' : 's-arrive')">Sửa</button>
+    </div>
+    <div class="pad lift">
+      <div class="card">
+        <div class="sum"><span id="sumPurpose"></span><span>Dự kiến xong <b id="sumFinish">--:--</b></span></div>
+        <div class="bar"><span id="sumBar" style="width:0"></span></div>
+        <div class="sum" style="font-size:11.5px"><span id="sumStep"></span><span>giờ là ước tính giả lập</span></div>
+      </div>
+      <div class="card now" id="nowCard"></div>
+      <div class="card" id="qCard" style="display:none">
+        <div class="group-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>Câu hỏi để hỏi bác sĩ</div>
+        <ul class="qdoc" id="qList" style="margin:0;padding-left:20px"></ul>
+      </div>
+      <div class="card">
+        <div class="group-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4v16M15 4v16M4 9h16M4 15h16" opacity=".0"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h6a4 4 0 0 1 0 8h-4a4 4 0 0 0 0 8" /></svg>Tất cả các bước</div>
+        <ul class="tl" id="timeline"></ul>
+      </div>
+      <div class="card" id="fbCard" style="display:none">
+        <b>Lộ trình này có giúp bạn không?</b>
+        <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
+        <textarea id="fbText" placeholder="Chỗ nào làm bạn bối rối, thiếu hoặc thừa? (không bắt buộc)" style="margin-top:10px"></textarea>
+      </div>
+      <button class="btn link" onclick="restart()">Bắt đầu lại (người thử mới)</button>
+    </div>
+  </section>
+  </div>
+
+  <nav class="tabbar">
+    <button class="on" onclick="go('s-home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Trang chủ</button>
+    <button onclick="toast('Hồ sơ không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm3 3v4h5V8zm7 1v1.5h5V9zm0 3v1.5h5V12zm-7 3v1.5h12V15z"/></svg>Hồ sơ</button>
+    <button class="center" onclick="go('s-book')"><span class="bubble"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>Đặt lịch</button>
+    <button onclick="toast('Thông báo không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.7A6.5 6.5 0 0 1 18.5 10.5V16l2 2v1h-17v-1l2-2v-5.5a6.5 6.5 0 0 1 5-6.3v-.7A1.5 1.5 0 0 1 12 2zm-2 18h4a2 2 0 0 1-4 0z"/></svg>Thông báo</button>
+    <button onclick="toast('Tài khoản không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7.5" r="4.5"/><path d="M3 21c.8-5 4.6-7.5 9-7.5s8.2 2.5 9 7.5z"/></svg>Tài khoản</button>
+  </nav>
+
+  <button class="fab" onclick="openSheet()" aria-label="Hỏi trợ lý"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke-linecap="round"/></svg>Hỏi</button>
+  <div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+  <div class="sheet" id="sheet">
+    <header>Trợ lý lộ trình <button onclick="closeSheet()" aria-label="Đóng">✕</button></header>
+    <div class="sub">Hỏi đường, chờ bao lâu, có cần nhịn ăn. Không giải thích kết quả, không tư vấn điều trị.</div>
+    <div class="msgs" id="msgs"></div>
+    <div class="quick" id="quick"></div>
+    <form class="inp" onsubmit="event.preventDefault();send(document.getElementById('askInput').value,'go')">
+      <input id="askInput" placeholder="Ví dụ: phòng siêu âm ở đâu?" autocomplete="off" maxlength="300">
+      <button aria-label="Gửi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="home-ind"></div>
 </div>
 
 <script>
-const ORDER = ["s-appt", "s-tell", "s-summary", "s-questions", "s-check", "s-done"];
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
-const state = { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
-                session_id: newId(), result: null, startedAt: null, questions: [] };
-let SERVICES = {};
+const nowMin = () => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); };
+const fresh = () => ({ session_id: newId(), startedAt: null, route: null, done: [], questions: [], ordersDecided: false, appt: null,
+  visit: { purpose: "kham-benh", booked: false, bhyt: false, first_time: true, paid_in_app: false, tests: [], start_min: nowMin() } });
+let state = fresh();
+let TESTS = {};
+let pendingTests = new Set();
 
-function go(id) {
-  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
-  const idx = Math.min(ORDER.indexOf(id), 4);
-  document.querySelectorAll(".steps span").forEach((s, i) => s.classList.toggle("on", i <= idx));
-  window.scrollTo(0, 0);
-}
 function esc(t) { const d = document.createElement("div"); d.textContent = t ?? ""; return d.innerHTML; }
 async function api(path, body) {
   const res = await fetch(path, { method: body ? "POST" : "GET", headers: { "Content-Type": "application/json" },
@@ -197,168 +387,257 @@ async function api(path, body) {
   return res.json();
 }
 const track = (event, extra = {}) => api("/api/event", { event, ...extra });
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1600);
+}
 
-const apptDate = new Date(Date.now() + 3 * 864e5);
-document.getElementById("apptDate").textContent =
-  apptDate.toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit" }) + " · 09:30 · Cơ sở giả lập";
+function go(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  const phone = document.getElementById("phone");
+  const flow = id === "s-arrive" || id === "s-book";
+  phone.classList.toggle("flow", flow);
+  phone.classList.toggle("route", id === "s-route");
+  phone.classList.toggle("on-teal", !flow);
+  if (flow) document.getElementById("topTitle").textContent = id === "s-book" ? "Đặt lịch (mô phỏng)" : "Hôm nay bạn đến viện";
+  if (id === "s-appts") renderAppts();
+  document.getElementById("scroll").scrollTop = 0;
+  if (id !== "s-route") closeSheet();
+}
+
+// Lưới dịch vụ Trang chủ (theo bố cục app); chỉ "Lộ trình hôm nay" mở được
+const ICON = p => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const TILES = [
+  ["Lộ trình hôm nay", '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h5a3 3 0 0 0 0-6h-2a3 3 0 0 1 0-6h5"/>', true, true],
+  ["Lịch hẹn", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>', "s-appts"],
+  ["Liên hệ", '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],
+  ["Dịch vụ y tế", '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/><path d="M12 10v5M9.5 12.5h5"/>'],
+  ["Đơn thuốc", '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v3h6V3M9 12h6M9 16h4"/>'],
+  ["Kết quả", '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'],
+  ["Thanh toán viện phí", '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'],
+  ["Tất cả dịch vụ", '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>'],
+];
+document.getElementById("homeGrid").innerHTML = TILES.map(([name, path, live, isNew]) => `
+  <button class="tile" onclick="${live ? `go('${live === true ? "s-arrive" : live}')` : `toast('${name} không có trong prototype')`}">
+    ${isNew ? '<span class="new">Mới</span>' : ""}<span class="ic${isNew ? " dash" : ""}">${ICON(path)}</span>${esc(name)}
+  </button>`).join("");
+const d0 = new Date();
+document.getElementById("clock").textContent = d0.getHours() + ":" + String(d0.getMinutes()).padStart(2, "0");
 
 document.querySelectorAll(".choice").forEach(group => group.addEventListener("click", e => {
-  if (e.target.tagName !== "BUTTON") return;
+  const btn = e.target.closest("button"); if (!btn) return;
   group.querySelectorAll("button").forEach(b => b.classList.remove("sel"));
-  e.target.classList.add("sel");
-  state[group.dataset.key] = e.target.dataset.v;
-  if (group.dataset.key === "service") document.getElementById("apptService").textContent = SERVICES[state.service] || "";
+  btn.classList.add("sel");
+  const k = group.dataset.key;
+  if (k.startsWith("bk_")) return;
+  state.visit[k] = k === "purpose" ? btn.dataset.v : btn.dataset.v === "1";
+  if (k === "booked") document.getElementById("bookedHint").classList.toggle("show", state.visit.booked);
 }));
 
-function startPrep() {
-  state.startedAt = Date.now();
-  track("start_prep", { step: state.service });
-  document.getElementById("tellTitle").textContent = state.for_whom === "nguoi-than"
-    ? "Người thân của bạn cần bác sĩ giúp gì?" : "Bạn muốn bác sĩ giúp gì lần này?";
-  go("s-tell");
+async function startRoute() {
+  const btn = document.getElementById("btnRoute");
+  btn.disabled = true;
+  if (!state.startedAt) state.startedAt = Date.now();
+  try { await refresh(); go("s-route"); } finally { btn.disabled = false; }
 }
-function skipPrep(btn) {
-  track("skip_prep");
-  btn.outerHTML = '<p class="muted" style="font-size:14px;margin:10px 0 0">Lịch hẹn vẫn giữ nguyên. App sẽ nhắc lại một lần trước ngày khám (giả lập).</p>';
-}
-
-async function runPrepare() {
-  const box = document.getElementById("story"), text = box.value.trim();
-  if (text.length < 3) { box.focus(); return; }
-  const btn = document.getElementById("btnPrep");
-  btn.disabled = true; btn.textContent = "Đang sắp xếp…";
-  try {
-    state.result = await api("/api/prepare", { text, service: state.service, for_whom: state.for_whom, age_group: state.age_group });
-    renderSummary();
-    go("s-summary");
-  } finally { btn.disabled = false; btn.textContent = "Tạo phiếu cho bác sĩ"; }
+async function refresh() {
+  state.route = await api("/api/route", { visit: state.visit });
+  render();
 }
 
-const LABELS = { ly_do: "Lý do chính", tu_khi_nao: "Từ khi nào", da_lam: "Đã khám / đã dùng thuốc / đã thử",
-                 dieu_lo: "Điều lo nhất", mong_muon: "Mong bác sĩ giúp" };
+function currentStep() { return state.route.steps.find(s => !state.done.includes(s.id)); }
 
-function renderSummary() {
-  const r = state.result, el = document.getElementById("summary");
-  if (r.red_flag) {
-    el.innerHTML = `
-      <div class="card emergency">
-        <h2>Có thể cần cấp cứu ngay</h2>
-        <p>Lời kể có dấu hiệu: <b>${r.red_flag_reasons.map(esc).join(", ")}</b>.</p>
-        <p>Đừng chờ tới ngày hẹn. Gọi <b>115</b> hoặc đến khoa Cấp cứu gần nhất ngay.</p>
-        <a class="btn danger" href="tel:115" onclick="track('emergency_ack',{step:'call115'})">Gọi 115</a>
-        <p class="disclaimer">App không chẩn đoán. Cảnh báo này hiện ra mỗi khi lời kể có dấu hiệu nguy hiểm, kể cả khi có thể là nhầm.</p>
-      </div>
-      <button class="btn link" onclick="track('emergency_ack',{step:'edit'});go('s-tell')">Tôi kể nhầm, sửa lại</button>`;
+function render() {
+  const r = state.route, steps = r.steps, cur = currentStep();
+  const doneCount = steps.filter(s => state.done.includes(s.id)).length;
+  document.getElementById("sumPurpose").textContent = r.purpose;
+  document.getElementById("sumFinish").textContent = r.finish;
+  document.getElementById("sumBar").style.width = Math.round(doneCount / steps.length * 100) + "%";
+  document.getElementById("sumStep").textContent = cur ? `Bước ${steps.indexOf(cur) + 1}/${steps.length}` : "Đã xong";
+
+  const now = document.getElementById("nowCard");
+  if (!cur) {
+    now.innerHTML = `<div class="lbl">HOÀN TẤT</div><h3>Bạn đã xong buổi khám hôm nay</h3>
+      <div class="where">Chúc bạn mau khoẻ. Kết quả và đơn thuốc xem lại trong app.</div>`;
+    document.getElementById("fbCard").style.display = "block";
+  } else {
+    const srcTag = cur.source === "vinmec" ? ` <a href="${cur.url}" target="_blank" rel="noopener">(theo hướng dẫn Vinmec)</a>` : " (giả lập)";
+    const prep = !(cur.prep && cur.prep.length) ? "" : cur.kind === "pre"
+      ? `<div class="prep"><b>Cần chuẩn bị</b>${srcTag}<ul>${cur.prep.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`
+      : `<div class="prep">⚠ ${cur.prep.map(esc).join(" · ")}${srcTag}</div>`;
+    const docs = cur.docs ? `<div class="docs">Mang theo: ${cur.docs.map(esc).join(" · ")}</div>` : "";
+    let actions = `<div class="row"><button class="btn primary" style="flex:2" onclick="markDone()">Tôi đã xong bước này</button>
+        <button class="btn ghost" style="flex:1" onclick="toggleHow()">Chỉ đường</button></div>`;
+    if (cur.id === "kham-1" && !state.ordersDecided) {
+      actions = `<div class="orders"><div class="lab">MÔ PHỎNG · BÁC SĨ CHỈ ĐỊNH GÌ?</div>
+        <div class="chips">${Object.entries(TESTS).map(([k, v]) => `<button class="chip${pendingTests.has(k) ? " sel" : ""}" onclick="toggleTest('${k}', this)">${esc(v)}</button>`).join("")}</div>
+        <div class="row"><button class="btn primary" style="flex:2" onclick="applyOrders()">Cập nhật lộ trình</button>
+        <button class="btn ghost" style="flex:1" onclick="noOrders()">Không có</button></div>
+        <button class="btn link" onclick="toggleHow()">Chỉ đường tới phòng khám</button></div>`;
+    }
+    if (cur.id === "thanh-toan-cd") {
+      actions += `<button class="btn link" onclick="paidInApp()">Tôi đã thanh toán trên app</button>`;
+    }
+    if (cur.kind === "pre") actions = `<button class="btn primary" onclick="markDone()">Tôi đã chuẩn bị xong</button>`;
+    const lbl = cur.kind === "pre" ? "TRƯỚC NGÀY KHÁM" : `${cur.kind === "wait" ? "BÂY GIỜ" : "BƯỚC TIẾP THEO"} · <span class="eta">dự kiến ${cur.eta}</span>`;
+    now.innerHTML = `<div class="lbl">${lbl}</div>
+      <h3>${esc(cur.title)}</h3><div class="room">${esc(cur.room)}</div><div class="where">${esc(cur.where)}</div>
+      <div class="how" id="how">${esc(cur.how || "Hỏi Quầy thông tin tầng 1 nếu không thấy biển chỉ dẫn.")}</div>
+      ${docs}${prep}<div class="why">Vì sao: ${esc(cur.why)}</div>${actions}`;
+    document.getElementById("fbCard").style.display = "none";
+  }
+
+  document.getElementById("timeline").innerHTML = steps.map(s => {
+    const cls = state.done.includes(s.id) ? "done" : s === cur ? "cur" : "";
+    return `<li class="${cls}${s.kind === "wait" ? " wait" : ""}${s.kind === "pre" ? " pre" : ""}" onclick="${cls === "done" ? `undo('${s.id}')` : ""}">
+      <span class="t">${s.eta}</span><span class="dot"></span>
+      <div class="body"><b>${esc(s.title)}</b><span>${esc(s.room)}${s.kind === "test" && s.fasting ? " · cần nhịn ăn" : ""}</span></div></li>`;
+  }).join("");
+
+  const q = document.getElementById("qCard");
+  q.style.display = state.questions.length ? "block" : "none";
+  document.getElementById("qList").innerHTML = state.questions.map(x => `<li>${esc(x)}</li>`).join("");
+}
+
+// ---- Đặt lịch (mô phỏng) và lịch hẹn ----
+let BOOKING = {}, SLOTS = [];
+const bk = { specialty: "noi-tong-quat", day: 1, time: "09:30" };
+const dayLabel = n => { const d = new Date(Date.now() + n * 864e5);
+  return ["CN", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"][d.getDay()] + " " + d.getDate() + "/" + (d.getMonth() + 1); };
+function renderBook() {
+  const chip = (group, val, label, cur) => `<button class="chip${val === cur ? " sel" : ""}" onclick="bk.${group}=${typeof val === "number" ? val : `'${val}'`};renderBook()">${esc(label)}</button>`;
+  document.getElementById("bkSpec").innerHTML = Object.entries(BOOKING).map(([k, v]) => chip("specialty", k, v, bk.specialty)).join("");
+  document.getElementById("bkDate").innerHTML = [1, 2, 3].map(n => chip("day", n, dayLabel(n), bk.day)).join("");
+  document.getElementById("bkTime").innerHTML = SLOTS.map(t => chip("time", t, t, bk.time)).join("");
+}
+const choiceVal = key => document.querySelector(`.choice[data-key="${key}"] button.sel`).dataset.v === "1";
+function bookAppt() {
+  state.appt = { specialty: bk.specialty, time: bk.time, date: dayLabel(bk.day), day: bk.day,
+                 bhyt: choiceVal("bk_bhyt"), first_time: choiceVal("bk_first") };
+  track("book_appt", { appt: { specialty: bk.specialty, time: bk.time } });
+  toast("Đặt lịch thành công (giả lập)");
+  go("s-appts");
+}
+function renderAppts() {
+  const box = document.getElementById("apptBox"), a = state.appt;
+  if (!a) {
+    box.innerHTML = `<div class="empty"><svg width="90" height="70" viewBox="0 0 120 86"><rect x="30" y="20" width="60" height="50" rx="6" fill="#fff" stroke="#37aea7" stroke-width="2.5"/><rect x="30" y="20" width="60" height="13" rx="6" fill="#37aea7"/><path d="M96 8v12M90 14h12" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <p>Hiện tại bạn chưa có lịch hẹn nào</p><button class="btn primary" onclick="go('s-book')">Đặt hẹn</button></div>`;
     return;
   }
-  const byKey = Object.fromEntries(r.fields.map(f => [f.key, f]));
-  state.original = Object.fromEntries(r.fields.map(f => [f.key, f.value]));
-  const rows = Object.entries(LABELS).map(([k, label]) => {
-    const f = byKey[k];
-    return `
-      <div class="field" data-k="${k}">
-        <div class="lab">${esc(label)} ${f ? `<button onclick="clearField('${k}')">Xoá</button>` : ""}</div>
-        <input type="text" value="${f ? esc(f.value) : ""}" placeholder="${f ? "" : "(chưa có, thêm nếu muốn)"}">
-        ${f ? `<div class="quote">Bạn đã kể: “${esc(f.quote)}”</div>` : ""}
-      </div>`;
-  }).join("");
-  el.innerHTML = `
-    <h2>Phiếu gửi bác sĩ: kiểm tra lại</h2>
-    <p class="hint">App chỉ sắp xếp lời bạn kể${r.mode.startsWith("llm") ? " (có AI hỗ trợ)" : ""}, không thêm thông tin. Sai chỗ nào, sửa chỗ đó.</p>
-    <div class="card">${rows}
-      <details><summary>Xem nguyên văn lời kể</summary>${esc(document.getElementById("story").value)}</details>
-    </div>
-    <button class="btn primary" onclick="confirmSummary()">Đúng rồi, tiếp tục</button>
-    <button class="btn link" onclick="go('s-tell')">← Kể lại</button>`;
+  const d = new Date(Date.now() + a.day * 864e5);
+  box.innerHTML = `<div class="appt-card"><div class="date"><span>${a.date.split(" ").slice(0, -1).join(" ").replace("Thứ ", "Th ")}</span><b>${d.getDate()}</b><span>Th${d.getMonth() + 1}</span></div>
+    <div class="info"><span class="status">✓ Đã xác nhận (giả lập)</span><b>${esc(BOOKING[a.specialty])}</b>
+    <div class="m">${esc(a.time)} · ${esc(a.date)}${a.bhyt ? " · có BHYT" : ""}</div></div></div>
+    <button class="btn primary" onclick="routeFromAppt()">Xem lộ trình hôm khám</button>
+    <p class="hint" style="margin:8px 0 0">Lộ trình bắt đầu từ lịch hẹn này: không phải trả lời lại câu hỏi, giờ tính theo giờ hẹn.</p>`;
 }
-function clearField(k) { document.querySelector(`.field[data-k="${k}"] input`).value = ""; }
-
-function confirmSummary() {
-  const edited = [], deleted = [], added = [];
-  state.final = {};
-  document.querySelectorAll("#summary .field").forEach(div => {
-    const k = div.dataset.k, v = div.querySelector("input").value.trim(), orig = state.original[k];
-    if (v) state.final[k] = v;
-    if (orig !== undefined && !v) deleted.push(k);
-    else if (orig !== undefined && v !== orig) edited.push(k);
-    else if (orig === undefined && v) added.push(k);
-  });
-  track("confirm_summary", { edited, deleted, added });
-  const r = state.result;
-  state.questions = [...r.questions_own.map(q => ({ text: q, kind: "own", on: true })),
-                     ...r.questions_suggested.map(q => ({ text: q, kind: "suggested", on: false }))];
-  renderQuestions();
-  go("s-questions");
+async function routeFromAppt() {
+  const a = state.appt;
+  state.visit = { purpose: "kham-benh", booked: true, bhyt: a.bhyt, first_time: a.first_time, paid_in_app: false, tests: [],
+                  start_min: nowMin(), appt: { specialty: a.specialty, time: a.time, date: a.date } };
+  state.done = ["dat-lich"]; state.ordersDecided = false; pendingTests = new Set();
+  if (!state.startedAt) state.startedAt = Date.now();
+  track("open_appt_route", { appt: { specialty: a.specialty, time: a.time } });
+  await refresh(); go("s-route");
 }
 
-function renderQuestions() {
-  document.getElementById("qList").innerHTML = state.questions.length ? state.questions.map((q, i) => `
-    <label class="q"><input type="checkbox" ${q.on ? "checked" : ""} onchange="state.questions[${i}].on=this.checked">
-      <span>${esc(q.text)} ${q.kind === "own" ? '<span class="tag">bạn đã kể</span>' : q.kind === "custom" ? '<span class="tag">bạn thêm</span>' : '<span class="tag gen">gợi ý chung</span>'}</span>
-    </label>`).join("") : '<span class="muted">Chưa có câu hỏi nào.</span>';
+function toggleHow() {
+  const el = document.getElementById("how"); if (!el) return;
+  el.classList.toggle("open");
+  if (el.classList.contains("open")) track("show_directions", { step: currentStep()?.id });
 }
-function addQuestion() {
-  const box = document.getElementById("qNew"), t = box.value.trim();
-  if (!t) return;
-  state.questions.push({ text: t, kind: "custom", on: true });
-  box.value = ""; renderQuestions();
+function markDone() {
+  const cur = currentStep(); if (!cur) return;
+  state.done.push(cur.id);
+  track("step_done", { step: cur.id });
+  render();
+  document.getElementById("scroll").scrollTop = 0;
+  if (!currentStep()) track("finish_visit", { seconds: Math.round((Date.now() - state.startedAt) / 1000) });
 }
-function confirmQuestions() {
-  const on = state.questions.filter(q => q.on);
-  track("confirm_questions", { own_kept: on.filter(q => q.kind === "own").length,
-                               suggested_chosen: on.filter(q => q.kind === "suggested").length,
-                               custom_added: on.filter(q => q.kind === "custom").length });
-  const list = state.result.checklist;
-  document.getElementById("checkHint").textContent = "Cho lịch hẹn: " + state.result.service_name +
-    (state.age_group === "tre-em" ? " · trẻ em" : "");
-  document.getElementById("checkList").innerHTML = list.map(i => `
-    <label class="q"><input type="checkbox"><span>${esc(i.text)}${i.why ? ` <span class="tag">${esc(i.why)}</span>` : ""}<br>
-      <span class="src">${i.source === "vinmec" ? `Theo hướng dẫn công khai của <a href="${i.url}" target="_blank" rel="noopener">Vinmec</a>` : "Đề xuất của prototype, cần bệnh viện xác nhận"}</span></span>
-    </label>`).join("");
-  go("s-check");
+function undo(id) {
+  state.done = state.done.filter(x => x !== id);
+  track("step_undo", { step: id });
+  render();
+}
+function toggleTest(k, el) { pendingTests.has(k) ? pendingTests.delete(k) : pendingTests.add(k); el.classList.toggle("sel"); }
+async function applyOrders() {
+  if (!pendingTests.size) { toast("Chọn ít nhất một chỉ định, hoặc bấm Không có"); return; }
+  state.visit.tests = [...pendingTests];
+  state.ordersDecided = true;
+  state.done.push("kham-1");
+  track("orders_added", { tests: state.visit.tests });
+  await refresh();
+  toast("Đã sắp xếp lại lộ trình theo chỉ định");
+}
+function noOrders() {
+  state.ordersDecided = true;
+  state.done.push("kham-1");
+  track("orders_added", { tests: [] });
+  render();
+}
+async function paidInApp() {
+  state.visit.paid_in_app = true;
+  track("step_done", { step: "thanh-toan-cd-app" });
+  await refresh();
 }
 
-function submitPrep() {
-  const seconds = state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : null;
-  track("submit", { seconds });
-  const who = (state.for_whom === "nguoi-than" ? "Người thân đặt hộ" : "Người bệnh tự kể") +
-              " · " + (state.age_group === "tre-em" ? "trẻ em" : "người lớn");
-  const fields = Object.entries(LABELS).filter(([k]) => state.final[k])
-    .map(([k, l]) => `<dt>${esc(l)}</dt><dd>${esc(state.final[k])}</dd>`).join("");
-  const qs = state.questions.filter(q => q.on).map(q => `<li>${esc(q.text)}</li>`).join("");
-  document.getElementById("doctorView").innerHTML = `
-    <span class="muted" style="font-size:12px">Bác sĩ thấy phiếu này trước giờ khám</span>
-    <h3>${esc(state.result.service_name)}</h3>
-    <span class="muted" style="font-size:13px">${esc(who)} · đã xem lại và xác nhận</span>
-    <dl>${fields || '<dd class="muted">Không có thông tin.</dd>'}</dl>
-    ${qs ? `<b style="font-size:14px">Người bệnh muốn hỏi</b><ol style="margin:4px 0 0;padding-left:20px">${qs}</ol>` : ""}`;
-  go("s-done");
+// ---- Trợ lý ----
+const QUICK = ["Tiếp theo tôi đi đâu?", "Tôi được ăn chưa?", "Bao lâu có kết quả?", "Nhà vệ sinh ở đâu?", "Thanh toán ở đâu?", "Cần mang giấy tờ gì?"];
+document.getElementById("quick").innerHTML = QUICK.map(q => `<button class="chip" onclick="send('${q}','chip')">${q}</button>`).join("");
+function openSheet() {
+  document.getElementById("sheet").classList.add("open"); document.getElementById("sheetBg").classList.add("open");
+  const box = document.getElementById("msgs");
+  if (!box.children.length) addMsg("bot", "Chào bạn! Mình biết lộ trình hôm nay của bạn. Hỏi mình đường đi, thời gian chờ hay cần chuẩn bị gì nhé.");
+  track("open_assistant", { step: currentStep()?.id });
+}
+function closeSheet() { document.getElementById("sheet").classList.remove("open"); document.getElementById("sheetBg").classList.remove("open"); }
+function addMsg(kind, html) {
+  const box = document.getElementById("msgs"), div = document.createElement("div");
+  div.className = "msg " + kind; div.innerHTML = html; box.appendChild(div); box.scrollTop = box.scrollHeight; return div;
+}
+async function send(text, via) {
+  text = (text || "").trim(); if (!text) return;
+  document.getElementById("askInput").value = "";
+  addMsg("me", esc(text));
+  const typing = addMsg("bot typing", "Đang tìm…");
+  const r = await api("/api/ask", { question: text, visit: state.visit, done: state.done, via });
+  typing.remove();
+  const a = r.answer, src = `<span class="src">Nguồn: ${esc(a.source)}${a.url ? ` · <a href="${a.url}" target="_blank" rel="noopener">xem</a>` : ""}${r.mode === "llm" ? " · AI hiểu câu hỏi" : ""}</span>`;
+  if (r.red_flag) {
+    addMsg("bot sos", `<b>${esc(a.text)}</b><a class="btn danger" href="tel:115">Gọi 115</a>${src}`);
+  } else if (r.medical) {
+    if (a.save_question && !state.questions.includes(a.save_question)) state.questions.push(a.save_question);
+    render();
+    addMsg("bot med", `${esc(a.text)}<br><b>Đã thêm vào "Câu hỏi để hỏi bác sĩ".</b>${src}`);
+  } else {
+    addMsg("bot", esc(a.text) + src);
+  }
 }
 
 function feedback(useful) {
   track("feedback", { useful, comment: document.getElementById("fbText").value });
-  document.getElementById("fb").innerHTML = "<b>Cảm ơn bạn!</b> Phản hồi đã được ghi lại (ẩn danh).";
+  document.getElementById("fbCard").innerHTML = "<b>Cảm ơn bạn!</b> Phản hồi đã được ghi lại (ẩn danh).";
 }
-
 function restart() {
   track("restart");
-  Object.assign(state, { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
-                         session_id: newId(), result: null, startedAt: null, questions: [], final: {} });
-  document.getElementById("story").value = "";
-  document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button").forEach((x, i) => x.classList.toggle("sel", i === 0)));
-  document.getElementById("apptService").textContent = SERVICES[state.service] || "";
-  document.getElementById("fb").innerHTML = `
-      <b>Phần chuẩn bị này có giúp bạn không?</b>
-      <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
-      <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:8px"></textarea>`;
-  go("s-appt");
+  state = fresh(); pendingTests = new Set();
+  document.getElementById("msgs").innerHTML = "";
+  document.getElementById("fbCard").innerHTML = `<b>Lộ trình này có giúp bạn không?</b>
+    <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
+    <textarea id="fbText" placeholder="Chỗ nào làm bạn bối rối, thiếu hoặc thừa? (không bắt buộc)" style="margin-top:10px"></textarea>`;
+  const defaults = { purpose: "kham-benh", booked: "0", bhyt: "0", first_time: "1", bk_bhyt: "0", bk_first: "1" };
+  document.getElementById("bookedHint").classList.remove("show");
+  document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button").forEach(b => b.classList.toggle("sel", b.dataset.v === defaults[g.dataset.key])));
+  go("s-arrive");
 }
 
 api("/api/config").then(c => {
-  SERVICES = c.services;
-  document.getElementById("apptService").textContent = SERVICES[state.service];
+  TESTS = c.tests; BOOKING = c.booking; SLOTS = c.slots; renderBook();
   document.getElementById("modePill").textContent = c.mode === "llm" ? "Chế độ: AI (LLM)" : "Chế độ: luật";
 });
 </script>
+<script src="tour.js"></script>
 </body>
 </html>

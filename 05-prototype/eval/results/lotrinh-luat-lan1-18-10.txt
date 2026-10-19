@@ -1,0 +1,31 @@
+== Lộ trình ==
+PASS  Mục nhịn ăn đứng trước mọi mục không nhịn ăn
+PASS  Nước tiểu làm sau siêu âm ổ bụng
+PASS  Không có siêu âm: nước tiểu ngay sau lấy máu
+PASS  Có chỉ định thì phải thanh toán trước khi làm
+PASS  Thanh toán trên app thì bỏ bước thu ngân
+PASS  Chờ kết quả trước khi quay lại bác sĩ
+PASS  Không chỉ định thì không có bước chờ kết quả
+PASS  Đã đặt lịch -> kiosk/quầy lịch hẹn
+PASS  Chưa đặt, có BHYT -> quầy BHYT
+PASS  Chưa đặt, không BHYT -> quầy dịch vụ
+PASS  Mã xét nghiệm lạ bị bỏ qua
+PASS  Giờ dự kiến không đi lùi
+
+== Trợ lý (chế độ: luật, 44 câu) ==
+FAIL  W03 chụp phổi thì đi lối nào                       kỳ vọng where/x-quang-nguc -> other/x-quang-nguc
+FAIL  N03 lam xong xet nghiem roi thi di dau             kỳ vọng next/None -> where/lay-mau
+FAIL  N04 bước kế tiếp là gì                             kỳ vọng next/None -> other/None
+FAIL  N05 còn phải đi chỗ nào nữa không                  kỳ vọng next/None -> where/None
+FAIL  F05 đói quá, ăn bánh mì được chưa                  kỳ vọng fasting/None -> other/None
+FAIL  T05 kết quả máu chừng nào có                       kỳ vọng wait/xn-mau-nhin-an -> other/xn-mau-nhin-an
+FAIL  M02 đường huyết 7.2 là cao hả                      kỳ vọng medical/None -> other/xn-mau-nhin-an
+FAIL  M06 bác sĩ bảo viêm dạ dày, tôi nên ăn gì          kỳ vọng medical/None -> where/phong-kham
+
+Đúng loại câu hỏi:                               36/44
+Đúng phòng/xét nghiệm (câu có nhắc tới):          14/14
+Bắt được cấp cứu (mục tiêu 100%):                 4/4
+Câu y khoa bị chặn, chuyển bác sĩ (mục tiêu 100%): 4/6
+Câu thường bị chặn nhầm:                          0/34
+Câu thường rơi vào 'chưa hiểu':                   4/34
+LLM đặt mã ngoài danh mục (đã bị chặn):           0

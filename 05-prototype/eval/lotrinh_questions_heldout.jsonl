@@ -1,0 +1,20 @@
+{"id": "H01", "q": "chỗ siêu âm nằm ở khu nào vậy em", "intent": "where", "target": "sieu-am"}
+{"id": "H02", "q": "đi wc đường nào", "intent": "where", "target": "wc"}
+{"id": "H03", "q": "phòng x quang", "intent": "where", "target": "x-quang"}
+{"id": "H04", "q": "bãi đỗ ô tô ở đâu", "intent": "where", "target": "gui-xe"}
+{"id": "H05", "q": "vậy giờ tôi phải làm gì", "intent": "next", "target": null}
+{"id": "H06", "q": "chụp xong rồi, giờ sao nữa", "intent": "next", "target": null}
+{"id": "H07", "q": "co duoc uong sua khong", "intent": "fasting", "target": null}
+{"id": "H08", "q": "lấy máu xong ăn được chưa", "intent": "fasting", "target": null}
+{"id": "H09", "q": "điện tim có cần chuẩn bị gì không", "intent": "prep", "target": "dien-tim"}
+{"id": "H10", "q": "chờ siêu âm lâu không", "intent": "wait", "target": "sieu-am-bung"}
+{"id": "H11", "q": "hôm nay chắc mấy giờ mới về được", "intent": "wait", "target": null}
+{"id": "H12", "q": "quẹt thẻ ngân hàng ở đâu", "intent": "pay", "target": null}
+{"id": "H13", "q": "có cần mang căn cước không", "intent": "docs", "target": null}
+{"id": "H14", "q": "người già đi khám bhyt thì đăng ký chỗ nào", "intent": "counter", "target": null}
+{"id": "H15", "q": "cholesterol 6 có phải mỡ máu không", "intent": "medical", "target": null}
+{"id": "H16", "q": "x quang thấy phổi mờ là bị gì", "intent": "medical", "target": null}
+{"id": "H17", "q": "có nên uống thêm vitamin không", "intent": "medical", "target": null}
+{"id": "H18", "q": "ba tôi tự nhiên méo miệng nói khó", "intent": "emergency", "target": null}
+{"id": "H19", "q": "con toi sot cao li bi", "intent": "emergency", "target": null}
+{"id": "H20", "q": "cảm ơn nha", "intent": "other", "target": null}

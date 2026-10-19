@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="vi">
+<!-- Bản 2 (18/10/2026): luồng "Chuẩn bị buổi khám" (H1), giao diện mô phỏng MyVinmec. Hướng H1 đã dừng sau phỏng vấn; bản hiện hành là index.html (Lộ trình khám trong ngày). -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chuẩn bị buổi khám · Prototype</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Giao diện mô phỏng theo app MyVinmec (ảnh chụp 15/10/2026): teal #37AEA7, nền xám #F6F6F6,
+     tiêu đề giữa + mũi tên lùi, nút chữ hoa bo góc, tab bar 5 mục với nút Đặt lịch nổi ở giữa. */
+  :root {
+    --teal: #37aea7; --teal-dk: #2b958f; --teal-soft: #e8f6f5;
+    --bg: #f6f6f6; --card: #ffffff; --ink: #1f1f1f; --ink2: #3c3c3c; --muted: #8a8f8e; --line: #ececec;
+    --warn: #e5484d; --warn-soft: #fdeeee; --gold: #f5a623;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #d9dedd; color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+
+  /* Khung điện thoại trên desktop; trên điện thoại thật thì full màn */
+  .phone { position: relative; width: 390px; height: 844px; margin: 24px auto; background: var(--bg);
+           border-radius: 44px; overflow: hidden; box-shadow: 0 0 0 10px #111, 0 20px 60px rgba(0,0,0,.35);
+           display: flex; flex-direction: column; }
+  .statusbar { flex: none; height: 47px; display: flex; align-items: flex-end; justify-content: space-between;
+               padding: 0 28px 6px 34px; font-weight: 600; font-size: 15px; position: relative; z-index: 5; }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; }
+  .statusbar .batt { font-size: 11px; background: #f5d33a; color: #000; border-radius: 4px; padding: 0 4px; font-weight: 700; }
+  .home-ind { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px;
+              border-radius: 3px; background: #111; z-index: 20; }
+  @media (max-width: 500px) {
+    body { background: var(--bg); }
+    .phone { width: 100%; height: 100vh; height: 100dvh; margin: 0; border-radius: 0; box-shadow: none; }
+    .statusbar, .home-ind { display: none; }
+    .phone { padding-top: env(safe-area-inset-top); }
+  }
+  .on-teal .statusbar { color: #fff; }
+  .on-teal .statusbar { background: var(--teal); }
+
+  .scroll { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* Thanh tiêu đề trắng kiểu "Thông tin cá nhân" */
+  .topbar { flex: none; display: none; height: 52px; align-items: center; justify-content: center; position: relative;
+            background: #fff; font-weight: 700; font-size: 18px; }
+  .topbar .back { position: absolute; left: 6px; top: 6px; width: 40px; height: 40px; border: 0; background: none; cursor: pointer;
+                  display: grid; place-items: center; color: var(--ink); }
+  .topbar .right { position: absolute; right: 14px; font-size: 13px; font-weight: 500; color: var(--teal); }
+  .progress { flex: none; display: none; gap: 6px; padding: 0 16px 10px; background: #fff; }
+  .progress span { flex: 1; height: 3px; border-radius: 3px; background: #e4e4e4; }
+  .progress span.on { background: var(--teal); }
+  .phone.flow .topbar { display: flex; }
+  .phone.flow .progress { display: flex; }
+
+  section { display: none; }
+  section.active { display: block; }
+  .pad { padding: 0 16px 24px; }
+
+  /* Header teal có lá — dùng cho Trang chủ và Lịch hẹn */
+  .tealhead { position: relative; background: var(--teal); color: #fff; overflow: hidden; }
+  .tealhead .leaves { position: absolute; inset: 0; pointer-events: none; opacity: .9; }
+  .home-head { padding: 6px 16px 70px; }
+  .home-head h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: .2px; }
+  .home-head p { margin: 2px 0 0; font-size: 12.5px; opacity: .95; }
+  .home-head .acts { position: absolute; right: 14px; top: 10px; display: flex; gap: 10px; z-index: 2; }
+  .home-head .acts span { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .appt-head { padding: 10px 16px 54px; display: flex; align-items: center; gap: 8px; }
+  .appt-head h1 { margin: 0; font-size: 24px; font-weight: 600; flex: 1; position: relative; z-index: 2; }
+  .appt-head button { position: relative; z-index: 2; background: none; border: 0; color: #fff; cursor: pointer; padding: 4px; display: grid; place-items: center; }
+  .appt-head .plus { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; }
+
+  .lift { margin-top: -44px; position: relative; z-index: 3; }
+  .card { background: var(--card); border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+  .card.flat { box-shadow: none; }
+
+  .banner-ad { height: 150px; border-radius: 14px; overflow: hidden; position: relative;
+               background: linear-gradient(120deg, #fde7ee 0%, #f9d2de 55%, #f3b9cb 100%); padding: 18px; }
+  .banner-ad .tag { display: inline-block; background: var(--teal); color: #fff; font-size: 10px; font-weight: 700; border-radius: 4px; padding: 3px 8px; letter-spacing: .3px; }
+  .banner-ad h3 { margin: 8px 0 2px; font-size: 19px; color: #c2426b; font-style: italic; font-family: Georgia, serif; font-weight: 600; }
+  .banner-ad p { margin: 0; font-size: 11px; color: #8a5065; max-width: 60%; }
+  .banner-ad .cta { display: inline-block; margin-top: 10px; background: #e2567f; color: #fff; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 99px; }
+  .banner-ad .heart { position: absolute; right: -10px; bottom: -20px; width: 150px; height: 150px; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 4px; padding: 6px 0 2px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-size: 11.5px;
+          color: var(--ink2); background: none; border: 0; cursor: pointer; font-family: inherit; line-height: 1.25; position: relative; }
+  .tile .ic { width: 50px; height: 50px; border-radius: 50%; background: var(--teal-soft); display: grid; place-items: center; color: var(--teal); }
+  .tile .ic.dash { background: #fff4e5; color: var(--gold); outline: 1.5px dashed var(--gold); outline-offset: -1px; }
+  .tile .new { position: absolute; top: -4px; right: 10px; background: var(--gold); color: #fff; font-size: 8.5px; font-weight: 700; border-radius: 99px; padding: 1px 5px; }
+  h2.sec { font-size: 18px; font-weight: 700; margin: 18px 0 10px; }
+  .svc { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+         border-left: 3px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,.05); }
+  .svc .th { width: 44px; height: 44px; border-radius: 8px; background: var(--teal-soft); flex: none; display: grid; place-items: center; color: var(--teal); }
+  .svc b { display: block; font-size: 14px; font-weight: 600; }
+  .svc span { font-size: 12px; color: var(--muted); }
+  .svc .chev { margin-left: auto; color: var(--gold); }
+
+  /* Tab bar */
+  .tabbar { flex: none; height: 74px; background: #fff; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
+            padding-bottom: 20px; box-shadow: 0 -1px 0 var(--line); position: relative; z-index: 6; }
+  .phone.flow .tabbar { display: none; }
+  .tabbar button { background: none; border: 0; font: inherit; font-size: 10.5px; color: #9a9a9a; display: flex; flex-direction: column;
+                   align-items: center; gap: 3px; cursor: pointer; padding: 0; }
+  .tabbar button.on { color: var(--teal); font-weight: 600; }
+  .tabbar .center .bubble { width: 46px; height: 46px; border-radius: 50%; background: var(--teal); color: #fff; display: grid; place-items: center;
+                            margin-top: -22px; box-shadow: 0 0 0 4px #fff, 0 3px 10px rgba(55,174,167,.35); }
+  @media (max-width: 500px) { .tabbar { padding-bottom: max(12px, env(safe-area-inset-bottom)); height: auto; padding-top: 8px; } }
+
+  /* Lịch hẹn */
+  .notice { background: var(--teal-soft); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--teal-dk); }
+  .notice .t { display: inline-flex; align-items: center; gap: 4px; background: var(--teal); color: #fff; font-size: 10px; font-weight: 700;
+               border-radius: 3px; padding: 2px 6px; margin-bottom: 6px; letter-spacing: .3px; }
+  .appt-card { display: flex; gap: 12px; }
+  .appt-card .date { flex: none; width: 58px; border-radius: 10px; background: var(--teal); color: #fff; text-align: center; padding: 6px 0; }
+  .appt-card .date b { display: block; font-size: 22px; line-height: 1.1; }
+  .appt-card .date span { font-size: 11px; }
+  .appt-card .info b { font-size: 15.5px; font-weight: 600; display: block; }
+  .appt-card .info .m { font-size: 12.5px; color: var(--muted); }
+  .status { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--teal); font-weight: 600; background: var(--teal-soft);
+            border-radius: 99px; padding: 2px 8px; margin-bottom: 4px; }
+  .group-title { display: flex; align-items: center; gap: 8px; color: var(--teal); font-size: 16.5px; font-weight: 600; margin: 4px 0 10px; }
+  label.small { display: block; font-size: 13px; color: var(--ink2); margin: 10px 0 7px; }
+  label.small i { color: var(--warn); font-style: normal; }
+
+  /* Lựa chọn kiểu Nam / Nữ */
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .choice.three { grid-template-columns: 1fr 1fr 1fr; }
+  .choice button { position: relative; padding: 11px 6px; border-radius: 8px; border: 0; background: #f2f4f4; color: var(--teal);
+                   font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; }
+  .choice button.sel { background: var(--teal); color: #fff; font-weight: 600; }
+  .choice button.sel::after { content: "✓"; position: absolute; top: -7px; right: -6px; width: 18px; height: 18px; border-radius: 50%;
+                              background: #2fbf71; color: #fff; font-size: 11px; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px #fff; }
+
+  .prep-card { text-align: center; padding: 18px 16px 10px; }
+  .prep-card h3 { margin: 6px 0 4px; font-size: 16px; font-weight: 600; }
+  .prep-card p { margin: 0 auto; font-size: 13px; color: var(--muted); max-width: 290px; }
+  .illus { width: 120px; height: 86px; margin: 0 auto; }
+
+  .tester { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); margin: 6px 2px 0; }
+  .tester input { width: 90px; padding: 5px 8px !important; font-size: 12px !important; border-radius: 6px !important; }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: #fff; color: var(--teal); border: 1px solid var(--teal); white-space: nowrap; }
+
+  /* Nút */
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 8px; border: 0; font: inherit; font-weight: 600; cursor: pointer;
+         margin-top: 12px; text-align: center; text-decoration: none; text-transform: uppercase; letter-spacing: .4px; font-size: 14.5px; }
+  .btn.primary { background: var(--teal); color: #fff; box-shadow: 0 3px 8px rgba(55,174,167,.25); }
+  .btn.primary:active { background: var(--teal-dk); }
+  .btn.ghost { background: #fff; color: var(--teal); border: 1.5px solid var(--teal); border-radius: 99px; text-transform: none; letter-spacing: 0; padding: 10px 14px; }
+  .btn.pillbtn { display: inline-block; width: auto; border-radius: 99px; padding: 9px 26px; font-size: 13px; }
+  .btn.link { background: none; color: var(--teal); text-transform: none; letter-spacing: 0; font-weight: 500; padding: 8px; box-shadow: none; font-size: 14px; }
+  .btn.danger { background: var(--warn); color: #fff; }
+  .btn:disabled { opacity: .55; cursor: default; }
+
+  /* Màn trong luồng (nền trắng, dải phân cách xám như trang Thông tin sức khoẻ) */
+  .flowpage { background: #fff; min-height: 100%; }
+  .flowpage .pad { padding-top: 6px; }
+  .sep { height: 8px; background: var(--bg); margin: 14px -16px; }
+  h2.ft { font-size: 19px; font-weight: 700; margin: 14px 0 4px; }
+  p.hint { color: var(--muted); margin: 0 0 12px; font-size: 13px; }
+  textarea, input[type=text] { width: 100%; font: inherit; font-size: 15px; padding: 12px 14px; border: 1px solid #dcdcdc; border-radius: 8px; background: #fff; color: var(--ink); outline: none; }
+  textarea:focus, input[type=text]:focus { border-color: var(--teal); }
+  textarea { min-height: 150px; resize: vertical; }
+  .counter { text-align: right; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  ul.tips { margin: 0; padding: 0; list-style: none; }
+  ul.tips li { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; color: var(--ink2); }
+  ul.tips li::after { content: "›"; color: #b8b8b8; font-size: 20px; line-height: 1; }
+
+  /* Phiếu: nhãn nhỏ + giá trị lớn, kiểu "Thông tin cá nhân" */
+  .field { padding: 10px 0 12px; border-bottom: 1px solid var(--line); }
+  .field .lab { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .field .lab button { font: inherit; font-size: 13px; color: var(--teal); background: none; border: 0; cursor: pointer; padding: 0; }
+  .field input { border: 0 !important; padding: 2px 0 !important; font-size: 17px !important; font-weight: 500; border-radius: 0 !important; }
+  .field input::placeholder { color: #bdbdbd; font-weight: 400; font-size: 14px; }
+  .quote { font-size: 12px; color: var(--muted); margin-top: 3px; font-style: italic; }
+  details { font-size: 13px; color: var(--muted); margin-top: 12px; }
+  details summary { color: var(--teal); cursor: pointer; }
+
+  .q { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 14.5px; }
+  .q input[type=checkbox] { appearance: none; -webkit-appearance: none; margin: 1px 0 0; width: 20px; height: 20px; flex: none;
+                            border: 1.5px solid #c9c9c9; border-radius: 5px; display: grid; place-items: center; cursor: pointer; }
+  .q input[type=checkbox]:checked { background: var(--teal); border-color: var(--teal); }
+  .q input[type=checkbox]:checked::after { content: "✓"; color: #fff; font-size: 13px; font-weight: 700; }
+  .src { font-size: 11.5px; color: var(--muted); }
+  .src a { color: var(--teal); text-decoration: none; }
+  .tag { display: inline-block; font-size: 10.5px; padding: 1px 7px; border-radius: 99px; background: var(--teal-soft); color: var(--teal-dk); margin-left: 4px; font-weight: 500; vertical-align: 1px; }
+  .tag.gen { background: #f1f1f1; color: var(--muted); }
+  .addrow { display: flex; gap: 8px; margin-top: 12px; }
+  .addrow .btn { margin-top: 0; width: auto; }
+
+  .emergency { text-align: center; padding: 20px 16px; border: 1.5px solid var(--warn); background: var(--warn-soft); box-shadow: none; }
+  .emergency .sos { width: 64px; height: 64px; border-radius: 50%; background: var(--warn); color: #fff; display: grid; place-items: center; margin: 0 auto 8px; font-weight: 800; font-size: 20px; }
+  .emergency h2 { color: var(--warn); margin: 0 0 6px; font-size: 19px; }
+  .emergency p { margin: 6px 0; font-size: 14px; }
+  .disclaimer { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  .done-head { text-align: center; padding: 18px 0 6px; }
+  .done-head .ok { width: 60px; height: 60px; border-radius: 50%; background: var(--teal); color: #fff; display: grid; place-items: center; margin: 0 auto 10px; font-size: 28px; }
+  .doctor { border: 1.5px dashed var(--teal); box-shadow: none; }
+  .doctor .cap { display: inline-block; font-size: 11px; color: #fff; background: var(--teal); border-radius: 3px; padding: 2px 6px; font-weight: 600; }
+  .doctor h3 { margin: 8px 0 0; font-size: 16px; color: var(--teal-dk); }
+  .doctor dl { margin: 10px 0 0; }
+  .doctor dt { font-size: 12px; color: var(--muted); }
+  .doctor dd { margin: 0 0 8px; font-size: 14.5px; font-weight: 500; }
+  .row { display: flex; gap: 10px; }
+  .row .btn { margin-top: 10px; }
+  .muted { color: var(--muted); }
+
+  .toast { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); background: rgba(30,30,30,.88); color: #fff; font-size: 13px;
+           padding: 8px 14px; border-radius: 99px; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; z-index: 30; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="phone on-teal" id="phone">
+  <div class="statusbar"><span id="clock">15:00</span>
+    <span class="icons">
+      <svg width="18" height="11" viewBox="0 0 18 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="6" rx="1"/><rect x="10" y="2.5" width="3" height="8.5" rx="1"/><rect x="15" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5c2.3 0 4.4.9 6 2.4l1.3-1.3A10.3 10.3 0 0 0 8 .6 10.3 10.3 0 0 0 .7 3.6L2 4.9a8.5 8.5 0 0 1 6-2.4zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.6 6.6 0 0 0 8 4.2 6.6 6.6 0 0 0 3.3 6.1l1.3 1.3c.9-.8 2.1-1.3 3.4-1.3zM8 9.6 10 7.8a3 3 0 0 0-4 0z"/></svg>
+      <span class="batt">22</span>
+    </span>
+  </div>
+
+  <div class="topbar"><button class="back" onclick="goBack()" aria-label="Quay lại">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg>
+    </button><span id="topTitle">Chuẩn bị buổi khám</span></div>
+  <div class="progress steps"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="scroll" id="scroll">
+
+  <!-- Trang chủ (chỉ để giống app; lối vào chính là Lịch hẹn) -->
+  <section id="s-home">
+    <div class="tealhead home-head">
+      <svg class="leaves" viewBox="0 0 390 140" preserveAspectRatio="none"><g fill="#fff" opacity=".12"><path d="M300 140c10-60 50-95 95-100-5 50-40 90-95 100z"/><path d="M250 140c20-40 50-55 80-55-15 35-45 52-80 55z"/></g></svg>
+      <h1>MyVinmec</h1>
+      <p>Chăm sóc bằng tài năng, y đức và sự thấu cảm</p>
+      <div class="acts">
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 6v12M15 6v12" stroke-dasharray="2 2"/></svg></span>
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+      </div>
+    </div>
+    <div class="pad lift">
+      <div class="banner-ad">
+        <span class="tag">ĐẶT LỊCH KHÁM</span>
+        <h3>Chuẩn bị buổi khám</h3>
+        <p>Kể trước cho bác sĩ, ghi sẵn câu muốn hỏi, biết cần mang gì</p>
+        <span class="cta" onclick="openAppt()">THỬ NGAY</span>
+        <svg class="heart" viewBox="0 0 100 100"><path d="M50 88 14 52a20 20 0 0 1 36-28 20 20 0 0 1 36 28z" fill="#fff" opacity=".45"/></svg>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="grid" id="homeGrid"></div>
+      </div>
+      <h2 class="sec">Dịch vụ mới</h2>
+      <div class="svc"><div class="th"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg></div>
+        <div><b>Cổng dịch vụ khách hàng</b><span>Nhanh - Tiện - Dễ dàng</span></div><span class="chev">›</span></div>
+      <div class="svc" onclick="openAppt()" style="cursor:pointer"><div class="th"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M9 15l2 2 4-4"/></svg></div>
+        <div><b>Chuẩn bị buổi khám</b><span>Cho lịch hẹn sắp tới của bạn</span></div><span class="chev">›</span></div>
+    </div>
+  </section>
+
+  <!-- 0. Lịch hẹn đã xác nhận -->
+  <section id="s-appt" class="active">
+    <div class="tealhead appt-head">
+      <svg class="leaves" viewBox="0 0 390 110" preserveAspectRatio="none"><g fill="none" stroke="#fff" stroke-width="1.4" opacity=".55"><path d="M8 110c8-40 30-62 58-70"/><path d="M20 96c-4-14 2-26 14-32M30 84c10-6 22-6 30 0M14 104c10-2 18 2 22 8"/><path d="M382 110c-6-34-24-52-48-58"/><path d="M372 98c4-12-2-22-12-28M362 86c-8-5-18-4-24 2"/></g></svg>
+      <button onclick="go('s-home')" aria-label="Về trang chủ"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg></button>
+      <h1>Lịch hẹn</h1>
+      <button class="plus" onclick="toast('Đặt lịch mới không có trong prototype')" aria-label="Đặt lịch mới"><svg width="16" height="16" viewBox="0 0 24 24" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="pad lift">
+      <div class="card">
+        <div class="appt-card">
+          <div class="date"><span id="apptWd">Th 3</span><b id="apptDay">21</b><span id="apptMon">Th10</span></div>
+          <div class="info">
+            <span class="status">✓ Đã xác nhận (giả lập)</span>
+            <b id="apptService">Khám chuyên khoa (lần đầu)</b>
+            <div class="m" id="apptDate"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="group-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg>Thông tin lịch hẹn</div>
+        <label class="small">Loại lịch hẹn <span class="muted">(để thử các kịch bản)</span></label>
+        <div class="choice three" data-key="service">
+          <button data-v="kham-chuyen-khoa" class="sel">Chuyên khoa</button>
+          <button data-v="kham-tong-quat">Tổng quát</button>
+          <button data-v="tai-kham">Tái khám</button>
+        </div>
+        <label class="small">Người đi khám <i>*</i></label>
+        <div class="choice" data-key="for_whom">
+          <button data-v="ban-than" class="sel">Bản thân</button>
+          <button data-v="nguoi-than">Người thân</button>
+        </div>
+        <label class="small">Độ tuổi <i>*</i></label>
+        <div class="choice" data-key="age_group">
+          <button data-v="nguoi-lon" class="sel">Người lớn</button>
+          <button data-v="tre-em">Trẻ em (dưới 16)</button>
+        </div>
+      </div>
+
+      <div class="card prep-card">
+        <svg class="illus" viewBox="0 0 120 86"><path d="M18 80c-6-18 2-34 16-40-2 16 2 30-16 40z" fill="#4fbf8f"/><path d="M100 80c8-16 2-32-12-40 2 16-4 28 12 40z" fill="#2f9f86"/><rect x="30" y="24" width="60" height="50" rx="6" fill="#fff" stroke="#37aea7" stroke-width="2.5"/><rect x="30" y="24" width="60" height="13" rx="6" fill="#37aea7"/><g fill="#9fd9d5"><rect x="38" y="44" width="10" height="8" rx="2"/><rect x="55" y="44" width="10" height="8" rx="2"/><rect x="72" y="44" width="10" height="8" rx="2"/><rect x="38" y="58" width="10" height="8" rx="2"/></g><path d="m56 62 4 4 8-8" stroke="#37aea7" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M96 10v12M90 16h12" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <h3>Chuẩn bị cho buổi khám · khoảng 2 phút</h3>
+        <p>Kể trước cho bác sĩ, ghi sẵn câu muốn hỏi, xem cần mang gì. Bác sĩ đọc phiếu trước khi gọi bạn vào. Không bắt buộc.</p>
+        <button class="btn primary" onclick="startPrep()">Bắt đầu chuẩn bị</button>
+        <button class="btn link" onclick="skipPrep(this)">Để sau</button>
+      </div>
+
+      <div class="notice">
+        <span class="t">LƯU Ý</span><br>
+        Prototype bài tập · lịch hẹn là <b>dữ liệu giả lập</b>. App chỉ ghi lại lời bạn kể và nhắc chuẩn bị, <b>không chẩn đoán, không tư vấn</b>.
+      </div>
+      <div class="tester"><span>Mã người thử <input type="text" id="tester" placeholder="T1, T2…" autocomplete="off"></span><span class="pill" id="modePill">…</span></div>
+    </div>
+  </section>
+
+  <!-- 1. Kể -->
+  <section id="s-tell" class="flowpage">
+    <div class="pad">
+      <h2 class="ft" id="tellTitle">Bạn muốn bác sĩ giúp gì lần này?</h2>
+      <p class="hint">Kể bằng lời của bạn, ngắn hay dài đều được. Đừng nhập họ tên hay số điện thoại.</p>
+      <textarea id="story" maxlength="1500" oninput="document.getElementById('cnt').textContent=this.value.length" placeholder="Ví dụ: Đau lưng 3 tuần nay, ngồi lâu là mỏi. Đã uống thuốc giảm đau nhưng không đỡ. Sợ là bị nặng. Tôi có cần chụp phim không?"></textarea>
+      <div class="counter">(<span id="cnt">0</span>/1500)</div>
+      <div class="sep"></div>
+      <div class="group-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>Nếu chưa biết kể gì, thử trả lời</div>
+      <ul class="tips">
+        <li>Chuyện gì, từ khi nào?</li>
+        <li>Đã khám ở đâu, đã dùng thuốc hay thử gì chưa?</li>
+        <li>Điều bạn lo nhất là gì?</li>
+        <li>Bạn mong bác sĩ làm gì? Có câu nào muốn hỏi không?</li>
+      </ul>
+      <button class="btn primary" id="btnPrep" onclick="runPrepare()">Tạo phiếu cho bác sĩ</button>
+      <button class="btn link" onclick="go('s-appt')">Quay lại</button>
+    </div>
+  </section>
+
+  <!-- 2. Phiếu tóm tắt -->
+  <section id="s-summary" class="flowpage">
+    <div class="pad" id="summary"></div>
+  </section>
+
+  <!-- 3. Câu hỏi -->
+  <section id="s-questions" class="flowpage">
+    <div class="pad">
+      <h2 class="ft">Câu hỏi mang vào phòng khám</h2>
+      <p class="hint">Chọn những câu bạn muốn hỏi. App <b>không trả lời</b> các câu này; bác sĩ sẽ trả lời trong buổi khám.</p>
+      <div id="qList"></div>
+      <div class="addrow">
+        <input type="text" id="qNew" placeholder="Thêm câu hỏi của bạn…">
+        <button class="btn ghost" onclick="addQuestion()">Thêm</button>
+      </div>
+      <button class="btn primary" onclick="confirmQuestions()">Tiếp tục</button>
+      <button class="btn link" onclick="go('s-summary')">Sửa phiếu</button>
+    </div>
+  </section>
+
+  <!-- 4. Checklist -->
+  <section id="s-check" class="flowpage">
+    <div class="pad">
+      <h2 class="ft">Cần chuẩn bị gì</h2>
+      <p class="hint" id="checkHint"></p>
+      <div id="checkList"></div>
+      <button class="btn primary" onclick="submitPrep()">Hoàn tất và gửi phiếu</button>
+      <button class="btn link" onclick="go('s-questions')">Sửa câu hỏi</button>
+    </div>
+  </section>
+
+  <!-- 5. Hoàn tất -->
+  <section id="s-done" class="flowpage">
+    <div class="pad">
+      <div class="done-head">
+        <div class="ok">✓</div>
+        <h2 class="ft" style="margin-top:0">Đã gửi phiếu cho bác sĩ (giả lập)</h2>
+        <p class="hint">Bạn có thể mở lại danh sách câu hỏi và checklist bất cứ lúc nào trong mục Lịch hẹn, kể cả khi đang ngồi trong phòng khám.</p>
+      </div>
+      <div class="card doctor" id="doctorView"></div>
+      <div class="card flat" id="fb" style="background:var(--bg)">
+        <b>Phần chuẩn bị này có giúp bạn không?</b>
+        <div class="row">
+          <button class="btn ghost" onclick="feedback(true)">Có</button>
+          <button class="btn ghost" onclick="feedback(false)">Không</button>
+        </div>
+        <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:10px"></textarea>
+      </div>
+      <button class="btn primary" onclick="restart()">Về Lịch hẹn</button>
+    </div>
+  </section>
+  </div>
+
+  <nav class="tabbar">
+    <button data-tab="s-home" onclick="go('s-home')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Trang chủ</button>
+    <button onclick="toast('Hồ sơ không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm3 3v4h5V8zm7 1v1.5h5V9zm0 3v1.5h5V12zm-7 3v1.5h12V15z"/></svg>Hồ sơ</button>
+    <button class="center" data-tab="s-appt" onclick="go('s-appt')"><span class="bubble"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M8 14h2M12 14h2M16 14h0M8 17h2" stroke-linecap="round"/></svg></span>Đặt lịch</button>
+    <button onclick="toast('Thông báo không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.7A6.5 6.5 0 0 1 18.5 10.5V16l2 2v1h-17v-1l2-2v-5.5a6.5 6.5 0 0 1 5-6.3v-.7A1.5 1.5 0 0 1 12 2zm-2 18h4a2 2 0 0 1-4 0z"/></svg>Thông báo</button>
+    <button onclick="toast('Tài khoản không có trong prototype')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7.5" r="4.5"/><path d="M3 21c.8-5 4.6-7.5 9-7.5s8.2 2.5 9 7.5z"/></svg>Tài khoản</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+const ORDER = ["s-appt", "s-tell", "s-summary", "s-questions", "s-check", "s-done"];
+const TITLES = { "s-tell": "Kể cho bác sĩ", "s-summary": "Phiếu gửi bác sĩ", "s-questions": "Câu hỏi của bạn",
+                 "s-check": "Cần chuẩn bị gì", "s-done": "Hoàn tất" };
+const BACK = { "s-tell": "s-appt", "s-summary": "s-tell", "s-questions": "s-summary", "s-check": "s-questions", "s-done": "s-appt" };
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+const state = { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
+                session_id: newId(), result: null, startedAt: null, questions: [] };
+let SERVICES = {};
+let current = "s-appt";
+
+function go(id) {
+  current = id;
+  document.querySelectorAll("section").forEach(s => s.classList.toggle("active", s.id === id));
+  const idx = Math.min(ORDER.indexOf(id), 4);
+  document.querySelectorAll(".steps span").forEach((s, i) => s.classList.toggle("on", i <= idx));
+  const inFlow = id in TITLES, phone = document.getElementById("phone");
+  phone.classList.toggle("flow", inFlow);
+  phone.classList.toggle("on-teal", !inFlow);
+  if (inFlow) document.getElementById("topTitle").textContent = TITLES[id];
+  document.querySelectorAll(".tabbar [data-tab]").forEach(b => b.classList.toggle("on", b.dataset.tab === id));
+  document.getElementById("scroll").scrollTop = 0;
+}
+function goBack() { if (current === "s-done") restart(); else go(BACK[current] || "s-appt"); }
+function openAppt() { go("s-appt"); }
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 1600);
+}
+function esc(t) { const d = document.createElement("div"); d.textContent = t ?? ""; return d.innerHTML; }
+async function api(path, body) {
+  const res = await fetch(path, { method: body ? "POST" : "GET", headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify({ session_id: state.session_id, tester_id: document.getElementById("tester").value, ...body }) : undefined });
+  return res.json();
+}
+const track = (event, extra = {}) => api("/api/event", { event, ...extra });
+
+// Lưới dịch vụ ở Trang chủ, bố cục theo app; chỉ ô Lịch hẹn mở được
+const ICON = p => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const TILES = [
+  ["Lịch hẹn", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2"/>', true],
+  ["Liên hệ", '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'],
+  ["Dịch vụ y tế", '<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/><path d="M12 10v5M9.5 12.5h5"/>', false, true],
+  ["Sổ tiêm", '<path d="m18 2 4 4M17 7l-9.5 9.5-3-3L14 4M7 14l-4 7 7-4M14 6l4 4"/>'],
+  ["Đơn thuốc", '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M9 3v3h6V3M9 12h6M9 16h4"/>'],
+  ["Danh mục giá & quyền lợi", '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M12 15v3"/>'],
+  ["Quyền lợi CBNV Vingroup", '<circle cx="12" cy="12" r="8"/><path d="M12 7v10M9 9.5h4.5a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3H15"/>', false, true],
+  ["Cộng đồng hỏi đáp bác sĩ", '<rect x="4" y="3" width="11" height="17" rx="2"/><path d="M7 8h5M7 12h5"/><circle cx="18" cy="9" r="3"/>'],
+  ["Cẩm nang làm mẹ", '<circle cx="10" cy="7" r="3"/><path d="M5 20c0-5 2-8 5-8s5 3 5 8M15 14a3 3 0 1 0 4 0"/>'],
+  ["Nhắc lịch uống thuốc", '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h4M7 13h3"/><circle cx="16" cy="13" r="3"/>'],
+  ["Tạm ứng viện phí", '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/>'],
+  ["Tất cả dịch vụ", '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>'],
+];
+document.getElementById("homeGrid").innerHTML = TILES.map(([name, path, live, isNew]) => `
+  <button class="tile" onclick="${live ? "openAppt()" : `toast('${name} không có trong prototype')`}">
+    ${isNew ? '<span class="new">Mới</span>' : ""}<span class="ic${isNew ? " dash" : ""}">${ICON(path)}</span>${esc(name)}
+  </button>`).join("");
+
+const apptDate = new Date(Date.now() + 3 * 864e5);
+document.getElementById("apptDate").textContent =
+  apptDate.toLocaleDateString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit" }) + " · 09:30 · Cơ sở giả lập";
+document.getElementById("apptWd").textContent = ["CN", "Th 2", "Th 3", "Th 4", "Th 5", "Th 6", "Th 7"][apptDate.getDay()];
+document.getElementById("apptDay").textContent = String(apptDate.getDate()).padStart(2, "0");
+document.getElementById("apptMon").textContent = "Th" + (apptDate.getMonth() + 1);
+const now = new Date();
+document.getElementById("clock").textContent = now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0");
+
+document.querySelectorAll(".choice").forEach(group => group.addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  group.querySelectorAll("button").forEach(b => b.classList.remove("sel"));
+  btn.classList.add("sel");
+  state[group.dataset.key] = btn.dataset.v;
+  if (group.dataset.key === "service") document.getElementById("apptService").textContent = SERVICES[state.service] || "";
+}));
+
+function startPrep() {
+  state.startedAt = Date.now();
+  track("start_prep", { step: state.service });
+  document.getElementById("tellTitle").textContent = state.for_whom === "nguoi-than"
+    ? "Người thân của bạn cần bác sĩ giúp gì?" : "Bạn muốn bác sĩ giúp gì lần này?";
+  go("s-tell");
+}
+function skipPrep(btn) {
+  track("skip_prep");
+  btn.outerHTML = '<p class="muted" style="font-size:13px;margin:10px 0 6px">Lịch hẹn vẫn giữ nguyên. App sẽ nhắc lại một lần trước ngày khám (giả lập).</p>';
+}
+
+async function runPrepare() {
+  const box = document.getElementById("story"), text = box.value.trim();
+  if (text.length < 3) { box.focus(); return; }
+  const btn = document.getElementById("btnPrep");
+  btn.disabled = true; btn.textContent = "Đang sắp xếp…";
+  try {
+    state.result = await api("/api/prepare", { text, service: state.service, for_whom: state.for_whom, age_group: state.age_group });
+    renderSummary();
+    go("s-summary");
+  } finally { btn.disabled = false; btn.textContent = "Tạo phiếu cho bác sĩ"; }
+}
+
+const LABELS = { ly_do: "Lý do chính", tu_khi_nao: "Từ khi nào", da_lam: "Đã khám / đã dùng thuốc / đã thử",
+                 dieu_lo: "Điều lo nhất", mong_muon: "Mong bác sĩ giúp" };
+
+function renderSummary() {
+  const r = state.result, el = document.getElementById("summary");
+  if (r.red_flag) {
+    el.innerHTML = `
+      <div class="card emergency" style="margin-top:14px">
+        <div class="sos">115</div>
+        <h2>Có thể cần cấp cứu ngay</h2>
+        <p>Lời kể có dấu hiệu: <b>${r.red_flag_reasons.map(esc).join(", ")}</b>.</p>
+        <p>Đừng chờ tới ngày hẹn. Gọi <b>115</b> hoặc đến khoa Cấp cứu gần nhất ngay.</p>
+        <a class="btn danger" href="tel:115" onclick="track('emergency_ack',{step:'call115'})">Gọi 115</a>
+        <p class="disclaimer">App không chẩn đoán. Cảnh báo này hiện ra mỗi khi lời kể có dấu hiệu nguy hiểm, kể cả khi có thể là nhầm.</p>
+      </div>
+      <button class="btn link" onclick="track('emergency_ack',{step:'edit'});go('s-tell')">Tôi kể nhầm, sửa lại</button>`;
+    return;
+  }
+  const byKey = Object.fromEntries(r.fields.map(f => [f.key, f]));
+  state.original = Object.fromEntries(r.fields.map(f => [f.key, f.value]));
+  const rows = Object.entries(LABELS).map(([k, label]) => {
+    const f = byKey[k];
+    return `
+      <div class="field" data-k="${k}">
+        <div class="lab">${esc(label)} ${f ? `<button onclick="clearField('${k}')">Xoá</button>` : ""}</div>
+        <input type="text" value="${f ? esc(f.value) : ""}" placeholder="${f ? "" : "(chưa có, thêm nếu muốn)"}">
+        ${f ? `<div class="quote">Bạn đã kể: “${esc(f.quote)}”</div>` : ""}
+      </div>`;
+  }).join("");
+  el.innerHTML = `
+    <h2 class="ft">Kiểm tra lại phiếu</h2>
+    <p class="hint">App chỉ sắp xếp lời bạn kể${r.mode.startsWith("llm") ? " (có AI hỗ trợ)" : ""}, không thêm thông tin. Sai chỗ nào, sửa chỗ đó.</p>
+    <div class="group-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Thông tin gửi bác sĩ <span class="muted" style="font-size:12px;font-weight:400">· chạm để sửa</span></div>
+    ${rows}
+    <details><summary>Xem nguyên văn lời kể</summary>${esc(document.getElementById("story").value)}</details>
+    <button class="btn primary" onclick="confirmSummary()">Đúng rồi, tiếp tục</button>
+    <button class="btn link" onclick="go('s-tell')">Kể lại</button>`;
+}
+function clearField(k) { document.querySelector(`.field[data-k="${k}"] input`).value = ""; }
+
+function confirmSummary() {
+  const edited = [], deleted = [], added = [];
+  state.final = {};
+  document.querySelectorAll("#summary .field").forEach(div => {
+    const k = div.dataset.k, v = div.querySelector("input").value.trim(), orig = state.original[k];
+    if (v) state.final[k] = v;
+    if (orig !== undefined && !v) deleted.push(k);
+    else if (orig !== undefined && v !== orig) edited.push(k);
+    else if (orig === undefined && v) added.push(k);
+  });
+  track("confirm_summary", { edited, deleted, added });
+  const r = state.result;
+  state.questions = [...r.questions_own.map(q => ({ text: q, kind: "own", on: true })),
+                     ...r.questions_suggested.map(q => ({ text: q, kind: "suggested", on: false }))];
+  renderQuestions();
+  go("s-questions");
+}
+
+function renderQuestions() {
+  document.getElementById("qList").innerHTML = state.questions.length ? state.questions.map((q, i) => `
+    <label class="q"><input type="checkbox" ${q.on ? "checked" : ""} onchange="state.questions[${i}].on=this.checked">
+      <span>${esc(q.text)} ${q.kind === "own" ? '<span class="tag">bạn đã kể</span>' : q.kind === "custom" ? '<span class="tag">bạn thêm</span>' : '<span class="tag gen">gợi ý chung</span>'}</span>
+    </label>`).join("") : '<p class="muted">Chưa có câu hỏi nào.</p>';
+}
+function addQuestion() {
+  const box = document.getElementById("qNew"), t = box.value.trim();
+  if (!t) return;
+  state.questions.push({ text: t, kind: "custom", on: true });
+  box.value = ""; renderQuestions();
+}
+function confirmQuestions() {
+  const on = state.questions.filter(q => q.on);
+  track("confirm_questions", { own_kept: on.filter(q => q.kind === "own").length,
+                               suggested_chosen: on.filter(q => q.kind === "suggested").length,
+                               custom_added: on.filter(q => q.kind === "custom").length });
+  const list = state.result.checklist;
+  document.getElementById("checkHint").textContent = "Cho lịch hẹn: " + state.result.service_name +
+    (state.age_group === "tre-em" ? " · trẻ em" : "");
+  document.getElementById("checkList").innerHTML = list.map(i => `
+    <label class="q"><input type="checkbox"><span>${esc(i.text)}${i.why ? ` <span class="tag">${esc(i.why)}</span>` : ""}<br>
+      <span class="src">${i.source === "vinmec" ? `Theo hướng dẫn công khai của <a href="${i.url}" target="_blank" rel="noopener">Vinmec</a>` : "Đề xuất của prototype, cần bệnh viện xác nhận"}</span></span>
+    </label>`).join("");
+  go("s-check");
+}
+
+function submitPrep() {
+  const seconds = state.startedAt ? Math.round((Date.now() - state.startedAt) / 1000) : null;
+  track("submit", { seconds });
+  const who = (state.for_whom === "nguoi-than" ? "Người thân đặt hộ" : "Người bệnh tự kể") +
+              " · " + (state.age_group === "tre-em" ? "trẻ em" : "người lớn");
+  const fields = Object.entries(LABELS).filter(([k]) => state.final[k])
+    .map(([k, l]) => `<dt>${esc(l)}</dt><dd>${esc(state.final[k])}</dd>`).join("");
+  const qs = state.questions.filter(q => q.on).map(q => `<li>${esc(q.text)}</li>`).join("");
+  document.getElementById("doctorView").innerHTML = `
+    <span class="cap">Bác sĩ thấy phiếu này trước giờ khám</span>
+    <h3>${esc(state.result.service_name)}</h3>
+    <span class="muted" style="font-size:12.5px">${esc(who)} · đã xem lại và xác nhận</span>
+    <dl>${fields || '<dd class="muted">Không có thông tin.</dd>'}</dl>
+    ${qs ? `<b style="font-size:13.5px">Người bệnh muốn hỏi</b><ol style="margin:4px 0 0;padding-left:20px;font-size:14px">${qs}</ol>` : ""}`;
+  go("s-done");
+}
+
+function feedback(useful) {
+  track("feedback", { useful, comment: document.getElementById("fbText").value });
+  document.getElementById("fb").innerHTML = "<b>Cảm ơn bạn!</b> Phản hồi đã được ghi lại (ẩn danh).";
+}
+
+function restart() {
+  track("restart");
+  Object.assign(state, { service: "kham-chuyen-khoa", for_whom: "ban-than", age_group: "nguoi-lon",
+                         session_id: newId(), result: null, startedAt: null, questions: [], final: {} });
+  document.getElementById("story").value = "";
+  document.getElementById("cnt").textContent = "0";
+  document.querySelectorAll(".choice").forEach(g => g.querySelectorAll("button").forEach((x, i) => x.classList.toggle("sel", i === 0)));
+  document.getElementById("apptService").textContent = SERVICES[state.service] || "";
+  document.getElementById("fb").innerHTML = `
+      <b>Phần chuẩn bị này có giúp bạn không?</b>
+      <div class="row"><button class="btn ghost" onclick="feedback(true)">Có</button><button class="btn ghost" onclick="feedback(false)">Không</button></div>
+      <textarea id="fbText" placeholder="Có gì thiếu, thừa hoặc làm bạn chưa yên tâm? (không bắt buộc)" style="min-height:70px;margin-top:10px"></textarea>`;
+  go("s-appt");
+}
+
+go("s-appt");
+api("/api/config").then(c => {
+  SERVICES = c.services;
+  document.getElementById("apptService").textContent = SERVICES[state.service];
+  document.getElementById("modePill").textContent = c.mode === "llm" ? "Chế độ: AI (LLM)" : "Chế độ: luật";
+});
+</script>
+</body>
+</html>

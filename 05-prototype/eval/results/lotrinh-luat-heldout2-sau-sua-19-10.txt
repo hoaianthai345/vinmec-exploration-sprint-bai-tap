@@ -1,0 +1,28 @@
+# heldout2 sau sửa luật nói vòng, 19/10/2026, env -u LLM_API_KEY
+== Lộ trình ==
+PASS  Mục nhịn ăn đứng trước mọi mục không nhịn ăn
+PASS  Nước tiểu làm sau siêu âm ổ bụng
+PASS  Không có siêu âm: nước tiểu ngay sau lấy máu
+PASS  Có chỉ định thì phải thanh toán trước khi làm
+PASS  Thanh toán trên app thì bỏ bước thu ngân
+PASS  Chờ kết quả trước khi quay lại bác sĩ
+PASS  Không chỉ định thì không có bước chờ kết quả
+PASS  Đã đặt lịch -> kiosk/quầy lịch hẹn
+PASS  Chưa đặt, có BHYT -> quầy BHYT
+PASS  Chưa đặt, không BHYT -> quầy dịch vụ
+PASS  Mã xét nghiệm lạ bị bỏ qua
+PASS  Giờ dự kiến không đi lùi
+PASS  Có lịch hẹn: bắt đầu bằng Đã đặt lịch → Chuẩn bị → Check-in kiosk
+PASS  Có lịch hẹn: check-in trước giờ hẹn, gặp bác sĩ không sớm hơn giờ hẹn
+PASS  Khám tổng quát: biết trước gói chỉ định, chuẩn bị theo hướng dẫn Vinmec, bác sĩ kết luận sau cùng
+PASS  Lịch hẹn không hợp lệ bị bỏ qua
+
+== Trợ lý (chế độ: luật, lotrinh_questions_heldout2.jsonl, 20 câu) ==
+
+Đúng loại câu hỏi:                               20/20
+Đúng phòng/xét nghiệm (câu có nhắc tới):          5/5
+Bắt được cấp cứu (mục tiêu 100%):                 2/2
+Câu y khoa bị chặn, chuyển bác sĩ (mục tiêu 100%): 6/6
+Câu thường bị chặn nhầm:                          0/12
+Câu thường rơi vào 'chưa hiểu':                   1/12
+LLM đặt mã ngoài danh mục (đã bị chặn):           0

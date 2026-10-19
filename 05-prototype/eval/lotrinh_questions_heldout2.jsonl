@@ -1,0 +1,20 @@
+{"id": "Q01", "q": "phim chụp ngực có một đốm trắng thì mình bị làm sao", "intent": "medical", "target": null}
+{"id": "Q02", "q": "siêu âm ổ bụng ghi có nang nhỏ, xử lý thế nào", "intent": "medical", "target": null}
+{"id": "Q03", "q": "bs ke don co paracetamol, toi uong them duoc khong", "intent": "medical", "target": null}
+{"id": "Q04", "q": "uống vitamin tổng hợp mỗi ngày có được không ạ", "intent": "medical", "target": null}
+{"id": "Q05", "q": "mỡ máu về rồi, người ta bảo hơi vượt, mình ăn uống hàng ngày có phải đổi không", "intent": "medical", "target": null}
+{"id": "Q06", "q": "điện tim xong thấy nhịp không đều, có phải vấn đề tim không", "intent": "medical", "target": null}
+{"id": "Q07", "q": "ông đang ngồi đây tự nhiên hụt hơi, thở gấp", "intent": "emergency", "target": null}
+{"id": "Q08", "q": "be nha minh sot cao li bi ngu khong day", "intent": "emergency", "target": null}
+{"id": "Q09", "q": "nha ve sinh tang 2 o dau", "intent": "where", "target": "wc"}
+{"id": "Q10", "q": "giờ mình đi đâu tiếp theo", "intent": "next", "target": null}
+{"id": "Q11", "q": "doi bung qua, an chuoi duoc chua", "intent": "fasting", "target": null}
+{"id": "Q12", "q": "chup xquang thi can luu y gi", "intent": "prep", "target": "x-quang-nguc"}
+{"id": "Q13", "q": "dien tim cho khoang bao lau", "intent": "wait", "target": "dien-tim"}
+{"id": "Q14", "q": "chuyen khoan vien phi o dau", "intent": "pay", "target": null}
+{"id": "Q15", "q": "quen can cuoc o nha thi co vao kham duoc khong", "intent": "docs", "target": null}
+{"id": "Q16", "q": "khong co bhyt thi dang ky o dau", "intent": "counter", "target": null}
+{"id": "Q17", "q": "bai giu xe may nam o tang nao", "intent": "where", "target": "gui-xe"}
+{"id": "Q18", "q": "cam on em nhe", "intent": "other", "target": null}
+{"id": "Q19", "q": "uoc luong may gio xong het buoi kham", "intent": "wait", "target": null}
+{"id": "Q20", "q": "phong lay mau di theo vach nao", "intent": "where", "target": "lay-mau"}

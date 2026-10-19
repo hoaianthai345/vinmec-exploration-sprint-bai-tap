@@ -1,0 +1,18 @@
+== Trợ lý (chế độ: luật, lotrinh_questions_heldout.jsonl, 20 câu) ==
+FAIL  H01 chỗ siêu âm nằm ở khu nào vậy em               kỳ vọng where/sieu-am -> where/sieu-am-bung
+FAIL  H03 phòng x quang                                  kỳ vọng where/x-quang -> other/x-quang-nguc
+FAIL  H04 bãi đỗ ô tô ở đâu                              kỳ vọng where/gui-xe -> where/None
+FAIL  H05 vậy giờ tôi phải làm gì                        kỳ vọng next/None -> other/None
+FAIL  H09 điện tim có cần chuẩn bị gì không              kỳ vọng prep/dien-tim -> medical/dien-tim
+FAIL  H12 quẹt thẻ ngân hàng ở đâu                       kỳ vọng pay/None -> where/None
+FAIL  H14 người già đi khám bhyt thì đăng ký chỗ nào     kỳ vọng counter/None -> where/quay-bhyt
+FAIL  H16 x quang thấy phổi mờ là bị gì                  kỳ vọng medical/None -> other/x-quang-nguc
+FAIL  H17 có nên uống thêm vitamin không                 kỳ vọng medical/None -> other/None
+
+Đúng loại câu hỏi:                               13/20
+Đúng phòng/xét nghiệm (câu có nhắc tới):          3/6
+Bắt được cấp cứu (mục tiêu 100%):                 2/2
+Câu y khoa bị chặn, chuyển bác sĩ (mục tiêu 100%): 1/3
+Câu thường bị chặn nhầm:                          1/15
+Câu thường rơi vào 'chưa hiểu':                   3/15
+LLM đặt mã ngoài danh mục (đã bị chặn):           0

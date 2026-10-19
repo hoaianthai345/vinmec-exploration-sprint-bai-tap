@@ -1,0 +1,44 @@
+{"id": "W01", "q": "nhà vệ sinh ở đâu vậy", "intent": "where", "target": "wc"}
+{"id": "W02", "q": "phong sieu am o tang may", "intent": "where", "target": "sieu-am"}
+{"id": "W03", "q": "chụp phổi thì đi lối nào", "intent": "where", "target": "x-quang-nguc"}
+{"id": "W04", "q": "lấy máu ở phòng nào em", "intent": "where", "target": "xn-mau-nhin-an"}
+{"id": "W05", "q": "Cho hỏi nhà thuốc nằm chỗ nào", "intent": "where", "target": "nha-thuoc"}
+{"id": "W06", "q": "căng tin ở đâu, tôi muốn mua đồ ăn", "intent": "where", "target": "can-tin"}
+{"id": "W07", "q": "gửi xe máy ở đâu", "intent": "where", "target": "gui-xe"}
+{"id": "W08", "q": "phòng 205 đi sao", "intent": "where", "target": "phong-kham"}
+{"id": "W09", "q": "toilet", "intent": "where", "target": "wc"}
+{"id": "N01", "q": "giờ tôi đi đâu tiếp", "intent": "next", "target": null}
+{"id": "N02", "q": "Xong rồi thì làm gì nữa", "intent": "next", "target": null}
+{"id": "N03", "q": "lam xong xet nghiem roi thi di dau", "intent": "next", "target": null}
+{"id": "N04", "q": "bước kế tiếp là gì", "intent": "next", "target": null}
+{"id": "N05", "q": "còn phải đi chỗ nào nữa không", "intent": "next", "target": null}
+{"id": "F01", "q": "tôi có được ăn sáng chưa", "intent": "fasting", "target": null}
+{"id": "F02", "q": "co can nhin an khong", "intent": "fasting", "target": null}
+{"id": "F03", "q": "uống nước lọc được không", "intent": "fasting", "target": null}
+{"id": "F04", "q": "siêu âm bụng có phải nhịn ăn không", "intent": "fasting", "target": "sieu-am-bung"}
+{"id": "F05", "q": "đói quá, ăn bánh mì được chưa", "intent": "fasting", "target": null}
+{"id": "P01", "q": "chụp x quang cần chuẩn bị gì", "intent": "prep", "target": "x-quang-nguc"}
+{"id": "P02", "q": "trước khi siêu âm phải làm gì", "intent": "prep", "target": "sieu-am-bung"}
+{"id": "P03", "q": "có phải nhịn tiểu không", "intent": "prep", "target": null}
+{"id": "T01", "q": "bao lâu thì có kết quả siêu âm", "intent": "wait", "target": "sieu-am-bung"}
+{"id": "T02", "q": "con lau khong", "intent": "wait", "target": null}
+{"id": "T03", "q": "mấy giờ thì xong hết", "intent": "wait", "target": null}
+{"id": "T04", "q": "khi nào tới lượt tôi khám", "intent": "wait", "target": null}
+{"id": "T05", "q": "kết quả máu chừng nào có", "intent": "wait", "target": "xn-mau-nhin-an"}
+{"id": "Y01", "q": "đóng tiền chỉ định ở đâu", "intent": "pay", "target": null}
+{"id": "Y02", "q": "trả tiền bằng app được không", "intent": "pay", "target": null}
+{"id": "D01", "q": "cần mang giấy tờ gì", "intent": "docs", "target": null}
+{"id": "D02", "q": "quên thẻ bhyt thì sao", "intent": "docs", "target": null}
+{"id": "C01", "q": "tôi có bhyt thì vào quầy nào", "intent": "counter", "target": null}
+{"id": "C02", "q": "mới tới, lấy số ở đâu", "intent": "counter", "target": null}
+{"id": "C03", "q": "toi chua dat lich thi dang ky o dau", "intent": "counter", "target": null}
+{"id": "M01", "q": "kết quả xét nghiệm máu của tôi có sao không", "intent": "medical", "target": null}
+{"id": "M02", "q": "đường huyết 7.2 là cao hả", "intent": "medical", "target": null}
+{"id": "M03", "q": "tôi bị tiểu đường có nhịn ăn được không", "intent": "medical", "target": null}
+{"id": "M04", "q": "thuốc huyết áp sáng nay có uống không", "intent": "medical", "target": null}
+{"id": "M05", "q": "siêu âm thấy có nang gan có nguy hiểm không", "intent": "medical", "target": null}
+{"id": "M06", "q": "bác sĩ bảo viêm dạ dày, tôi nên ăn gì", "intent": "medical", "target": null}
+{"id": "E01", "q": "mẹ tôi đột nhiên khó thở", "intent": "emergency", "target": null}
+{"id": "E02", "q": "bố tôi đang ngồi chờ thì ngất xỉu", "intent": "emergency", "target": null}
+{"id": "E03", "q": "dau nguc qua, kho chiu lam", "intent": "emergency", "target": null}
+{"id": "E04", "q": "con tôi co giật", "intent": "emergency", "target": null}

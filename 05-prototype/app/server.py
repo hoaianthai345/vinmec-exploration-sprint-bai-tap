@@ -1,7 +1,8 @@
-"""Server local cho prototype "Chuẩn bị buổi khám". Chỉ dùng thư viện chuẩn của Python.
+"""Server local cho prototype. Chỉ dùng thư viện chuẩn của Python.
 
-Trang chính (/) là luồng Chuẩn bị buổi khám (prep.py). Trang /chon-khoa.html là module gợi ý chuyên khoa cũ
-(triage.py), giữ lại cho backlog B1.
+Trang chính (/) là "Lộ trình khám trong ngày" (lotrinh.py, hướng hiện hành từ 18/10/2026).
+Các bản trước vẫn chạy để đối chiếu: /index-v2.html và /index-v1.html là "Chuẩn bị buổi khám" (prep.py, hướng H1);
+/chon-khoa.html là gợi ý chuyên khoa (triage.py, hướng H0, backlog B1).
 
 Chạy:  python3 server.py            (chế độ luật, không cần API key)
        LLM_API_KEY=... LLM_MODEL=... [LLM_BASE_URL=...] python3 server.py   (chế độ LLM)
@@ -15,8 +16,10 @@ import json
 import os
 import pathlib
 import random
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
+import lotrinh
 import prep
 import triage
 
@@ -55,6 +58,16 @@ def mock_slots(specialty: str) -> list[dict]:
     return slots
 
 
+def lotrinh_visit(data: dict) -> dict:
+    """Chỉ nhận các trường đã biết; mã xét nghiệm phải có trong danh mục."""
+    visit = data.get("visit") or {}
+    return {"purpose": visit.get("purpose") if visit.get("purpose") in lotrinh.PURPOSES else "kham-benh",
+            **{k: bool(visit.get(k)) for k in ("booked", "bhyt", "first_time", "paid_in_app")},
+            "tests": [t for t in (visit.get("tests") or []) if t in lotrinh.TESTS],
+            "start_min": int(visit.get("start_min")) % 1440 if str(visit.get("start_min", "")).isdigit() else 480,
+            "appt": lotrinh.valid_appt(visit.get("appt"))}
+
+
 class Handler(BaseHTTPRequestHandler):
     def _send(self, status: int, body: bytes, ctype: str) -> None:
         self.send_response(status)
@@ -73,8 +86,13 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/api/config":
             return self._json(200, {"mode": "llm" if triage.llm_configured() else "rules",
                                     "specialties": triage.SPECIALTIES,
-                                    "services": {k: v["name"] for k, v in prep.SERVICES.items()}})
-        name = "index.html" if self.path in ("/", "/index.html") else self.path.lstrip("/")
+                                    "services": {k: v["name"] for k, v in prep.SERVICES.items()},
+                                    "purposes": lotrinh.PURPOSES,
+                                    "tests": {k: v["name"] for k, v in lotrinh.TESTS.items()},
+                                    "booking": {k: v["name"] for k, v in lotrinh.BOOKING.items()},
+                                    "slots": lotrinh.SLOTS})
+        path = urllib.parse.urlsplit(self.path).path  # bỏ query (?tour=1)
+        name = "index.html" if path in ("/", "/index.html") else path.lstrip("/")
         file = (STATIC / name).resolve()
         if not str(file).startswith(str(STATIC.resolve())) or not file.is_file():
             return self._send(404, b"Not found", "text/plain")
@@ -90,6 +108,25 @@ class Handler(BaseHTTPRequestHandler):
 
         session = str(data.get("session_id", ""))[:40]
         tester = str(data.get("tester_id", ""))[:20]
+
+        if self.path == "/api/route":
+            visit = lotrinh_visit(data)
+            result = lotrinh.build_route(visit)
+            log_event({"event": "route", "session_id": session, "tester_id": tester, **visit,
+                       "steps": [st["id"] for st in result["steps"]]})
+            return self._json(200, result)
+
+        if self.path == "/api/ask":
+            question = str(data.get("question", ""))[:500]
+            done = [str(x)[:40] for x in (data.get("done") or [])][:30]
+            result = lotrinh.ask(question, lotrinh_visit(data), done)
+            log_event({"event": "ask", "session_id": session, "tester_id": tester, "done": done,
+                       "via": str(data.get("via", ""))[:10],
+                       **{k: result[k] for k in ("question_masked", "mode", "intent", "target", "red_flag",
+                                                 "red_flag_reasons", "medical", "guardrail_issues", "latency_ms")},
+                       "fallback": bool(result["answer"].get("fallback"))})
+            result.pop("question_masked")
+            return self._json(200, result)
 
         if self.path == "/api/prepare":
             text = str(data.get("text", ""))[:1500]
@@ -131,12 +168,15 @@ class Handler(BaseHTTPRequestHandler):
             allowed = {"choose_specialty", "manual_specialty", "book", "call_hotline",
                        "emergency_ack", "feedback", "restart",
                        # Chuẩn bị buổi khám
-                       "start_prep", "skip_prep", "confirm_summary", "confirm_questions", "submit"}
+                       "start_prep", "skip_prep", "confirm_summary", "confirm_questions", "submit",
+                       # Lộ trình khám trong ngày
+                       "step_done", "step_undo", "orders_added", "open_assistant", "show_directions", "finish_visit",
+                       "book_appt", "open_appt_route"}
             if data.get("event") not in allowed:
                 return self._json(400, {"error": "Sự kiện không hợp lệ"})
             detail = {k: data.get(k) for k in ("specialty", "slot", "useful", "comment", "step", "edited",
                                                 "deleted", "added", "own_kept", "suggested_chosen",
-                                                "custom_added", "seconds")
+                                                "custom_added", "seconds", "tests", "saved_questions", "appt")
                       if data.get(k) is not None}
             if "comment" in detail:
                 detail["comment"] = triage.mask_pii(str(detail["comment"]))[:500]

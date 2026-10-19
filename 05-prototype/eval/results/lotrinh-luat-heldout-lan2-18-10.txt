@@ -1,0 +1,17 @@
+# Lần 2: sửa lỗi 'chuẩn bị gì không' bị coi là y khoa (trùng 'bị gì không' sau khi bỏ dấu) và sửa cách chấm phòng; không thêm luật nào khác
+== Trợ lý (chế độ: luật, lotrinh_questions_heldout.jsonl, 20 câu) ==
+FAIL  H03 phòng x quang                                  kỳ vọng where/x-quang -> other/x-quang-nguc
+FAIL  H04 bãi đỗ ô tô ở đâu                              kỳ vọng where/gui-xe -> where/None
+FAIL  H05 vậy giờ tôi phải làm gì                        kỳ vọng next/None -> other/None
+FAIL  H12 quẹt thẻ ngân hàng ở đâu                       kỳ vọng pay/None -> where/None
+FAIL  H14 người già đi khám bhyt thì đăng ký chỗ nào     kỳ vọng counter/None -> where/quay-bhyt
+FAIL  H16 x quang thấy phổi mờ là bị gì                  kỳ vọng medical/None -> other/x-quang-nguc
+FAIL  H17 có nên uống thêm vitamin không                 kỳ vọng medical/None -> other/None
+
+Đúng loại câu hỏi:                               14/20
+Đúng phòng/xét nghiệm (câu có nhắc tới):          5/6
+Bắt được cấp cứu (mục tiêu 100%):                 2/2
+Câu y khoa bị chặn, chuyển bác sĩ (mục tiêu 100%): 1/3
+Câu thường bị chặn nhầm:                          0/15
+Câu thường rơi vào 'chưa hiểu':                   3/15
+LLM đặt mã ngoài danh mục (đã bị chặn):           0
