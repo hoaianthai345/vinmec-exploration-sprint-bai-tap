@@ -74,7 +74,7 @@ như Vinmec. Nếu need statement chỉ đo "đổi khoa khi đến viện", r�
 - **Công sức:** số lần người dùng phải mô tả lại và thời gian tới lúc đặt xong.
 
 Phỏng vấn nên hỏi thêm: *"Lần gần nhất bạn có phân vân giữa hai khoa không? Bạn đã làm gì?"* và *"Tổng đài gọi lại có
-đổi khoa giúp bạn không?"* (câu sau đã có trong `interview-guide.md`, câu 6). Nếu hầu hết người được hỏi đều chọn đúng khoa
+đổi khoa giúp bạn không?"* (`interview-guide.md` bản 2 hỏi ở chặng C1 và C2). Nếu hầu hết người được hỏi đều chọn đúng khoa
 mà không mất công, trọng tâm nên nghiêng hẳn về **an toàn cấp cứu và giảm phải kể lại**, không nghiêng về "chọn đúng khoa".
 
 ## Nguồn

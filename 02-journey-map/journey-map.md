@@ -1,44 +1,49 @@
-# Journey map: từ lúc đặt lịch xong tới lúc gặp bác sĩ
+# Journey map (bản 2, 18/10/2026): một buổi khám ngoại trú, từ cửa viện tới lúc nhận thuốc
 
-> **Trạng thái: BẢN GIẢ THUYẾT.** Bước 1–3 dựa trên dùng thử MyVinmec thật (2 video, 15/10/2026). Cảm xúc và điểm đau
-> ở bước 4–7 là giả thuyết từ nghiên cứu, **chưa có phỏng vấn**.
-> ⚠️ THÁI CẬP NHẬT sau phỏng vấn: gắn mã P vào từng điểm đau, xoá điểm đau không ai nhắc tới, thêm điểm đau mới.
+> Bản 1 (đoạn "đặt lịch xong → gặp bác sĩ", hướng H1) giữ ở [journey-map-v1.md](journey-map-v1.md).
+> Bản 2 trước khi gắn bằng chứng: [journey-map-v2.md](journey-map-v2.md).
+> **Trạng thái (18/10 tối):** cột "Bằng chứng" chỉ ghi nguồn có thật. **P1, P2** là hai buổi có bản ghi. Điểm đau nào chưa
+> có trong bản ghi thì ghi rõ "chưa có bằng chứng phỏng vấn"; đó là giả thuyết từ desk research hoặc từ lời Thái nhớ lại.
 
-Persona giả định: người đi làm 25–40 tuổi, đặt lịch cho chính mình hoặc đi khám cùng bố mẹ.
+Persona: người đến khám lần đầu, **không đặt lịch trước**, có thể đi cùng bố mẹ lớn tuổi.
 
 ```mermaid
 journey
-    title Từ lúc đặt lịch xong tới lúc gặp bác sĩ (giả thuyết)
-    section Đặt lịch
-      Chọn cơ sở, khoa hoặc triệu chứng, ngày mong muốn: 4: Người bệnh
-      Gõ lý do khám tối đa 120 ký tự: 2: Người bệnh
-    section Chờ xác nhận
-      Tổng đài gọi lại, hỏi lại tình trạng: 3: Người bệnh, Tổng đài
-    section Chuẩn bị trước hôm khám
-      Tự tìm cần nhịn ăn, mang gì: 2: Người bệnh
+    title Một buổi khám ngoại trú (bản 2)
     section Đến viện
-      Kể lại cho quầy hoặc điều dưỡng: 2: Người bệnh, Điều dưỡng
-      Phải làm lại vì chuẩn bị sai: 1: Người bệnh
-    section Gặp bác sĩ
-      Kể bệnh trong vài phút, bị ngắt lời: 2: Người bệnh, Bác sĩ
-      Ra khỏi phòng mới nhớ điều quên hỏi: 1: Người bệnh
+      Tìm đúng quầy đăng ký: 1: Người bệnh
+      Lấy số, chờ gọi: 2: Người bệnh
+    section Khám lần 1
+      Đo sinh hiệu, chờ trước phòng khám: 3: Người bệnh, Điều dưỡng
+      Bác sĩ khám, chỉ định xét nghiệm: 3: Người bệnh, Bác sĩ
+    section Làm chỉ định
+      Thanh toán chỉ định: 2: Người bệnh
+      Tìm từng phòng, không biết thứ tự: 1: Người bệnh
+      Còn phải nhịn ăn, không biết khi nào ăn được: 2: Người bệnh
+    section Chờ kết quả
+      Không biết khi nào có kết quả: 2: Người bệnh
+      Quay lại phòng khám, xếp hàng lại: 2: Người bệnh, Bác sĩ
+    section Kết thúc
+      Thanh toán, nhận thuốc: 3: Người bệnh
 ```
 
 | Bước | Người bệnh làm gì | Suy nghĩ / cảm xúc | Điểm đau | Bằng chứng |
 |---|---|---|---|---|
-| 1. Đặt lịch | Chọn cơ sở → theo bác sĩ, khoa hoặc triệu chứng → **ngày mong muốn** (không chọn giờ) | 😀 | — | Video V1 1:20–1:31 |
-| 2. Gõ lý do khám | Gõ vào ô ≤ 120 ký tự; nếu đã nói chuyện với MIA thì gõ lại | "Lại phải gõ nữa à" 😐 | ⚡ **Đ1. Kể đi kể lại**: form triệu chứng, MIA, ô lý do khám, rồi tổng đài, điều dưỡng, bác sĩ | Dùng thử: T3 (V2 1:07–1:47); phỏng vấn: P? |
-| 3. Chờ xác nhận | Tổng đài gọi lại chốt giờ | Chưa biết hôm đó cần gì 😐 | — | Desk research form web; phỏng vấn: P? |
-| 4. Chuẩn bị trước hôm khám | Tự tra "có cần nhịn ăn không", hỏi người quen | "Không biết có phải xét nghiệm máu không" 😟 | ⚡ **Đ2. Không biết cần chuẩn bị gì** cho đúng lịch hẹn của mình; hướng dẫn chỉ có dạng bài viết chung trên web | Trang Vinmec "Những lưu ý trước khi khám sức khỏe tổng quát"; app: chưa thấy; phỏng vấn: P? |
-| 5. Đến viện | Kể lại lý do ở quầy hoặc với điều dưỡng; có thể phải chờ vì chưa nhịn ăn | 😤 nếu phải làm lại | ⚡ **Đ3. Chuẩn bị sai → chờ thêm hoặc hẹn lại** | P? |
-| 6. Gặp bác sĩ | Kể trong vài phút | Hồi hộp, sợ làm mất thời gian bác sĩ 😟 | ⚡ **Đ4. Không nói hết điều lo, bị ngắt lời** | Nghiên cứu: chỉ 4/35 nói hết điều định nói; bác sĩ hỏi người bệnh muốn bàn gì ở 36% lượt khám, ngắt lời sau trung vị 11 giây. Phỏng vấn: P? |
-| 7. Ra khỏi phòng | Nhớ ra điều quên hỏi | "Thôi để lần sau" 😞 | ⚡ **Đ5. Quên hỏi**, phải gọi lại hoặc tra mạng | P? |
-| 6b. Đi cùng hoặc thay người thân | Kể giúp bố mẹ hoặc con | "Không phải mình nên không nắm hết" 😟 | ⚡ **Đ6. Người kể không phải người bệnh** | P? |
-| (ẩn) Tình huống nguy hiểm | Người có dấu hiệu cấp cứu vẫn đặt lịch thường | Không nhận ra mức độ | ⚡ **Đ7. Trì hoãn cấp cứu** (an toàn, không phải tiện lợi) | Dùng thử: T1, T2 |
+| 1. Vào cửa viện | Đến sớm lấy số, quét thẻ BHYT, tự chọn khoa (P1) | 😐 | Đ1. Không biết quầy nào (**giả thuyết**) | **Chưa có bằng chứng phỏng vấn (0/2).** P1 mô tả ngược lại: "giờ nó quét bằng má, quét bằng máy hết rồi" [01:43]. Thái nhớ lại từ cuộc không ghi |
+| 2. Đăng ký, điền phiếu | Điền thông tin cá nhân, nói tình trạng (P2) | 😐 | — | P2 [01:08]. Ý "phiếu là trắc nghiệm" không có trong bản ghi |
+| 3. Chờ, gặp bác sĩ lần 1 | Đo sinh hiệu, chờ gọi số | Sốt ruột khi số "nhảy cóc" 😐 | ⚡ **Đ2. Không hiểu thứ tự gọi số** | VnReview (số cấp cho cả lộ trình) |
+| 4. Thanh toán chỉ định | Ra thu ngân hoặc trả trên app | "Lại xếp hàng" 😐 | ⚡ Đ3. Thêm một lần xếp hàng (UMC Care, MyVinmec đã cho trả trên app) | UMC Care: thanh toán chỉ định trong app |
+| 5. Đi làm xét nghiệm, chụp | Cầm phiếu đi chụp, siêu âm rồi mang kết quả về cho bác sĩ (P1); bị "đẩy qua phòng" (P2) | P2: rườm rà 😟 | Đ4. Không biết thứ tự, đi vòng (**giả thuyết**). Đ4b. **Không hiểu vì sao phải làm thêm, nghi bị bán thêm dịch vụ** (P2) | Đ4: chưa có bằng chứng phỏng vấn. Đ4b: P2 [01:56], [03:47], 1/2 |
+| 5b. Đang nhịn ăn | Đói, không biết khi nào được ăn | 😟 | ⚡ Đ5. Không biết xong mục nhịn ăn chưa | Hướng dẫn Vinmec: không ăn sáng trước lấy máu |
+| 6. Chờ kết quả | Ngồi chờ, hỏi nhân viên | "Bao giờ có?" 😐 | ⚡ **Đ6. Không biết khi nào có kết quả** | Khảo sát hài lòng ngoại trú: chờ ở khâu trả kết quả |
+| 7. Quay lại bác sĩ | Mang kết quả về cho bác sĩ xem (P1) | 😐 | Đ7. Quay lại khi chưa đủ kết quả (**giả thuyết**) | P1 [02:56] chỉ mô tả bước này, không than |
+| 8. Nhận thuốc, về | Thanh toán, lấy thuốc | 😀 nếu trả được trên app | — | UMC Care: kết toán BHYT trên app (6/2026) |
+| (ẩn) Người đi cùng bố mẹ | Vừa dẫn đường vừa lo thủ tục | 😟 | Đ8. Một người phải lo hết (**giả thuyết**) | Chưa có bằng chứng phỏng vấn |
+| 10. Tái khám | Quét lại thẻ, làm lại quy trình, tự nói đã có lịch sử khám (P1) | 😐 | Đ10. Kể lại lịch sử ở mỗi lần tái khám | P1 [03:08], không tỏ ra bực |
+| (ẩn) Tình huống nguy hiểm | Người bệnh trở nặng khi đang chờ | Không biết báo ai | ⚡ **Đ9. Không biết khoa Cấp cứu ở đâu** (an toàn) | Luật cấp cứu giữ từ bản trước |
 
 ## Điểm đau ưu tiên
 
-Ưu tiên điểm đau xuất hiện nhiều nhất trong phỏng vấn **và** nằm trong khả năng của prototype: Đ4 + Đ5 (nói hết và hỏi
-đủ), Đ1 (kể một lần), Đ2 + Đ3 (chuẩn bị đúng). Đ7 bắt buộc xử lý vì an toàn. Đ6 dùng để kiểm tra thiết kế (đặt hộ).
-
-Nguồn nghiên cứu: [00-huong-tinh-nang-moi.md](../00-huong-tinh-nang-moi.md), mục 3.
+**Chưa chọn được điểm đau ưu tiên bằng bằng chứng.** Đ1, Đ4, Đ6 (hướng Lộ trình) hiện **chưa có trong bản ghi phỏng vấn**.
+Tín hiệu có cảm xúc nhất trong bản ghi là **Đ4b** (rườm rà, nghi bị làm thêm dịch vụ; P2, 1/2). Đ9 bắt buộc xử lý vì an toàn.
+Đ3 và bước 8 đã được các app lớn giải nên không làm lại.

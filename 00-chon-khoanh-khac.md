@@ -1,57 +1,44 @@
-# Chọn khoảnh khắc: Đặt lịch, đoạn từ lúc đặt hẹn xong tới lúc gặp bác sĩ
+# Chọn khoảnh khắc (bản 2, 18/10/2026; cột nguồn sửa theo bản ghi sau review, bản trước ở [-v2](00-chon-khoanh-khac-v2.md)): Chờ, tức trong ngày khám, từ cửa viện tới lúc nhận thuốc
+
+> Bản 1 chọn đoạn "đặt lịch xong → gặp bác sĩ" (hướng H1), giữ ở [00-chon-khoanh-khac-v1.md](00-chon-khoanh-khac-v1.md).
+> Toàn bộ quá trình đổi hướng: [00-qua-trinh-chon-huong.md](00-qua-trinh-chon-huong.md).
 
 ## Quyết định
 
-Đào sâu khoảnh khắc **đặt lịch**, và trong đó chỉ lấy một lát cắt: **từ lúc đặt hẹn thành công tới lúc ngồi trước bác
-sĩ**. Đây là lúc người bệnh (hoặc người thân đặt hộ) phải tự chuẩn bị: cần nhịn ăn không, mang giấy tờ gì, kể gì và hỏi
-bác sĩ điều gì.
+Đào sâu khoảnh khắc **chờ**, hiểu rộng là **cả ngày khám tại viện**: tìm quầy đăng ký, đi các phòng xét nghiệm và chụp
+chiếu theo chỉ định, chờ kết quả, quay lại bác sĩ, nhận thuốc. Câu hỏi trung tâm của người bệnh: **"Bây giờ tôi đi đâu
+tiếp, và còn phải chờ bao lâu?"**
 
-Lát cắt này được chọn **sau khi dùng thử app**. Hướng ban đầu là "không biết khám khoa nào", nhưng MyVinmec đã có đặt
-lịch theo triệu chứng và trợ lý MIA. Lý do đổi hướng và các hướng đã cân nhắc: [00-qua-trinh-chon-huong.md](00-qua-trinh-chon-huong.md).
-So sánh 7 hướng tính năng: [00-huong-tinh-nang-moi.md](00-huong-tinh-nang-moi.md).
+Không đào sâu: đặt lịch (các app lớn đã làm tốt), thanh toán và kết toán BHYT (UMC Care, MyVinmec đã có), đọc kết quả
+(gần lời khuyên y khoa).
 
-Không đào sâu: thanh toán, đổi hoặc huỷ lịch, chọn khoa (đã có trong app), đọc kết quả.
+## Vì sao đổi so với bản 1
 
-## Tiêu chí so sánh
+| Dữ kiện mới (18/10) | Nguồn | Ảnh hưởng |
+|---|---|---|
+| Người bệnh **đến thẳng viện**, không đặt lịch qua app | Bản ghi P1, P2 (2/2) | Đoạn "đặt xong → gặp bác sĩ" gần như không tồn tại với họ |
+| Phiếu thông tin ở viện là **trắc nghiệm**, có ô ghi thêm, không gây khó | Thái nhớ lại từ một cuộc không ghi âm; không có trong bản ghi P1, P2 | Hướng "phiếu trước khám" không có điểm đau |
+| Than phiền: **bỡ ngỡ, không biết vào quầy nào** (tuỳ cách vận hành của viện) | Thái nhớ lại từ một cuộc không ghi âm; không có trong bản ghi P1, P2. P1 còn mô tả ngược lại (máy quét, tự chọn khoa). **Giả thuyết, 0/2** | Điểm đau nằm trong ngày khám |
+| Người dùng trên Threads cho rằng app đặt lịch hiện **đã tốt và tiện** | Thái đọc Threads (⚠️ chờ trích nguyên văn) | Không làm thêm ở bước đặt lịch |
+| UMC Care (bác sĩ được phỏng vấn giới thiệu) làm tốt đặt lịch, thanh toán, kết quả; **hướng dẫn quy trình chỉ là bài viết chung**, không theo chỉ định của từng người | Dùng thử UMC Care 18/10; [ghi chép](04-best-practice/umc-care-va-app-benh-vien-vn.md) | Khoảng trống: app biết dữ liệu nhưng không chỉ bước tiếp theo |
 
-| Tiêu chí | Vì sao quan trọng với bài này |
-|---|---|
-| A. Phỏng vấn được mà không chạm vào bệnh án | Đề cấm hỏi chẩn đoán, bệnh án, tình trạng sức khoẻ (mục 6.4) |
-| B. Người phỏng vấn được đều từng trải qua | Chỉ phỏng vấn người quen, ít nhất 3 người, trong khoảng 1 tuần |
-| C. Tự thử được trên MyVinmec | Đề yêu cầu ghi chép dùng thử app |
-| D. AI có lợi thế thật so với rule/workflow | Day 2 (PAIR): "hỏi bài toán trước, AI sau"; AI chỉ đáng làm khi bài toán thuộc nhóm AI làm tốt hơn |
-| E. Rủi ro an toàn kiểm soát được trong prototype 1 tuần | Đề cấm đưa lời khuyên y khoa; prototype phải thử được với người thật |
-| F. App chưa giải | Mục tiêu là tính năng mới, không làm lại thứ app đã có |
+## So sánh lại theo tiêu chí cũ (A–F)
 
-## So sánh 5 khoảnh khắc
-
-| Khoảnh khắc | A | B | C | D | E | F | Kết luận |
+| Khoảnh khắc | A. Không chạm bệnh án | B. Ai cũng trải qua | C. Thử được | D. AI có lợi thế | E. Rủi ro kiểm soát được | F. App chưa giải | Kết luận |
 |---|---|---|---|---|---|---|---|
-| **Đặt lịch → chuẩn bị gặp bác sĩ** | ✅ hỏi "lần trước bạn có quên hỏi, quên mang gì", không cần biết bệnh gì | ✅ ai đi khám cũng từng trải qua | ✅ đã thử luồng đặt lịch và mục Lịch hẹn | ✅ hiểu lời kể tự do → phiếu có cấu trúc; gợi ý câu hỏi (PAIR: *natural language*) | ✅ AI chỉ ghi lại và gợi ý câu hỏi, không trả lời câu hỏi y khoa; có luật cấp cứu | ✅ chưa thấy tính năng nào cho đoạn này | **Chọn** |
-| Đặt lịch → chọn khoa (hướng ban đầu) | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ app đã có form triệu chứng và MIA | Dừng, đưa vào backlog B1 |
-| Check-in | ✅ | ⚠️ nhiều người check-in tại quầy, khó nhớ chi tiết | ⚠️ khó thử nếu không thật sự đến viện | ❌ chủ yếu là thủ tục → rule/QR giải tốt hơn | ✅ | ⚠️ app có check-in QR | Loại |
-| Chờ tại viện | ✅ | ✅ | ❌ không thử được khi ngồi nhà | ⚠️ cần **dữ liệu hàng đợi thật** | ✅ | ✅ | Loại: không kiểm chứng được trong 1 tuần (backlog B7) |
-| Nhận kết quả | ❌ dễ trượt sang tình trạng sức khoẻ | ✅ | ✅ | ✅ | ❌ giải thích chỉ số rất gần **lời khuyên y khoa** | ⚠️ | Loại |
-| Tái khám, sau khám | ⚠️ | ⚠️ | ⚠️ có Đơn thuốc, Nhắc thuốc | ✅ viết lại lời dặn dễ hiểu | ⚠️ phải đọc nội dung y khoa, cần bác sĩ duyệt | ⚠️ | Backlog B3, ưu tiên cao nhất cho sprint 6 tuần |
+| **Chờ / trong ngày khám** | ✅ hỏi đi đâu, chờ bao lâu | ✅ | ⚠️ thử bằng dữ liệu giả lập (đề cho phép) | ⚠️ **chỉ ở bước hiểu câu hỏi tự do**; lộ trình là luật | ✅ không trả lời câu y khoa, câu trả lời ghép từ dữ liệu viện | ✅ app chỉ có hướng dẫn chung | **Chọn** |
+| Đặt lịch → chuẩn bị gặp bác sĩ (bản 1) | ✅ | ⚠️ người đến thẳng không qua đoạn này | ✅ | ✅ | ✅ | ✅ | Dừng: phỏng vấn không thấy điểm đau. Backlog B9 |
+| Đặt lịch → chọn khoa (H0) | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ app đã có | Backlog B1 |
+| Nhận kết quả | ❌ | ✅ | ✅ | ✅ | ❌ gần lời khuyên y khoa | ⚠️ | Loại |
+| Sau khám (hiểu lời dặn) | ⚠️ | ⚠️ | ⚠️ | ✅ | ⚠️ cần bác sĩ duyệt | ⚠️ | Backlog B3 |
 
-## Vì sao không chọn từng phương án còn lại (bản ngắn để trả lời khi phỏng vấn)
+**Điểm yếu thừa nhận trước:** tiêu chí D chỉ đạt một phần. Phần lớn giá trị đến từ luật và dữ liệu vận hành; AI chỉ đáng
+dùng nếu hiểu câu hỏi tự do tốt hơn rõ rệt so với luật từ khoá. Bài đo điều này trên bộ held-out (xem `05-prototype/`).
+Trước đó, bản 1 đã đổi hướng khi đạt cả 6 tiêu chí trên giấy nhưng phỏng vấn không thấy điểm đau: tiêu chí trên giấy không
+thay được bằng chứng người dùng.
 
-- **Chọn khoa:** app đã có. Tỷ lệ đặt sai gốc ở nơi khác cũng rất thấp (0,68% ở một bệnh viện Quảng Châu), nên khó cho
-  thấy khác biệt. Mình giữ phát hiện về app (T1–T10) làm bằng chứng dùng thử.
-- **Check-in:** bài toán thủ tục; rule, QR hoặc check-in online giải tốt hơn và rẻ hơn AI.
-- **Chờ:** pain có thật, nhưng cần dữ liệu hàng đợi thật mà ứng viên không có.
-- **Nhận kết quả:** pain lớn về cảm xúc, nhưng chỉ một bước nhỏ là thành lời khuyên y khoa.
-- **Sau khám:** nhu cầu mạnh nhất, nhưng cần ghi chú bác sĩ và bác sĩ duyệt. Hợp với sprint có bác sĩ đồng hành.
+## Câu hỏi còn phải trả lời khi thử
 
-## Giả thuyết cần kiểm chứng bằng phỏng vấn
-
-Đây mới là **giả thuyết**; phỏng vấn có thể bác bỏ. Nếu 3 người đều nói "chuẩn bị không có gì khó, khó là ...", mình ghi
-lại và đổi trọng tâm.
-
-- **H1. Người bệnh không nói hết hoặc quên hỏi điều mình định hỏi** khi gặp bác sĩ (thời gian ngắn, bị ngắt lời, hồi
-  hộp, hoặc người đặt hộ không đi cùng).
-- **H2. Người bệnh phải kể lại cùng một chuyện nhiều lần** (form đặt lịch, tổng đài, điều dưỡng, bác sĩ).
-- **H3. Người bệnh có lúc chuẩn bị sai** (chưa nhịn ăn, thiếu giấy tờ, không mang thuốc đang dùng hay kết quả cũ) và
-  phải chờ thêm hoặc quay lại.
-- **H4. Người bệnh sẵn sàng dành khoảng 2 phút trước buổi khám** nếu biết bác sĩ sẽ đọc, nhưng lo về việc ai đọc được
-  phiếu đó.
+1. Điểm đau "bỡ ngỡ quầy, lộ trình" ở viện công có còn mạnh ở **Vinmec** (viện tư, có nhân viên chăm sóc khách hàng)?
+2. Người thử có tin giờ dự kiến không, hay giờ sai làm họ lo hơn?
+3. Người thử hỏi bằng lời của mình nhiều không, hay chỉ bấm câu gợi ý? (Nếu chỉ bấm gợi ý thì không cần AI.)
